@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/models/handyman_dashboard_response.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
-import 'package:handyman_provider_flutter/utils/configs.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/extensions/num_extenstions.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class HandymanCommissionComponent extends StatelessWidget {
@@ -15,56 +17,58 @@ class HandymanCommissionComponent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-      margin: const EdgeInsets.symmetric(horizontal: 16),
+      margin: const EdgeInsets.only(top: 8, left: 16, right: 16),
       decoration: boxDecorationWithRoundedCorners(
         borderRadius: radius(8),
-        backgroundColor:
-            appStore.isDarkMode ? cardDarkColor : gray.withValues(alpha: 0.1),
+        backgroundColor: context.cardSecondary,
       ),
       child: Row(
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              RichTextWidget(
-                textAlign: TextAlign.center,
-                list: [
-                  TextSpan(
-                      text: "${languages.lblHandymanType}: ",
-                      style: secondaryTextStyle()),
-                  TextSpan(
-                      text: '${commission.name.validate()}',
-                      style: boldTextStyle()),
-                ],
-              ),
-              8.height,
-              RichTextWidget(
-                textAlign: TextAlign.center,
-                list: [
-                  TextSpan(
-                      text: '${languages.lblMyCommission}: ',
-                      style: secondaryTextStyle()),
-                  TextSpan(
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                RichTextWidget(
+                  textAlign: TextAlign.start,
+                  list: [
+                    TextSpan(
+                        text: '${languages.lblHandymanType}: ',
+                        style: context.primaryTextStyle()),
+                    TextSpan(
+                      text: commission.name.validate().capitalizeFirstLetter(),
+                      style: context.boldTextStyle(),
+                    ),
+                  ],
+                ),
+                12.height,
+                RichTextWidget(
+                  textAlign: TextAlign.start,
+                  list: [
+                    TextSpan(
+                        text: '${languages.lblMyCommission}: ',
+                        style: context.primaryTextStyle()),
+                    TextSpan(
                       text: isCommissionTypePercent(commission.type)
                           ? '${commission.commission.validate()}%'
-                          : '${appConfigurationStore.currencySymbol}${commission.commission.validate()}',
-                      style: boldTextStyle()),
-                  if (!isCommissionTypePercent(commission.type))
-                    TextSpan(
-                      text: ' (${languages.lblFixed})',
-                      style: secondaryTextStyle(),
+                          : commission.commission.validate().toPriceFormat(),
+                      style: context.boldTextStyle(),
                     ),
-                ],
-              ),
-            ],
+                    if (!isCommissionTypePercent(commission.type))
+                      TextSpan(
+                        text: ' (${languages.lblFixed})',
+                        style: context.primaryTextStyle(),
+                      ),
+                  ],
+                ),
+              ],
+            ),
           ),
-          const Spacer(),
           Container(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(6),
             decoration:
-                const BoxDecoration(shape: BoxShape.circle, color: primary),
-            child:
-                Image.asset(percent_line, height: 22, width: 22, color: white),
+                BoxDecoration(shape: BoxShape.circle, color: context.primary),
+            child: Image.asset(percent_line,
+                height: 24, width: 24, color: context.onPrimary),
           ),
         ],
       ),

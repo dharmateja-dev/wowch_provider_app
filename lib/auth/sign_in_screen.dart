@@ -402,8 +402,14 @@ class _SignInScreenState extends State<SignInScreen> {
     // Small delay to simulate network call
     await Future.delayed(const Duration(milliseconds: 500));
 
-    // Get demo user based on configured user type
-    UserData demoUser = DemoData.currentDemoUser;
+    // Determine demo user based on the email field (not the constant)
+    // This allows switching between Provider and Handyman using the demo buttons
+    UserData demoUser;
+    if (emailCont.text.trim() == DEFAULT_HANDYMAN_EMAIL) {
+      demoUser = DemoData.demoHandymanUser;
+    } else {
+      demoUser = DemoData.demoProviderUser;
+    }
 
     // Save demo user data to app store
     await appStore.setUserId(demoUser.id ?? 1);
@@ -424,6 +430,23 @@ class _SignInScreenState extends State<SignInScreen> {
     await appStore.setProviderId(demoUser.providerId ?? 1);
     await appStore.setLoggedIn(true);
     await appStore.setTester(true);
+
+    // Set createdAt for handyman experience calculation
+    await appStore
+        .setCreatedAt(demoUser.createdAt ?? DateTime.now().toString());
+
+    // Set subscription and commission demo data for Provider
+    if (demoUser.userType == USER_TYPE_PROVIDER) {
+      // Set subscription plan demo data to show Current Plan container
+      await appStore.setEarningType(EARNING_TYPE_SUBSCRIPTION);
+      await appStore.setPlanTitle('Free Plan');
+      await appStore.setPlanEndDate('2024-02-09');
+      await appStore.setPlanSubscribeStatus(true);
+
+      // Set commission demo data to show Provider Type & My Commission container
+      await setValue(DASHBOARD_COMMISSION,
+          '{"name":"company","commission":70,"type":"percent"}');
+    }
 
     // Set remember credentials
     await setValue(USER_PASSWORD, 'demo_password');
