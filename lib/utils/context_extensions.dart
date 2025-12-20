@@ -292,6 +292,11 @@ extension ColorSchemeExtension on BuildContext {
   Color get dialogSubTitleColor =>
       isDarkMode ? const Color(0xFFB2C7BF) : const Color(0xFF72777A);
 
+  // ——— Upload Card Colors ———
+  /// Upload document card background - Light: #D9D9D9, Dark: #1E1E1E
+  Color get uploadCardBackground =>
+      isDarkMode ? const Color(0xFF1E1E1E) : const Color(0xFFD9D9D9);
+
   // ══════════════════════════════════════════════════════════════════════════
   // CONVENIENCE HELPERS
   // ══════════════════════════════════════════════════════════════════════════
@@ -314,4 +319,16 @@ extension ColorSchemeExtension on BuildContext {
   Color get hintColor => hintTextColor;
   Color get icon => iconColor;
   Color get divider => themeDividerColor;
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// DIALOG HELPERS
+// ══════════════════════════════════════════════════════════════════════════
+
+/// Helper function for consistent dialog shape
+/// Usage: shape: appDialogShape(16)
+RoundedRectangleBorder appDialogShape([double radius = 16]) {
+  return RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(radius),
+  );
 }

@@ -1,31 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:handyman_provider_flutter/utils/configs.dart';
-import 'package:nb_utils/nb_utils.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 
-// ignore: must_be_immutable
 class SelectedItemWidget extends StatelessWidget {
-  Decoration? decoration;
-  double itemSize;
-  bool isSelected;
+  final bool isSelected;
+  final VoidCallback? onChanged;
 
-  SelectedItemWidget(
-      {this.decoration, this.itemSize = 12.0, required this.isSelected});
+  const SelectedItemWidget({
+    super.key,
+    required this.isSelected,
+    this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(2),
-      height: 18,
-      width: 18,
-      decoration: decoration ??
-          boxDecorationDefault(
-            color: isSelected ? primary : Colors.white,
-            border: Border.all(color: primary),
-            shape: BoxShape.circle,
-          ),
-      child: isSelected
-          ? Icon(Icons.check, color: Colors.white, size: itemSize)
-          : const Offstage(),
+    return SizedBox(
+      height: 20,
+      width: 20,
+      child: Checkbox(
+        value: isSelected,
+        onChanged: onChanged != null ? (_) => onChanged!() : null,
+        activeColor: context.primary,
+        checkColor: context.onPrimary,
+        side: BorderSide(color: context.primary, width: 1.5),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4),
+        ),
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+      ),
     );
   }
 }

@@ -102,3 +102,5 @@ const ic_briefcase = 'assets/icons/briefcase.png';
 const ic_documents = 'assets/icons/ic_documents.png';
 const ic_clean = 'assets/icons/ic_clean.png';
 const ic_shop = 'assets/icons/ic_shop.png';
+const ic_warning = 'assets/icons/ic_warning.png';
+const ic_gallery_add = 'assets/icons/Ic_gallery_add.png';

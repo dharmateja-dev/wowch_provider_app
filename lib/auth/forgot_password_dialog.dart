@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:handyman_provider_flutter/components/app_widgets.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
-import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/model_keys.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
@@ -16,7 +16,7 @@ class ForgotPasswordScreen extends StatefulWidget {
 
 class ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   TextEditingController emailCont = TextEditingController();
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -24,9 +24,13 @@ class ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     init();
   }
 
-  Future<void> init() async {}
+  Future<void> init() async {
+    //
+  }
 
   Future<void> forgotPwd() async {
+    hideKeyboard(context);
+
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
 
@@ -34,18 +38,20 @@ class ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           emailCont.text == DEFAULT_PROVIDER_EMAIL) {
         toast(languages.lblUnAuthorized);
       } else {
-        Map req = {UserKeys.email: emailCont.text.validate()};
         appStore.setLoading(true);
 
-        forgotPassword(req).then((value) {
-          appStore.setLoading(false);
-          toast(value.message.toString());
+        Map req = {
+          UserKeys.email: emailCont.text.validate(),
+        };
 
-          pop();
-        }).catchError((e) {
+        forgotPassword(req).then((res) {
           appStore.setLoading(false);
+          finish(context);
+
+          toast(res.message.validate());
+        }).catchError((e) {
           toast(e.toString(), print: true);
-        });
+        }).whenComplete(() => appStore.setLoading(false));
       }
     }
   }
@@ -57,98 +63,71 @@ class ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: context.width(),
-      color: Colors.transparent,
-      child: Container(
-        decoration: boxDecorationDefault(
-          color: context.scaffoldBackgroundColor,
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: context.width(),
-                decoration: boxDecorationWithRoundedCorners(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(8),
-                      topRight: Radius.circular(8)),
-                  backgroundColor: primary,
+    return Form(
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      key: formKey,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            16.height,
+            Text(languages.forgotPassword,
+                    style: context.boldTextStyle(size: 22))
+                .center(),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(languages.hintEmailAddressTxt,
+                    style: context.primaryTextStyle(
+                      size: 14,
+                    )),
+                6.height,
+                Text(languages.forgotPasswordSubtitle,
+                    style: context.primaryTextStyle(
+                      size: 12,
+                      weight: FontWeight.w400,
+                    )),
+                24.height,
+                Observer(
+                  builder: (_) => AppTextField(
+                    textStyle: context.primaryTextStyle(),
+                    textFieldType: TextFieldType.EMAIL_ENHANCED,
+                    controller: emailCont,
+                    autoFocus: true,
+                    errorThisFieldRequired: languages.hintRequired,
+                    decoration: inputDecoration(context,
+                        fillColor: context.fillColor,
+                        hintText: languages.hintEmailAddressTxt,
+                        borderRadius: 8),
+                  ).visible(!appStore.isLoading, defaultWidget: Loader()),
                 ),
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(languages.forgotPassword,
-                            style: boldTextStyle(color: white))
-                        .paddingOnly(left: 16),
-                    CloseButton(color: Colors.white),
-                  ],
+                32.height,
+                AppButton(
+                  text: languages.confirm,
+                  color: context.primary,
+                  textColor: context.onPrimary,
+                  width: context.width() - context.navigationBarHeight,
+                  onTap: () {
+                    forgotPwd();
+                  },
                 ),
+              ],
+            ).paddingAll(16),
+            8.height,
+            GestureDetector(
+              onTap: () => Navigator.of(context).pop(),
+              child: Text(
+                languages.lblCancel,
+                style: context.primaryTextStyle(
+                    size: 14,
+                    weight: FontWeight.bold,
+                    color: context.primaryColor),
               ),
-              16.height,
-              Container(
-                margin: EdgeInsets.fromLTRB(16, 0, 16, 0),
-                padding: const EdgeInsets.all(8),
-                alignment: Alignment.bottomCenter,
-                decoration: boxDecorationRoundedWithShadow(
-                    defaultRadius.toInt(),
-                    blurRadius: 0,
-                    backgroundColor: context.scaffoldBackgroundColor),
-                child: Form(
-                  key: formKey,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(languages.forgotPasswordTitleTxt,
-                          style: primaryTextStyle().copyWith(height: 1.5)),
-                      6.height,
-                      Text(languages.forgotPasswordSubtitle,
-                          style: secondaryTextStyle()),
-                      24.height,
-                      AppTextField(
-                        textFieldType: TextFieldType.EMAIL_ENHANCED,
-                        controller: emailCont,
-                        autoFocus: true,
-                        validator: (s) {
-                          if (s!.isEmpty)
-                            return languages.hintRequired;
-                          else
-                            return null;
-                        },
-                        errorThisFieldRequired: languages.hintRequired,
-                        decoration: inputDecoration(context,
-                            hintText: languages.hintEmailAddressTxt,
-                            fillColor: context.cardColor),
-                        onFieldSubmitted: (s) {
-                          forgotPwd();
-                        },
-                      ),
-                      24.height,
-                      Observer(
-                        builder: (_) => appStore.isLoading
-                            ? LoaderWidget().center()
-                            : AppButton(
-                                text: languages.resetPassword,
-                                color: primary,
-                                textStyle: boldTextStyle(color: white),
-                                width: context.width() -
-                                    context.navigationBarHeight,
-                                onTap: () {
-                                  forgotPwd();
-                                },
-                              ),
-                      ),
-                      8.height,
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ).center(),
+            32.height,
+          ],
         ),
       ),
     );

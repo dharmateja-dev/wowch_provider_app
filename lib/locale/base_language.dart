@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 abstract class Languages {
-  static Languages of(BuildContext context) => Localizations.of<Languages>(context, Languages)!;
+  static Languages of(BuildContext context) =>
+      Localizations.of<Languages>(context, Languages)!;
 
   String planAboutToExpire(int days);
 
@@ -26,6 +27,8 @@ abstract class Languages {
   String get hintLastNameTxt;
 
   String get hintContactNumberTxt;
+
+  String get addYourPhoneNumber;
 
   String get hintEmailAddressTxt;
 

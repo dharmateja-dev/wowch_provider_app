@@ -13,10 +13,12 @@ import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/num_extenstions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
 import 'package:handyman_provider_flutter/utils/model_keys.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 import '../components/back_widget.dart';
 import '../components/cached_image_widget.dart';
@@ -60,6 +62,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   FocusNode designationFocus = FocusNode();
 
   String? selectedUserTypeValue;
+  bool isFirstTimeValidation = true;
 
   List<UserTypeData> commissionTypeList = [
     UserTypeData(name: languages.lblSelectCommission, id: -1)
@@ -131,58 +134,57 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        extendBodyBehindAppBar: true,
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: transparentColor,
-          leading: Container(
-            margin: const EdgeInsets.only(left: 6),
-            padding: const EdgeInsets.only(left: 6),
-            decoration: BoxDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              shape: BoxShape.circle,
-            ),
-            child: BackWidget(color: context.iconColor),
+      child: SafeArea(
+        top: false,
+        child: Scaffold(
+          backgroundColor: context.scaffold,
+          extendBodyBehindAppBar: true,
+          appBar: AppBar(
+            elevation: 0,
+            leading: Navigator.of(context).canPop()
+                ? BackWidget(iconColor: context.icon)
+                : null,
+            backgroundColor: transparentColor,
+            scrolledUnderElevation: 0,
+            systemOverlayStyle: SystemUiOverlayStyle(
+                statusBarIconBrightness: context.statusBarBrightness,
+                statusBarColor: context.scaffold),
           ),
-          scrolledUnderElevation: 0,
-          systemOverlayStyle: SystemUiOverlayStyle(
-            statusBarIconBrightness:
-                appStore.isDarkMode ? Brightness.light : Brightness.dark,
-            statusBarColor: context.scaffoldBackgroundColor,
-          ),
-        ),
-        body: Stack(
-          alignment: AlignmentDirectional.center,
-          children: [
-            Observer(
-              builder: (context) {
-                return AbsorbPointer(
-                  absorbing: appStore.isLoading,
-                  child: Form(
-                    key: formKey,
-                    child: SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        children: [
-                          _buildTopWidget(),
-                          _buildFormWidget(),
-                          _buildFooterWidget(),
-                        ],
+          body: Stack(
+            alignment: AlignmentDirectional.center,
+            children: [
+              Observer(
+                builder: (context) {
+                  return AbsorbPointer(
+                    absorbing: appStore.isLoading,
+                    child: Form(
+                      key: formKey,
+                      autovalidateMode: isFirstTimeValidation
+                          ? AutovalidateMode.disabled
+                          : AutovalidateMode.onUserInteraction,
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          children: [
+                            _buildTopWidget(),
+                            _buildFormWidget(),
+                            _buildFooterWidget(),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
-            ),
+                  );
+                },
+              ),
 
-            /// 🔄 Loader shown when loading
-            Observer(
-              builder: (context) =>
-                  LoaderWidget().center().visible(appStore.isLoading),
-            ),
-          ],
+              /// 🔄 Loader shown when loading
+              Observer(
+                builder: (context) =>
+                    LoaderWidget().center().visible(appStore.isLoading),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -193,30 +195,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget _buildTopWidget() {
     return Column(
       children: [
-        (context.height() * 0.12).toInt().height,
-        Container(
-          width: 85,
-          height: 85,
-          decoration: boxDecorationWithRoundedCorners(
-              boxShape: BoxShape.circle, backgroundColor: primary),
-          child: Image.asset(profile, height: 45, width: 45, color: white),
-        ),
+        (context.height() * 0.08).toInt().height,
+        Text(languages.lblSignupTitle, style: context.boldTextStyle(size: 24))
+            .center(),
         16.height,
-        Text(languages.lblSignupTitle, style: boldTextStyle(size: 18)),
-        16.height,
-        Text(
-          languages.lblSignupSubtitle,
-          style: secondaryTextStyle(size: 14),
-          textAlign: TextAlign.center,
-        ).paddingSymmetric(horizontal: 32),
-        32.height,
+        Text(languages.lblSignupSubtitle,
+                style: context.primaryTextStyle(size: 16),
+                textAlign: TextAlign.center)
+            .center()
+            .paddingSymmetric(horizontal: 16),
+        55.height,
       ],
     );
   }
 
   Widget _buildFormWidget() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Text(
+          languages.hintFirstNameTxt,
+          style: context.boldTextStyle(size: 14),
+        ),
+        8.height,
         // First name text field...
         AppTextField(
           textFieldType: TextFieldType.NAME,
@@ -224,11 +225,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
           focus: fNameFocus,
           nextFocus: lNameFocus,
           errorThisFieldRequired: languages.hintRequired,
-          decoration:
-              inputDecoration(context, hintText: languages.hintFirstNameTxt),
-          suffix: profile.iconImage(context: context,size: 10).paddingAll(14),
+          decoration: inputDecoration(context,
+              hintText: languages.hintFirstNameTxt,
+              borderRadius: 8,
+              prefixIcon: profile
+                  .iconImage(
+                      context: context, size: 10, color: context.iconMuted)
+                  .paddingAll(14)),
         ),
         16.height,
+        Text(
+          languages.hintLastNameTxt,
+          style: context.boldTextStyle(size: 14),
+        ),
+        8.height,
         // Last name text field...
         AppTextField(
           textFieldType: TextFieldType.NAME,
@@ -236,91 +246,133 @@ class _SignUpScreenState extends State<SignUpScreen> {
           focus: lNameFocus,
           nextFocus: userNameFocus,
           errorThisFieldRequired: languages.hintRequired,
-          decoration: inputDecoration(context, hintText: languages.hintLastNameTxt),
-          suffix: profile.iconImage(context: context,size: 10).paddingAll(14),
+          decoration: inputDecoration(context,
+              hintText: languages.hintLastNameTxt,
+              borderRadius: 8,
+              prefixIcon: profile
+                  .iconImage(
+                      context: context, size: 10, color: context.iconMuted)
+                  .paddingAll(14)),
         ),
         16.height,
+
         // User name test field...
+        Text(
+          languages.hintUserNameTxt,
+          style: context.boldTextStyle(size: 14),
+        ),
+        8.height,
         AppTextField(
           textFieldType: TextFieldType.USERNAME,
           controller: userNameCont,
           focus: userNameFocus,
           nextFocus: emailFocus,
           errorThisFieldRequired: languages.hintRequired,
-          decoration: inputDecoration(context, hintText: languages.hintUserNameTxt),
-          suffix: profile.iconImage(context: context,size: 10).paddingAll(14),
+          decoration: inputDecoration(context,
+              hintText: languages.hintUserNameTxt,
+              borderRadius: 8,
+              prefixIcon: profile
+                  .iconImage(
+                      context: context, size: 10, color: context.iconMuted)
+                  .paddingAll(14)),
         ),
         16.height,
         // Email text field...
+        Text(
+          languages.hintEmailAddressTxt,
+          style: context.boldTextStyle(size: 14),
+        ),
+        8.height,
         AppTextField(
           textFieldType: TextFieldType.EMAIL_ENHANCED,
           controller: emailCont,
           focus: emailFocus,
           nextFocus: mobileFocus,
           errorThisFieldRequired: languages.hintRequired,
-          decoration:
-              inputDecoration(context, hintText: languages.hintEmailAddressTxt),
-          suffix: ic_message.iconImage(context: context,size: 10).paddingAll(14),
+          decoration: inputDecoration(context,
+              hintText: languages.hintEmailAddressTxt,
+              borderRadius: 8,
+              prefixIcon: ic_message
+                  .iconImage(
+                      context: context, size: 10, color: context.iconMuted)
+                  .paddingAll(14)),
         ),
         16.height,
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Country code ...
-            Container(
-              height: 48.0,
-              decoration: BoxDecoration(
-                color: context.cardColor,
-                borderRadius: BorderRadius.circular(12.0),
-              ),
-              child: Center(
-                child: ValueListenableBuilder(
-                  valueListenable: _valueNotifier,
-                  builder: (context, value, child) => Row(
-                    children: [
-                      Text(
-                        "+${selectedCountry.phoneCode}",
-                        style: primaryTextStyle(size: 12),
-                      ).paddingOnly(left: 8),
-                      const Icon(Icons.arrow_drop_down)
-                    ],
-                  ).paddingOnly(left: 8),
-                ),
-              ),
-            ).onTap(() => changeCountry()),
-            10.width,
-            // Mobile number text field...
-            AppTextField(
-              textFieldType:
-                  isAndroid ? TextFieldType.PHONE : TextFieldType.NAME,
-              controller: mobileCont,
-              focus: mobileFocus,
-              errorThisFieldRequired: languages.hintRequired,
-              nextFocus: passwordFocus,
-              decoration: inputDecoration(context,
-                      hintText: '${languages.hintContactNumberTxt}')
-                  .copyWith(
-                hintText: '${languages.lblExample}: ${selectedCountry.example}',
-                hintStyle: secondaryTextStyle(),
-              ),
-              maxLength: 15,
-              suffix: calling.iconImage(context: context,size: 10).paddingAll(14),
-            ).expand(),
-          ],
+        // Contact number label
+        Text(
+          languages.hintContactNumberTxt,
+          style: context.boldTextStyle(size: 14),
         ),
         8.height,
+        // Contact number field with country code
+        AppTextField(
+          textFieldType: isAndroid ? TextFieldType.PHONE : TextFieldType.NAME,
+          controller: mobileCont,
+          focus: mobileFocus,
+          errorThisFieldRequired: languages.hintRequired,
+          nextFocus: designationFocus,
+          decoration: inputDecoration(
+            context,
+            hintText: languages.addYourPhoneNumber,
+            borderRadius: 8,
+            prefixIcon: // Country code dropdown
+                GestureDetector(
+              onTap: () => changeCountry(),
+              child: ValueListenableBuilder(
+                valueListenable: _valueNotifier,
+                builder: (context, value, child) => Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      "+${selectedCountry.phoneCode}",
+                      style: context.boldTextStyle(size: 14),
+                    ),
+                    2.width,
+                    Icon(
+                      Icons.arrow_drop_down,
+                      color: context.icon,
+                      size: 20,
+                    ),
+                  ],
+                ),
+              ),
+            ).paddingAll(14),
+          ),
+          maxLength: 15,
+          buildCounter: (context,
+                  {required currentLength, required isFocused, maxLength}) =>
+              null,
+        ),
+        16.height,
+
         // Designation text field...
+        Text(
+          languages.lblDesignation,
+          style: context.boldTextStyle(size: 14),
+        ),
+        8.height,
         AppTextField(
           textFieldType: TextFieldType.USERNAME,
           controller: designationCont,
           isValidationRequired: false,
           focus: designationFocus,
           nextFocus: passwordFocus,
-          decoration: inputDecoration(context, hintText: languages.lblDesignation),
-          suffix: profile.iconImage(context: context,size: 10).paddingAll(14),
+          decoration: inputDecoration(context,
+              hintText: languages.lblDesignation,
+              borderRadius: 8,
+              prefixIcon: profile
+                  .iconImage(
+                      context: context, size: 10, color: context.iconMuted)
+                  .paddingAll(14)),
         ),
         16.height,
-        // User role text field...
+        // User Role label
+        Text(
+          languages.lblUserType,
+          style: context.boldTextStyle(size: 14),
+        ),
+        8.height,
+        // User role dropdown
         ValueListenableBuilder(
           valueListenable: _valueNotifier,
           builder: (context, value, child) => Column(
@@ -329,19 +381,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 items: [
                   DropdownMenuItem(
                     value: USER_TYPE_PROVIDER,
-                    child: Text(languages.provider, style: primaryTextStyle()),
+                    child: Text(languages.provider,
+                        style: context.primaryTextStyle()),
                   ),
                   DropdownMenuItem(
                     value: USER_TYPE_HANDYMAN,
-                    child: Text(languages.handyman, style: primaryTextStyle()),
+                    child: Text(languages.handyman,
+                        style: context.primaryTextStyle()),
                   ),
                 ],
                 focusNode: userTypeFocus,
                 dropdownColor: context.cardColor,
-                decoration: inputDecoration(context, hintText: languages.userRole),
+                decoration: inputDecoration(context,
+                    hintText: languages.lblUserType, borderRadius: 8),
                 initialValue: selectedUserTypeValue,
                 validator: (value) {
-                  if (value == null) return errorThisFieldRequired;
+                  if (value == null) return languages.hintRequired;
                   return null;
                 },
                 onChanged: (c) {
@@ -367,16 +422,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     log(e.toString());
                   });
 
-                  // ✅ Correct call
                   if (selectedUserTypeValue == USER_TYPE_PROVIDER) {
-                    getZoneListApi(); // This will update `zoneList`
+                    getZoneListApi();
                   } else {
                     _valueNotifier.notifyListeners();
                   }
                 },
               ),
               if (selectedUserTypeValue == USER_TYPE_PROVIDER) ...[
-                12.height,
+                16.height,
+                // Zone selection for providers
                 Container(
                   decoration: boxDecorationDefault(
                     color: context.cardColor,
@@ -389,7 +444,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       splashFactory: InkSplash.splashFactory,
                     ),
                     child: ExpansionTile(
-                      iconColor: context.iconColor,
+                      iconColor: context.icon,
                       tilePadding: const EdgeInsets.symmetric(horizontal: 16),
                       childrenPadding:
                           const EdgeInsets.symmetric(horizontal: 16),
@@ -422,20 +477,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               hoverColor: Colors.transparent,
                               unselectedWidgetColor: appStore.isDarkMode
                                   ? context.dividerColor
-                                  : context.iconColor,
+                                  : context.icon,
                             ),
                             child: CheckboxListTile(
                               checkboxShape: RoundedRectangleBorder(
                                   borderRadius: radius(4)),
                               activeColor: context.primaryColor,
                               checkColor: appStore.isDarkMode
-                                  ? context.iconColor
+                                  ? context.icon
                                   : context.cardColor,
                               contentPadding:
                                   const EdgeInsets.symmetric(horizontal: 16),
                               title: Text(zone.name.validate(),
-                                  style: secondaryTextStyle(
-                                      color: context.iconColor)),
+                                  style:
+                                      secondaryTextStyle(color: context.icon)),
                               value: isSelected,
                               onChanged: (val) {
                                 if (val == true) {
@@ -459,7 +514,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ],
           ),
         ),
-        if (selectedUserTypeValue != USER_TYPE_HANDYMAN) 16.height,
+        // User role text field...
         if (selectedUserTypeValue == USER_TYPE_HANDYMAN)
           Container(
             decoration: boxDecorationDefault(
@@ -540,63 +595,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
           ),
         // Select user type text field...
-        ValueListenableBuilder(
-          valueListenable: _valueNotifier,
-          builder: (context, value, child) =>
-              DropdownButtonFormField<UserTypeData>(
-            onChanged: (UserTypeData? val) {
-              selectedUserCommissionType = val;
-              _valueNotifier.notifyListeners();
-            },
-            validator: selectedUserCommissionType == null
-                ? (c) {
-                    if (c == null) return errorThisFieldRequired;
-                    return null;
-                  }
-                : null,
-            initialValue: selectedUserCommissionType,
-            dropdownColor: context.cardColor,
-            decoration:
-                inputDecoration(context, hintText: languages.lblSelectCommission),
-            items: List.generate(
-              commissionTypeList.length,
-              (index) {
-                UserTypeData data = commissionTypeList[index];
 
-                return DropdownMenuItem<UserTypeData>(
-                  value: data,
-                  child: Row(
-                    children: [
-                      Text(data.name.toString(), style: primaryTextStyle()),
-                      4.width,
-                      if (data.type == COMMISSION_TYPE_PERCENT)
-                        Text(
-                          '(${data.commission.toString()}%)',
-                          style: primaryTextStyle(),
-                        )
-                      else if (data.type == COMMISSION_TYPE_FIXED)
-                        Text('(${data.commission.validate().toPriceFormat()})',
-                            style: primaryTextStyle()),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
-        ),
-        16.height,
         // Password text field...
+        Text(
+          languages.hintPassword,
+          style: context.boldTextStyle(size: 14),
+        ),
+        8.height,
         AppTextField(
           textFieldType: TextFieldType.PASSWORD,
           controller: passwordCont,
           focus: passwordFocus,
           obscureText: true,
-          suffixPasswordVisibleWidget:
-              ic_show.iconImage(context: context,size: 10).paddingAll(14),
-          suffixPasswordInvisibleWidget:
-              ic_hide.iconImage(context: context,size: 10).paddingAll(14),
+          suffixPasswordVisibleWidget: ic_show
+              .iconImage(context: context, size: 10, color: context.iconMuted)
+              .paddingAll(14),
+          suffixPasswordInvisibleWidget: ic_hide
+              .iconImage(context: context, size: 10, color: context.iconMuted)
+              .paddingAll(14),
           errorThisFieldRequired: languages.hintRequired,
-          decoration: inputDecoration(context, hintText: languages.hintPassword),
+          decoration: inputDecoration(context,
+              hintText: languages.hintPassword,
+              prefixIcon: ic_passwordIcon
+                  .iconImage(
+                      context: context, size: 10, color: context.iconMuted)
+                  .paddingAll(14)),
           isValidationRequired: true,
           validator: (val) {
             if (val == null || val.isEmpty) {
@@ -614,8 +637,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
         AppButton(
           text: languages.lblNext,
           height: 40,
-          color: primary,
-          textStyle: boldTextStyle(color: white),
+          color: context.primary,
+          textStyle: boldTextStyle(color: context.onPrimary),
           width: context.width() - context.navigationBarHeight,
           onTap: () {
             saveUser();
@@ -662,10 +685,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
           list: [
             TextSpan(
                 text: "${languages.alreadyHaveAccountTxt}? ",
-                style: secondaryTextStyle()),
+                style: primaryTextStyle(size: 14)),
             TextSpan(
               text: languages.signIn,
-              style: boldTextStyle(color: primary),
+              style: boldTextStyle(
+                  color: context.primary, fontStyle: FontStyle.italic),
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
                   finish(context);
@@ -716,14 +740,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   void saveUser() async {
     if (formKey.currentState!.validate()) {
-      if (selectedUserCommissionType == null ||
-          selectedUserCommissionType!.id == -1) {
-        return toast(languages.pleaseSelectCommission);
-      }
-      if (selectedUserTypeValue == USER_TYPE_PROVIDER &&
-          selectedZoneIds.isEmpty) {
-        return toast(languages.plzSelectOneZone);
-      }
+      // TODO: Re-enable these validations after testing
+      // if (selectedUserCommissionType == null ||
+      //     selectedUserCommissionType!.id == -1) {
+      //   return toast(languages.pleaseSelectCommission);
+      // }
+      // if (selectedUserTypeValue == USER_TYPE_PROVIDER &&
+      //     selectedZoneIds.isEmpty) {
+      //   return toast(languages.plzSelectOneZone);
+      // }
       formKey.currentState!.save();
       hideKeyboard(context);
       var request = {
@@ -743,8 +768,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
       }
 
       if (selectedUserTypeValue == USER_TYPE_PROVIDER) {
-        request.putIfAbsent(UserKeys.providerTypeId,
-            () => selectedUserCommissionType!.id.toString());
+        // Only add providerTypeId if commission type is selected
+        if (selectedUserCommissionType != null &&
+            selectedUserCommissionType!.id != -1) {
+          request.putIfAbsent(UserKeys.providerTypeId,
+              () => selectedUserCommissionType!.id.toString());
+        }
         if (selectedZoneIds.isNotEmpty) {
           request[UserKeys.zoneId] = selectedZoneIds.join(',');
           log('✅ Zone IDs added: ${request[UserKeys.zoneId]}');
@@ -753,7 +782,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
         }
       }
 
+      log('📋 Selected User Type: $selectedUserTypeValue');
+      log('📋 Request: $request');
+
       if (selectedUserTypeValue == USER_TYPE_PROVIDER) {
+        log('🚀 Navigating to UploadDocumentsScreen');
         UploadDocumentsScreen(formRequest: request).launch(context,
             pageRouteAnimation: PageRouteAnimation.SlideBottomTop);
       } else {

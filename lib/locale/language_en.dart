@@ -39,6 +39,9 @@ class LanguageEn extends Languages {
   String get hintContactNumberTxt => 'Contact Number';
 
   @override
+  String get addYourPhoneNumber => 'Add your phone number';
+
+  @override
   String get hintEmailAddressTxt => 'Email Address';
 
   @override
@@ -405,7 +408,7 @@ class LanguageEn extends Languages {
       "Welcome Back, You Have Been Missed For A Long Time";
 
   @override
-  String get lblSignupTitle => "Hello User !";
+  String get lblSignupTitle => "Hello User!";
 
   @override
   String get lblSignupSubtitle => "Create Your Account for Better Experience";

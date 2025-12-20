@@ -85,7 +85,7 @@ class _UserDemoModeScreenState extends State<UserDemoModeScreen> {
                           style: boldTextStyle(
                               color: isSelected
                                   ? context.primary
-                                  : context.onSurface,
+                                  : const Color(0xFF121212),
                               size: 12),
                           textAlign: TextAlign.center),
                     ).withWidth(context.width() / 2 - 24);
