@@ -3,7 +3,9 @@ import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/models/about_model.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/data_provider.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -17,6 +19,7 @@ class AboutUsScreen extends StatelessWidget {
     List<AboutModel> aboutList = getAboutDataModel(context: context);
 
     return AppScaffold(
+      scaffoldBackgroundColor: context.scaffoldSecondary,
       appBarTitle: languages.lblAbout,
       body: AnimatedWrap(
         spacing: 16,
@@ -24,22 +27,26 @@ class AboutUsScreen extends StatelessWidget {
         itemCount: aboutList.length,
         listAnimationType: ListAnimationType.FadeIn,
         fadeInConfiguration: FadeInConfiguration(duration: 2.seconds),
-        scaleConfiguration: ScaleConfiguration(duration: 400.milliseconds, delay: 50.milliseconds),
+        scaleConfiguration: ScaleConfiguration(
+            duration: 400.milliseconds, delay: 50.milliseconds),
         itemBuilder: (context, index) {
           return Container(
             width: context.width() * 0.5 - 26,
             padding: const EdgeInsets.all(16),
             decoration: boxDecorationWithRoundedCorners(
-              borderRadius: radius(),
-              backgroundColor: context.cardColor,
+              borderRadius: radius(8),
+              backgroundColor: context.cardSecondary,
+              border: Border.all(color: context.cardSecondaryBorder),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset(aboutList[index].image.toString(), height: 22, width: 22, color: context.iconColor),
+                Image.asset(aboutList[index].image.toString(),
+                    height: 20, width: 20, color: context.icon),
                 8.height,
-                Text(aboutList[index].title.toString(), style: primaryTextStyle(size: LABEL_TEXT_SIZE)),
+                Text(aboutList[index].title.toString(),
+                    style: context.primaryTextStyle(size: LABEL_TEXT_SIZE)),
               ],
             ),
           ).onTap(
@@ -47,37 +54,47 @@ class AboutUsScreen extends StatelessWidget {
               final title = aboutList[index].title;
 
               if (title == languages.lblTermsAndConditions) {
-                checkIfLink(context, appConfigurationStore.termConditions, title: languages.lblTermsAndConditions);
+                checkIfLink(context, appConfigurationStore.termConditions,
+                    title: languages.lblTermsAndConditions);
               } else if (title == languages.lblPrivacyPolicy) {
-                checkIfLink(context, appConfigurationStore.privacyPolicy, title: languages.lblPrivacyPolicy);
+                checkIfLink(context, appConfigurationStore.privacyPolicy,
+                    title: languages.lblPrivacyPolicy);
               } else if (title == languages.lblHelpAndSupport) {
                 if (appConfigurationStore.helpAndSupport.isNotEmpty) {
-                  checkIfLink(context, appConfigurationStore.helpAndSupport, title: languages.lblHelpAndSupport);
+                  checkIfLink(context, appConfigurationStore.helpAndSupport,
+                      title: languages.lblHelpAndSupport);
                 } else {
-                  checkIfLink(context, appConfigurationStore.inquiryEmail, title: languages.lblHelpAndSupport);
+                  checkIfLink(context, appConfigurationStore.inquiryEmail,
+                      title: languages.lblHelpAndSupport);
                 }
               } else if (title == languages.lblHelpLineNum) {
-                checkIfLink(context, appConfigurationStore.helplineNumber, title: languages.lblHelpLineNum);
+                checkIfLink(context, appConfigurationStore.helplineNumber,
+                    title: languages.lblHelpLineNum);
               } else if (title == 'Rate us') {
                 //Todo:
                 {
                   if (isAndroid) {
                     if (getStringAsync(PROVIDER_PLAY_STORE_URL).isNotEmpty) {
-                      commonLaunchUrl(getStringAsync(PROVIDER_PLAY_STORE_URL), launchMode: LaunchMode.externalApplication);
+                      commonLaunchUrl(getStringAsync(PROVIDER_PLAY_STORE_URL),
+                          launchMode: LaunchMode.externalApplication);
                     } else {
-                      commonLaunchUrl('${getSocialMediaLink(LinkProvider.PLAY_STORE)}${await getPackageName()}', launchMode: LaunchMode.externalApplication);
+                      commonLaunchUrl(
+                          '${getSocialMediaLink(LinkProvider.PLAY_STORE)}${await getPackageName()}',
+                          launchMode: LaunchMode.externalApplication);
                     }
                   } else if (isIOS) {
                     if (getStringAsync(PROVIDER_APPSTORE_URL).isNotEmpty) {
-                      commonLaunchUrl(getStringAsync(PROVIDER_APPSTORE_URL), launchMode: LaunchMode.externalApplication);
+                      commonLaunchUrl(getStringAsync(PROVIDER_APPSTORE_URL),
+                          launchMode: LaunchMode.externalApplication);
                     } else {
-                      commonLaunchUrl(IOS_LINK_FOR_PARTNER, launchMode: LaunchMode.externalApplication);
+                      commonLaunchUrl(IOS_LINK_FOR_PARTNER,
+                          launchMode: LaunchMode.externalApplication);
                     }
                   }
                 }
               }
             },
-            borderRadius: radius(),
+            borderRadius: radius(8),
           );
         },
       ).paddingAll(16),

@@ -46,7 +46,7 @@ class AppScaffold extends StatelessWidget {
               centerTitle: true,
             )
           : null,
-      backgroundColor: context.scaffold,
+      backgroundColor: scaffoldBackgroundColor ?? context.scaffold,
       body: Stack(
         children: [
           AbsorbPointer(

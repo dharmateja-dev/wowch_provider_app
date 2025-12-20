@@ -301,11 +301,23 @@ extension ColorSchemeExtension on BuildContext {
   // CONVENIENCE HELPERS
   // ══════════════════════════════════════════════════════════════════════════
 
-  /// Scaffold background
+  /// Scaffold background (default theme)
   Color get scaffold => appTheme.scaffoldBackgroundColor;
+
+  /// Scaffold secondary background - Light: #F4F4F4, Dark: #121212
+  Color get scaffoldSecondary =>
+      isDarkMode ? const Color(0xFF121212) : const Color(0xFFF5F4f4);
 
   /// Card background
   Color get card => appTheme.cardTheme.color ?? surface;
+
+  /// Card secondary background - Light: #FFFFFF, Dark: #1E1E1E
+  Color get cardSecondary =>
+      isDarkMode ? const Color(0xFF1E1E1E) : const Color(0xFFFFFFFF);
+
+  /// Card secondary border - Light: #D6D6D6, Dark: #2F2F2F
+  Color get cardSecondaryBorder =>
+      isDarkMode ? const Color(0xFF2F2F2F) : const Color(0xFFD6D6D6);
 
   /// Status bar brightness (for SystemUiOverlayStyle)
   Brightness get statusBarBrightness =>
