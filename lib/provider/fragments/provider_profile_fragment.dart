@@ -87,6 +87,49 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
     }
   }
 
+  /// Manually format plan end date to "February 9, 2024" format
+  String _formatPlanEndDate(String dateString) {
+    if (dateString.isEmpty) return '';
+
+    try {
+      final months = [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December'
+      ];
+
+      DateTime? date;
+
+      // Try parsing different formats
+      if (dateString.contains('-')) {
+        date = DateTime.tryParse(dateString);
+      }
+
+      if (date == null) {
+        // Try other common formats
+        date = DateTime.tryParse(dateString.replaceAll('/', '-'));
+      }
+
+      if (date != null) {
+        return '${months[date.month - 1]} ${date.day}, ${date.year}';
+      }
+
+      // Fallback to original string if parsing fails
+      return dateString;
+    } catch (e) {
+      return dateString;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Observer(
@@ -210,8 +253,8 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                               ),
                               4.width,
                               Text(
-                                formatDate(appStore.planEndDate.validate(),
-                                    format: DATE_FORMAT_2),
+                                _formatPlanEndDate(
+                                    appStore.planEndDate.validate()),
                                 style: context.boldTextStyle(
                                     color: context.onPrimary,
                                     fontStyle: FontStyle.italic,
@@ -325,9 +368,9 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                       decoration:
                           BoxDecoration(color: context.scaffoldSecondary),
                       leading: Image.asset(services,
-                          height: 16, width: 16, color: context.icon),
+                          height: 18, width: 18, color: context.icon),
                       title: languages.lblServices,
-                      titleTextStyle: context.boldTextStyle(size: 12),
+                      titleTextStyle: context.boldTextStyle(),
                       trailing: Icon(Icons.chevron_right,
                           color: context.icon, size: 20),
                       padding:
@@ -342,9 +385,9 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                       decoration:
                           BoxDecoration(color: context.scaffoldSecondary),
                       leading: Image.asset(ic_document,
-                          height: 16, width: 16, color: context.icon),
+                          height: 18, width: 18, color: context.icon),
                       title: languages.btnVerifyId,
-                      titleTextStyle: context.boldTextStyle(size: 12),
+                      titleTextStyle: context.boldTextStyle(),
                       trailing: Icon(Icons.chevron_right,
                           color: context.icon, size: 20),
                       padding:
@@ -359,9 +402,9 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                       decoration:
                           BoxDecoration(color: context.scaffoldSecondary),
                       leading: Image.asset(ic_blog,
-                          height: 16, width: 16, color: context.icon),
+                          height: 18, width: 18, color: context.icon),
                       title: languages.blogs,
-                      titleTextStyle: context.boldTextStyle(size: 12),
+                      titleTextStyle: context.boldTextStyle(),
                       trailing: Icon(Icons.chevron_right,
                           color: context.icon, size: 20),
                       padding:
@@ -375,9 +418,9 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                       decoration:
                           BoxDecoration(color: context.scaffoldSecondary),
                       leading: Image.asset(handyman,
-                          height: 16, width: 16, color: context.icon),
+                          height: 18, width: 18, color: context.icon),
                       title: languages.lblAllHandyman,
-                      titleTextStyle: context.boldTextStyle(size: 12),
+                      titleTextStyle: context.boldTextStyle(),
                       trailing: Icon(Icons.chevron_right,
                           color: context.icon, size: 20),
                       padding:
@@ -392,9 +435,9 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                       decoration:
                           BoxDecoration(color: context.scaffoldSecondary),
                       leading:
-                          ic_help_desk.iconImage(context: context, size: 16),
+                          ic_help_desk.iconImage(context: context, size: 18),
                       title: languages.helpDesk,
-                      titleTextStyle: context.boldTextStyle(size: 12),
+                      titleTextStyle: context.boldTextStyle(),
                       trailing: Icon(Icons.chevron_right,
                           color: context.icon, size: 20),
                       padding:
@@ -409,9 +452,9 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                       decoration:
                           BoxDecoration(color: context.scaffoldSecondary),
                       leading: Image.asset(ic_earning,
-                          height: 16, width: 16, color: context.icon),
+                          height: 18, width: 18, color: context.icon),
                       title: languages.handymanEarningList,
-                      titleTextStyle: context.boldTextStyle(size: 12),
+                      titleTextStyle: context.boldTextStyle(),
                       trailing: Icon(Icons.chevron_right,
                           color: context.icon, size: 20),
                       padding:
@@ -425,11 +468,11 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                       decoration:
                           BoxDecoration(color: context.scaffoldSecondary),
                       leading: Image.asset(percent_line,
-                          height: 16, width: 16, color: context.icon),
+                          height: 18, width: 18, color: context.icon),
                       title: languages.handymanCommission,
-                      titleTextStyle: context.boldTextStyle(size: 12),
+                      titleTextStyle: context.boldTextStyle(),
                       trailing: Icon(Icons.chevron_right,
-                          color: context.icon, size: 18),
+                          color: context.icon, size: 20),
                       padding:
                           const EdgeInsets.only(top: 20, left: 16, right: 16),
                       onTap: () {
@@ -443,9 +486,9 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                       decoration:
                           BoxDecoration(color: context.scaffoldSecondary),
                       leading: Image.asset(ic_packages,
-                          height: 16, width: 16, color: context.icon),
+                          height: 18, width: 18, color: context.icon),
                       title: languages.packages,
-                      titleTextStyle: context.boldTextStyle(size: 12),
+                      titleTextStyle: context.boldTextStyle(),
                       trailing: Icon(Icons.chevron_right,
                           color: context.icon, size: 20),
                       padding:
@@ -460,9 +503,9 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                       decoration:
                           BoxDecoration(color: context.scaffoldSecondary),
                       leading: Image.asset(ic_addon_service,
-                          height: 16, width: 16, color: context.icon),
+                          height: 18, width: 18, color: context.icon),
                       title: languages.addonServices,
-                      titleTextStyle: context.boldTextStyle(size: 12),
+                      titleTextStyle: context.boldTextStyle(),
                       trailing: Icon(Icons.chevron_right,
                           color: context.icon, size: 20),
                       padding:
@@ -476,11 +519,11 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                       decoration:
                           BoxDecoration(color: context.scaffoldSecondary),
                       leading: Image.asset(ic_time_slots,
-                          height: 16, width: 16, color: context.icon),
+                          height: 18, width: 18, color: context.icon),
                       title: languages.timeSlots,
-                      titleTextStyle: context.boldTextStyle(size: 12),
+                      titleTextStyle: context.boldTextStyle(),
                       trailing: Icon(Icons.chevron_right,
-                          color: context.icon, size: 18),
+                          color: context.icon, size: 20),
                       padding:
                           const EdgeInsets.only(top: 20, left: 16, right: 16),
                       onTap: () {
@@ -492,9 +535,9 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                       decoration:
                           BoxDecoration(color: context.scaffoldSecondary),
                       leading: Image.asset(list,
-                          height: 16, width: 16, color: context.icon),
+                          height: 18, width: 18, color: context.icon),
                       title: languages.bidList,
-                      titleTextStyle: context.boldTextStyle(size: 12),
+                      titleTextStyle: context.boldTextStyle(),
                       trailing: Icon(Icons.chevron_right,
                           color: context.icon, size: 20),
                       padding:
@@ -508,9 +551,9 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                       decoration:
                           BoxDecoration(color: context.scaffoldSecondary),
                       leading: Image.asset(ic_tax,
-                          height: 16, width: 14, color: context.icon),
+                          height: 18, width: 18, color: context.icon),
                       title: languages.lblTaxes,
-                      titleTextStyle: context.boldTextStyle(size: 12),
+                      titleTextStyle: context.boldTextStyle(),
                       trailing: Icon(Icons.chevron_right,
                           color: context.icon, size: 20),
                       padding:
@@ -524,9 +567,9 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                       decoration:
                           BoxDecoration(color: context.scaffoldSecondary),
                       leading: Image.asset(ic_wallet_history,
-                          height: 16, width: 16, color: context.icon),
+                          height: 18, width: 18, color: context.icon),
                       title: languages.lblWalletHistory,
-                      titleTextStyle: context.boldTextStyle(size: 12),
+                      titleTextStyle: context.boldTextStyle(),
                       trailing: Icon(Icons.chevron_right,
                           color: context.icon, size: 20),
                       padding:
@@ -540,9 +583,9 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                       decoration:
                           BoxDecoration(color: context.scaffoldSecondary),
                       leading: Image.asset(ic_card,
-                          height: 16, width: 16, color: context.icon),
+                          height: 18, width: 18, color: context.icon),
                       title: languages.lblBankDetails,
-                      titleTextStyle: context.boldTextStyle(size: 12),
+                      titleTextStyle: context.boldTextStyle(),
                       trailing: Icon(Icons.chevron_right,
                           color: context.icon, size: 20),
                       highlightColor: Colors.transparent,
@@ -559,9 +602,9 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                       decoration:
                           BoxDecoration(color: context.scaffoldSecondary),
                       leading: Image.asset(ic_promotional_banner,
-                          height: 16, width: 16, color: context.icon),
+                          height: 18, width: 18, color: context.icon),
                       title: languages.promotionalBanners,
-                      titleTextStyle: context.boldTextStyle(size: 12),
+                      titleTextStyle: context.boldTextStyle(),
                       trailing: Icon(Icons.chevron_right,
                           color: context.icon, size: 20),
                       padding:
@@ -601,8 +644,8 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                     decoration: BoxDecoration(color: context.scaffoldSecondary),
                     leading: Image.asset(
                       ic_check_update,
-                      height: 14,
-                      width: 14,
+                      height: 18,
+                      width: 18,
                       color: context.icon,
                     ),
                     title: languages.lblOptionalUpdateNotify,
@@ -667,7 +710,7 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                   SettingItemWidget(
                     decoration: BoxDecoration(color: context.scaffoldSecondary),
                     leading: Image.asset(ic_theme,
-                        height: 16, width: 16, color: context.icon),
+                        height: 18, width: 18, color: context.icon),
                     title: languages.appTheme,
                     titleTextStyle: context.boldTextStyle(),
                     trailing: Icon(Icons.chevron_right,
@@ -685,7 +728,7 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                   SettingItemWidget(
                     decoration: BoxDecoration(color: context.scaffoldSecondary),
                     leading: Image.asset(language,
-                        height: 16, width: 16, color: context.icon),
+                        height: 18, width: 18, color: context.icon),
                     title: languages.language,
                     titleTextStyle: context.boldTextStyle(),
                     trailing: Icon(Icons.chevron_right,
@@ -716,7 +759,7 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                         borderRadius: const BorderRadiusDirectional.vertical(
                             bottom: Radius.circular(16))),
                     leading: Image.asset(about,
-                        height: 16, width: 16, color: context.icon),
+                        height: 18, width: 18, color: context.icon),
                     title: languages.lblAbout,
                     titleTextStyle: context.boldTextStyle(),
                     trailing: Icon(Icons.chevron_right,
@@ -746,7 +789,7 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                       color: context.scaffoldSecondary,
                     ),
                     leading: ic_delete.iconImage(
-                        context: context, size: 16, color: context.icon),
+                        context: context, size: 18, color: context.icon),
                     paddingBeforeTrailing: 4,
                     title: languages.lblDeleteAccount,
                     titleTextStyle: context.boldTextStyle(),
@@ -803,7 +846,7 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                         color: context.scaffoldSecondary,
                         borderRadius: const BorderRadiusDirectional.vertical(
                             bottom: Radius.circular(16))),
-                    leading: ic_logout.iconImage(context: context, size: 12),
+                    leading: ic_logout.iconImage(context: context, size: 18),
                     paddingBeforeTrailing: 4,
                     title: languages.logout,
                     titleTextStyle: context.boldTextStyle(),

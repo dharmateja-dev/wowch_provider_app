@@ -114,11 +114,108 @@ class SplashScreenState extends State<SplashScreen> {
     await appConfigurationStore.setCurrencyPosition(CURRENCY_POSITION_LEFT);
     await appConfigurationStore.setPriceDecimalPoint(2);
 
-    // Enable common features for demo
+    // Enable ALL features for demo mode
     await appConfigurationStore.setEnableUserWallet(true);
     await appConfigurationStore.setSlotServiceStatus(true);
     await appConfigurationStore.setJobRequestStatus(true);
     await appConfigurationStore.setEnableChat(true);
+    await appConfigurationStore.setOnlinePaymentStatus(true);
+    await appConfigurationStore.setServicePackageStatus(true);
+    await appConfigurationStore.setServiceAddonStatus(true);
+    await appConfigurationStore.setBlogStatus(true);
+    await appConfigurationStore.setAdvancePaymentAllowed(true);
+    await appConfigurationStore.setDigitalServiceStatus(true);
+    await appConfigurationStore.setPromotionalBannerStatus(true);
+    await appConfigurationStore.setAutoAssignStatus(true);
+
+    // Enable ALL permissions for demo mode - Provider permissions
+    await rolesAndPermissionStore.setService(true);
+    await rolesAndPermissionStore.setServiceList(true);
+    await rolesAndPermissionStore.setServiceAdd(true);
+    await rolesAndPermissionStore.setServiceEdit(true);
+    await rolesAndPermissionStore.setServiceDelete(true);
+
+    await rolesAndPermissionStore.setHandyman(true);
+    await rolesAndPermissionStore.setHandymanList(true);
+    await rolesAndPermissionStore.setHandymanAdd(true);
+    await rolesAndPermissionStore.setHandymanEdit(true);
+    await rolesAndPermissionStore.setHandymanDelete(true);
+
+    await rolesAndPermissionStore.setBooking(true);
+    await rolesAndPermissionStore.setBookingList(true);
+    await rolesAndPermissionStore.setBookingEdit(true);
+    await rolesAndPermissionStore.setBookingView(true);
+
+    await rolesAndPermissionStore.setPayment(true);
+    await rolesAndPermissionStore.setPaymentList(true);
+
+    await rolesAndPermissionStore.setBank(true);
+    await rolesAndPermissionStore.setBankList(true);
+    await rolesAndPermissionStore.setBankAdd(true);
+    await rolesAndPermissionStore.setBankEdit(true);
+
+    await rolesAndPermissionStore.setTax(true);
+    await rolesAndPermissionStore.setTaxList(true);
+    await rolesAndPermissionStore.setTaxAdd(true);
+    await rolesAndPermissionStore.setTaxEdit(true);
+
+    await rolesAndPermissionStore.setWallet(true);
+    await rolesAndPermissionStore.setWalletList(true);
+
+    await rolesAndPermissionStore.setEarning(true);
+    await rolesAndPermissionStore.setEarningList(true);
+
+    await rolesAndPermissionStore.setHandymanPayout(true);
+    await rolesAndPermissionStore.setProviderPayout(true);
+
+    await rolesAndPermissionStore.setHandymanType(true);
+    await rolesAndPermissionStore.setHandymanTypeList(true);
+    await rolesAndPermissionStore.setHandymanTypeAdd(true);
+
+    await rolesAndPermissionStore.setPostJob(true);
+    await rolesAndPermissionStore.setPostJobList(true);
+
+    await rolesAndPermissionStore.setServicePackage(true);
+    await rolesAndPermissionStore.setServicePackageList(true);
+    await rolesAndPermissionStore.setServicePackageAdd(true);
+    await rolesAndPermissionStore.setServicePackageEdit(true);
+
+    await rolesAndPermissionStore.setServiceAddOn(true);
+    await rolesAndPermissionStore.setServiceAddOnList(true);
+    await rolesAndPermissionStore.setServiceAddOnAdd(true);
+    await rolesAndPermissionStore.setServiceAddOnEdit(true);
+
+    await rolesAndPermissionStore.setBlog(true);
+    await rolesAndPermissionStore.setBlogList(true);
+    await rolesAndPermissionStore.setBlogAdd(true);
+    await rolesAndPermissionStore.setBlogEdit(true);
+
+    await rolesAndPermissionStore.setDocument(true);
+    await rolesAndPermissionStore.setDocumentList(true);
+    await rolesAndPermissionStore.setDocumentAdd(true);
+
+    await rolesAndPermissionStore.setProviderDocument(true);
+    await rolesAndPermissionStore.setProviderDocumentList(true);
+    await rolesAndPermissionStore.setProviderDocumentAdd(true);
+
+    await rolesAndPermissionStore.setHelpDesk(true);
+    await rolesAndPermissionStore.setHelpDeskList(true);
+    await rolesAndPermissionStore.setHelpDeskAdd(true);
+
+    await rolesAndPermissionStore.setPromotionalBanner(true);
+    await rolesAndPermissionStore.setPromotionalBannerList(true);
+    await rolesAndPermissionStore.setPromotionalBannerAdd(true);
+
+    // Set subscription plan demo data to show Current Plan container
+    await appStore.setEarningType(EARNING_TYPE_SUBSCRIPTION);
+    await appStore.setPlanTitle('Free Plan');
+    await appStore.setPlanEndDate('2024-02-09');
+    await appStore.setPlanSubscribeStatus(true);
+
+    // Set commission demo data to show Provider Type & My Commission container
+    // Commission model: name, commission, type
+    await setValue(DASHBOARD_COMMISSION,
+        '{"name":"company","commission":70,"type":"percent"}');
 
     appStore.setLoading(false);
 

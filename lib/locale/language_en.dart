@@ -2802,4 +2802,33 @@ class LanguageEn extends Languages {
 
   @override
   String get lblMobile => 'Mobile';
+
+  // Edit Profile Screen - New Fields
+  @override
+  String get lblStreetAddress => 'Street Address';
+
+  @override
+  String get lblApartmentSuiteUnit => 'Apartment, Suite, Unit';
+
+  @override
+  String get lblApartmentOptional => 'Apartment, Suite, Unit (Optional)';
+
+  @override
+  String get lblZipCode => 'Zip Code';
+
+  @override
+  String get lblCity => 'City';
+
+  @override
+  String get lblState => 'State';
+
+  @override
+  String get lblCountry => 'Country';
+
+  @override
+  String get lblWhyChooseMe => 'Why Choose Me?';
+
+  @override
+  String get lblShortLineAboutWhyChooseMe =>
+      'Write a short line about why customers should choose you';
 }

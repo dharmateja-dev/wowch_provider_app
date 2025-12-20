@@ -2844,4 +2844,33 @@ class LanguageDe extends Languages {
 
   @override
   String get lblMobile => 'Handy';
+
+  // Edit Profile Screen - New Fields
+  @override
+  String get lblStreetAddress => 'Straßenadresse';
+
+  @override
+  String get lblApartmentSuiteUnit => 'Wohnung, Suite, Einheit';
+
+  @override
+  String get lblApartmentOptional => 'Wohnung, Suite, Einheit (Optional)';
+
+  @override
+  String get lblZipCode => 'Postleitzahl';
+
+  @override
+  String get lblCity => 'Stadt';
+
+  @override
+  String get lblState => 'Staat';
+
+  @override
+  String get lblCountry => 'Land';
+
+  @override
+  String get lblWhyChooseMe => 'Warum mich wählen?';
+
+  @override
+  String get lblShortLineAboutWhyChooseMe =>
+      'Schreiben Sie eine kurze Zeile darüber, warum Kunden Sie wählen sollten';
 }

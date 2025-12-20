@@ -1805,4 +1805,23 @@ abstract class Languages {
   String get lblShopDocument;
 
   String get lblMobile;
+
+  // Edit Profile Screen - New Fields
+  String get lblStreetAddress;
+
+  String get lblApartmentSuiteUnit;
+
+  String get lblApartmentOptional;
+
+  String get lblZipCode;
+
+  String get lblCity;
+
+  String get lblState;
+
+  String get lblCountry;
+
+  String get lblWhyChooseMe;
+
+  String get lblShortLineAboutWhyChooseMe;
 }

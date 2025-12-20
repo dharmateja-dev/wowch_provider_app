@@ -2864,4 +2864,33 @@ class LanguageFr extends Languages {
 
   @override
   String get lblMobile => 'Mobile';
+
+  // Edit Profile Screen - New Fields
+  @override
+  String get lblStreetAddress => 'Adresse de la rue';
+
+  @override
+  String get lblApartmentSuiteUnit => 'Appartement, Suite, Unité';
+
+  @override
+  String get lblApartmentOptional => 'Appartement, Suite, Unité (Optionnel)';
+
+  @override
+  String get lblZipCode => 'Code postal';
+
+  @override
+  String get lblCity => 'Ville';
+
+  @override
+  String get lblState => 'État';
+
+  @override
+  String get lblCountry => 'Pays';
+
+  @override
+  String get lblWhyChooseMe => 'Pourquoi me choisir?';
+
+  @override
+  String get lblShortLineAboutWhyChooseMe =>
+      'Écrivez une courte ligne expliquant pourquoi les clients devraient vous choisir';
 }

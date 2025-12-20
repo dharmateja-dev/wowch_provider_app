@@ -2773,4 +2773,33 @@ class LanguageAr extends Languages {
 
   @override
   String get lblMobile => 'الجوال';
+
+  // Edit Profile Screen - New Fields
+  @override
+  String get lblStreetAddress => 'عنوان الشارع';
+
+  @override
+  String get lblApartmentSuiteUnit => 'شقة، جناح، وحدة';
+
+  @override
+  String get lblApartmentOptional => 'شقة، جناح، وحدة (اختياري)';
+
+  @override
+  String get lblZipCode => 'الرمز البريدي';
+
+  @override
+  String get lblCity => 'المدينة';
+
+  @override
+  String get lblState => 'الولاية';
+
+  @override
+  String get lblCountry => 'البلد';
+
+  @override
+  String get lblWhyChooseMe => 'لماذا تختارني؟';
+
+  @override
+  String get lblShortLineAboutWhyChooseMe =>
+      'اكتب سطرًا قصيرًا عن سبب اختيار العملاء لك';
 }

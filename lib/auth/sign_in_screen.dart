@@ -212,25 +212,19 @@ class _SignInScreenState extends State<SignInScreen> {
                         _buildForgotRememberWidget(),
                         _buildButtonWidget(),
                         16.height,
-                        SnapHelperWidget<bool>(
-                          future: isIqonicProduct,
-                          onSuccess: (data) {
-                            if (data) {
-                              return UserDemoModeScreen(
-                                onChanged: (email, password) {
-                                  if (email.isNotEmpty && password.isNotEmpty) {
-                                    emailCont.text = email;
-                                    passwordCont.text = password;
-                                  } else {
-                                    emailCont.clear();
-                                    passwordCont.clear();
-                                  }
-                                },
-                              );
-                            }
-                            return const Offstage();
-                          },
-                        ),
+                        // Show demo login options when demo mode is enabled
+                        if (DEMO_MODE_ENABLED)
+                          UserDemoModeScreen(
+                            onChanged: (email, password) {
+                              if (email.isNotEmpty && password.isNotEmpty) {
+                                emailCont.text = email;
+                                passwordCont.text = password;
+                              } else {
+                                emailCont.clear();
+                                passwordCont.clear();
+                              }
+                            },
+                          ),
                       ],
                     ),
                   ),

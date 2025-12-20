@@ -2815,4 +2815,33 @@ class LanguageHi extends Languages {
 
   @override
   String get lblMobile => 'मोबाइल';
+
+  // Edit Profile Screen - New Fields
+  @override
+  String get lblStreetAddress => 'गली का पता';
+
+  @override
+  String get lblApartmentSuiteUnit => 'अपार्टमेंट, सुइट, यूनिट';
+
+  @override
+  String get lblApartmentOptional => 'अपार्टमेंट, सुइट, यूनिट (वैकल्पिक)';
+
+  @override
+  String get lblZipCode => 'पिन कोड';
+
+  @override
+  String get lblCity => 'शहर';
+
+  @override
+  String get lblState => 'राज्य';
+
+  @override
+  String get lblCountry => 'देश';
+
+  @override
+  String get lblWhyChooseMe => 'मुझे क्यों चुनें?';
+
+  @override
+  String get lblShortLineAboutWhyChooseMe =>
+      'लिखें कि ग्राहकों को आपको क्यों चुनना चाहिए';
 }

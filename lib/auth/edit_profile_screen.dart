@@ -38,6 +38,7 @@ import '../components/chat_gpt_loder.dart';
 import '../models/selectZoneModel.dart';
 import '../models/user_update_response.dart';
 import '../models/zone_model.dart';
+import '../utils/demo_mode.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final Function(List<int> val)? onSelectedList;
@@ -74,6 +75,11 @@ class EditProfileScreenState extends State<EditProfileScreen> {
   TextEditingController userNameCont = TextEditingController();
   TextEditingController mobileCont = TextEditingController();
   TextEditingController addressCont = TextEditingController();
+  TextEditingController apartmentCont = TextEditingController();
+  TextEditingController cityCont = TextEditingController();
+  TextEditingController zipCodeCont = TextEditingController();
+  TextEditingController stateCont = TextEditingController();
+  TextEditingController countryCont = TextEditingController();
   TextEditingController designationCont = TextEditingController();
   TextEditingController knownLangCont = TextEditingController();
   TextEditingController skillsCont = TextEditingController();
@@ -86,8 +92,13 @@ class EditProfileScreenState extends State<EditProfileScreen> {
   FocusNode userNameFocus = FocusNode();
   FocusNode mobileFocus = FocusNode();
   FocusNode designationFocus = FocusNode();
-  FocusNode knownLangFocus = FocusNode();
   FocusNode addressFocus = FocusNode();
+  FocusNode apartmentFocus = FocusNode();
+  FocusNode cityFocus = FocusNode();
+  FocusNode zipCodeFocus = FocusNode();
+  FocusNode stateFocus = FocusNode();
+  FocusNode countryFocus = FocusNode();
+  FocusNode knownLangFocus = FocusNode();
   FocusNode skillsFocus = FocusNode();
   FocusNode descriptionFocus = FocusNode();
   FocusNode whyChooseMeFocus = FocusNode();
@@ -117,6 +128,12 @@ class EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Future<void> init() async {
+    // In demo mode, just use data from appStore without API calls
+    if (DEMO_MODE_ENABLED) {
+      _initDemoModeData();
+      return;
+    }
+
     afterBuildCreated(() async {
       appStore.setLoading(true);
       await getSelectedZone();
@@ -156,6 +173,100 @@ class EditProfileScreenState extends State<EditProfileScreen> {
     } else {
       await getCountry();
     }
+  }
+
+  /// Initialize demo mode data from appStore without API calls
+  void _initDemoModeData() {
+    // Set form fields from appStore (already populated from demo login)
+    fNameCont.text = appStore.userFirstName;
+    lNameCont.text = appStore.userLastName;
+    emailCont.text = appStore.userEmail;
+    userNameCont.text = appStore.userName;
+    addressCont.text = '123 Demo Street';
+    apartmentCont.text = 'Suite 100';
+    cityCont.text = 'Los Angeles';
+    zipCodeCont.text = '90001';
+    stateCont.text = 'California';
+    countryCont.text = 'United States';
+    designationCont.text = appStore.designation;
+
+    // Parse contact number
+    final String contactNumber = appStore.userContactNumber;
+    if (contactNumber.isNotEmpty) {
+      if (contactNumber.startsWith('+')) {
+        final parts = contactNumber.split(' ');
+        if (parts.length > 1) {
+          mobileCont.text =
+              parts.sublist(1).join('').replaceAll(RegExp(r'[^\d]'), '');
+        } else {
+          mobileCont.text = contactNumber.replaceAll(RegExp(r'[^\d]'), '');
+        }
+      } else {
+        mobileCont.text = contactNumber.replaceAll(RegExp(r'[^\d]'), '');
+      }
+    }
+
+    // Set demo country/state/city IDs (for dropdowns if they exist)
+    countryId = appStore.countryId;
+    stateId = appStore.stateId;
+    cityId = appStore.cityId;
+
+    // Add demo country to list (for backward compatibility)
+    countryList = [
+      CountryListResponse(id: 1, name: 'United States'),
+      CountryListResponse(id: 2, name: 'United Kingdom'),
+      CountryListResponse(id: 3, name: 'India'),
+    ];
+    selectedCountry = countryList.firstWhere(
+      (e) => e.id == countryId,
+      orElse: () => countryList.first,
+    );
+
+    // Add demo states (for backward compatibility)
+    stateList = [
+      StateListResponse(id: 1, name: 'California'),
+      StateListResponse(id: 2, name: 'New York'),
+      StateListResponse(id: 3, name: 'Texas'),
+    ];
+    selectedState = stateList.firstWhere(
+      (e) => e.id == stateId,
+      orElse: () => stateList.first,
+    );
+
+    // Add demo cities (for backward compatibility)
+    cityList = [
+      CityListResponse(id: 1, name: 'Los Angeles'),
+      CityListResponse(id: 2, name: 'San Francisco'),
+      CityListResponse(id: 3, name: 'San Diego'),
+    ];
+    selectedCity = cityList.firstWhere(
+      (e) => e.id == cityId,
+      orElse: () => cityList.first,
+    );
+
+    // Add demo zones for Provider
+    if (isUserTypeProvider) {
+      zoneList = [
+        ZoneModel(id: 1, name: 'Downtown Area'),
+        ZoneModel(id: 2, name: 'Suburban Region'),
+        ZoneModel(id: 3, name: 'Industrial Zone'),
+      ];
+      selectedZoneIds = ['1', '2'];
+    }
+
+    // Add demo languages and skills
+    knownLanguages = ['English', 'Spanish'];
+    skills = ['Plumbing', 'Electrical', 'Carpentry'];
+    whyChooseMeReasons = ['Fast Response', 'Quality Work', 'Affordable Prices'];
+    whyChooseMeCont.text = 'Professional Service Provider';
+    descriptionCont.text =
+        'Experienced professional with 5+ years of experience providing top-quality services.';
+
+    isEmailVerified = true;
+    selectedCountryPicker = defaultCountry();
+
+    appStore.setLoading(false);
+    setState(() {});
   }
 
   Future<void> getSelectedZone() async {
@@ -308,6 +419,25 @@ class EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Future<void> update() async {
+    // In demo mode, just update local appStore and show success
+    if (DEMO_MODE_ENABLED) {
+      appStore.setLoading(true);
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      // Update appStore with form values
+      await appStore.setFirstName(fNameCont.text);
+      await appStore.setLastName(lNameCont.text);
+      await appStore.setAddress(addressCont.text);
+      await appStore.setDesignation(designationCont.text);
+      await appStore.setContactNumber(
+          '+${selectedCountryPicker.phoneCode} ${mobileCont.text}');
+
+      appStore.setLoading(false);
+      toast('Profile updated successfully (Demo Mode)');
+      finish(context);
+      return;
+    }
+
     final MultipartRequest multiPartRequest =
         await getMultiPartRequest('update-profile');
     multiPartRequest.headers[HttpHeaders.authorizationHeader] =
@@ -768,118 +898,107 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                             hintText: languages.lblDesignation),
                       ),
                       16.height,
-                      Text(
-                        languages.selectCountry,
-                        style: context.boldTextStyle(),
-                      ),
-                      8.height,
-                      Row(
-                        children: [
-                          DropdownButtonFormField<CountryListResponse>(
-                            decoration: inputDecoration(context,
-                                fillColor: context.profileInputFillColor,
-                                hintText: languages.selectCountry),
-                            isExpanded: true,
-                            menuMaxHeight: 300,
-                            initialValue: selectedCountry,
-                            dropdownColor: context.cardColor,
-                            items: countryList.map((CountryListResponse e) {
-                              return DropdownMenuItem<CountryListResponse>(
-                                value: e,
-                                child: Text(e.name!,
-                                    style: context.primaryTextStyle(),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis),
-                              );
-                            }).toList(),
-                            onChanged: (CountryListResponse? value) async {
-                              countryId = value!.id!;
-                              selectedCountry = value;
-                              selectedState = null;
-                              selectedCity = null;
-                              setState(() {});
-
-                              getStates(value.id!);
-                            },
-                          ).expand(),
-                          8.width.visible(stateList.isNotEmpty),
-                          if (stateList.isNotEmpty)
-                            DropdownButtonFormField<StateListResponse>(
-                              decoration: inputDecoration(context,
-                                  fillColor: context.profileInputFillColor,
-                                  hintText: languages.selectState),
-                              isExpanded: true,
-                              dropdownColor: context.cardSecondary,
-                              menuMaxHeight: 300,
-                              initialValue: selectedState,
-                              items: stateList.map((StateListResponse e) {
-                                return DropdownMenuItem<StateListResponse>(
-                                  value: e,
-                                  child: Text(e.name!,
-                                      style: context.primaryTextStyle(),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis),
-                                );
-                              }).toList(),
-                              onChanged: (StateListResponse? value) async {
-                                selectedCity = null;
-                                selectedState = value;
-                                stateId = value!.id!;
-                                setState(() {});
-
-                                getCity(value.id!);
-                              },
-                            ).expand(),
-                        ],
-                      ),
-                      16.height,
-                      if (cityList.isNotEmpty)
-                        Column(
-                          children: [
-                            DropdownButtonFormField<CityListResponse>(
-                              decoration: inputDecoration(context,
-                                  fillColor: context.profileInputFillColor),
-                              hint: Text(languages.selectCity,
-                                  style: context.primaryTextStyle()),
-                              isExpanded: true,
-                              menuMaxHeight: 400,
-                              initialValue: selectedCity,
-                              dropdownColor: context.cardColor,
-                              items: cityList.map(
-                                (CityListResponse e) {
-                                  return DropdownMenuItem<CityListResponse>(
-                                    value: e,
-                                    child: Text(e.name!,
-                                        style: context.primaryTextStyle(),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis),
-                                  );
-                                },
-                              ).toList(),
-                              onChanged: (CityListResponse? value) async {
-                                selectedCity = value;
-                                cityId = value!.id!;
-
-                                setState(() {});
-                              },
-                            ),
-                            8.height,
-                          ],
-                        ),
-                      if (isUserTypeHandyman && serviceAddressList.isNotEmpty)
-                        16.height,
-                      Text(languages.hintAddress,
+                      // Street Address
+                      Text(languages.lblStreetAddress,
                           style: context.boldTextStyle()),
                       8.height,
                       AppTextField(
                         controller: addressCont,
                         textFieldType: TextFieldType.MULTILINE,
-                        maxLines: 5,
+                        maxLines: 2,
                         focus: addressFocus,
-                        minLines: 3,
+                        nextFocus: apartmentFocus,
+                        minLines: 1,
                         decoration: inputDecoration(context,
                             fillColor: context.profileInputFillColor,
-                            hintText: languages.hintAddress),
+                            hintText: languages.lblStreetAddress),
+                      ),
+                      16.height,
+                      // Apartment, Suite, Unit (optional)
+                      Text(languages.lblApartmentOptional,
+                          style: context.boldTextStyle()),
+                      8.height,
+                      AppTextField(
+                        controller: apartmentCont,
+                        textFieldType: TextFieldType.NAME,
+                        focus: apartmentFocus,
+                        nextFocus: cityFocus,
+                        isValidationRequired: false,
+                        decoration: inputDecoration(context,
+                            fillColor: context.profileInputFillColor,
+                            hintText: languages.lblApartmentSuiteUnit),
+                      ),
+                      16.height,
+                      // City and Zip Code in a row
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(languages.lblCity,
+                                    style: context.boldTextStyle()),
+                                8.height,
+                                AppTextField(
+                                  controller: cityCont,
+                                  textFieldType: TextFieldType.NAME,
+                                  focus: cityFocus,
+                                  nextFocus: zipCodeFocus,
+                                  decoration: inputDecoration(context,
+                                      fillColor: context.profileInputFillColor,
+                                      hintText: languages.lblCity),
+                                ),
+                              ],
+                            ),
+                          ),
+                          16.width,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(languages.lblZipCode,
+                                    style: context.boldTextStyle()),
+                                8.height,
+                                AppTextField(
+                                  controller: zipCodeCont,
+                                  textFieldType: TextFieldType.NAME,
+                                  focus: zipCodeFocus,
+                                  nextFocus: stateFocus,
+                                  decoration: inputDecoration(context,
+                                      fillColor: context.profileInputFillColor,
+                                      hintText: languages.lblZipCode),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      16.height,
+                      // State
+                      Text(languages.lblState, style: context.boldTextStyle()),
+                      8.height,
+                      AppTextField(
+                        controller: stateCont,
+                        textFieldType: TextFieldType.NAME,
+                        focus: stateFocus,
+                        nextFocus: countryFocus,
+                        decoration: inputDecoration(context,
+                            fillColor: context.profileInputFillColor,
+                            hintText: languages.lblState),
+                      ),
+                      16.height,
+                      // Country
+                      Text(languages.lblCountry,
+                          style: context.boldTextStyle()),
+                      8.height,
+                      AppTextField(
+                        controller: countryCont,
+                        textFieldType: TextFieldType.NAME,
+                        focus: countryFocus,
+                        nextFocus: knownLangFocus,
+                        decoration: inputDecoration(context,
+                            fillColor: context.profileInputFillColor,
+                            hintText: languages.lblCountry),
                       ),
                       16.height,
                       if (isUserTypeProvider)
@@ -975,7 +1094,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                         children: knownLanguages.map((e) {
                           return Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 8),
+                                horizontal: 12, vertical: 6),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8),
                               color: context.primary,
@@ -1090,7 +1209,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                       ),
                       16.height,
-                      Text(languages.reasonsToChooseYour,
+                      Text(languages.lblWhyChooseMe,
                           style: context.boldTextStyle()),
                       8.height,
                       AppTextField(
@@ -1111,7 +1230,8 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                             appConfigurationStore.testWithoutKey,
                         loaderWidgetForChatGPT: const ChatGPTLoadingWidget(),
                         decoration: inputDecoration(context,
-                            hintText: languages.writeShortLineAbout),
+                            fillColor: context.profileInputFillColor,
+                            hintText: languages.lblShortLineAboutWhyChooseMe),
                         isValidationRequired: false,
                       ),
                       16.height,
@@ -1135,6 +1255,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                             appConfigurationStore.testWithoutKey,
                         loaderWidgetForChatGPT: const ChatGPTLoadingWidget(),
                         decoration: inputDecoration(context,
+                            fillColor: context.profileInputFillColor,
                             hintText: languages.writeHere),
                         isValidationRequired: false,
                       ),
