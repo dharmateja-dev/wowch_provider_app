@@ -5,8 +5,10 @@ import 'package:handyman_provider_flutter/components/cached_image_widget.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class CustomImagePicker extends StatefulWidget {
@@ -220,24 +222,24 @@ class FilePickerDialog extends StatelessWidget {
         children: [
           SettingItemWidget(
             title: languages.removeImage,
-            titleTextStyle: primaryTextStyle(),
-            leading: Icon(Icons.close, color: context.iconColor),
+            titleTextStyle: context.primaryTextStyle(),
+            leading: Icon(Icons.close, color: context.icon),
             onTap: () {
               finish(context, GalleryFileTypes.CANCEL);
             },
           ).visible(isSelected),
           SettingItemWidget(
             title: languages.camera,
-            titleTextStyle: primaryTextStyle(),
-            leading: Icon(LineIcons.camera, color: context.iconColor),
+            titleTextStyle: context.primaryTextStyle(),
+            leading: Icon(LineIcons.camera, color: context.icon),
             onTap: () {
               finish(context, GalleryFileTypes.CAMERA);
             },
           ).visible(!isWeb),
           SettingItemWidget(
             title: languages.lblGallery,
-            titleTextStyle: primaryTextStyle(),
-            leading: Icon(LineIcons.image_1, color: context.iconColor),
+            titleTextStyle: context.primaryTextStyle(),
+            leading: Icon(LineIcons.image_1, color: context.icon),
             onTap: () {
               finish(context, GalleryFileTypes.GALLERY);
             },

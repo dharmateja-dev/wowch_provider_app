@@ -23,9 +23,11 @@ import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
 import 'package:handyman_provider_flutter/utils/model_keys.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -484,7 +486,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
     showInDialog(
       context,
       contentPadding: const EdgeInsets.symmetric(vertical: 16),
-      title: Text(languages.chooseAction, style: boldTextStyle()),
+      title: Text(languages.chooseAction, style: context.boldTextStyle()),
       builder: (p0) {
         return FilePickerDialog(isSelected: (false));
       },
@@ -522,6 +524,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
+      scaffoldBackgroundColor: context.scaffoldSecondary,
       appBarTitle: languages.editProfile,
       body: Stack(
         children: [
@@ -545,8 +548,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                             Container(
                               decoration: boxDecorationDefault(
                                 border: Border.all(
-                                    color: context.scaffoldBackgroundColor,
-                                    width: 4),
+                                    color: context.scaffoldSecondary, width: 4),
                                 shape: BoxShape.circle,
                               ),
                               child: imageFile != null
@@ -571,11 +573,11 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                                 alignment: Alignment.center,
                                 decoration: boxDecorationWithRoundedCorners(
                                   boxShape: BoxShape.circle,
-                                  backgroundColor: primary,
-                                  border: Border.all(color: Colors.white),
+                                  backgroundColor: context.primary,
+                                  border: Border.all(color: context.onPrimary),
                                 ),
-                                child: const Icon(AntDesign.camera,
-                                        color: Colors.white, size: 16)
+                                child: Icon(AntDesign.camera,
+                                        color: context.onPrimary, size: 16)
                                     .paddingAll(4.0),
                               ).onTap(() async {
                                 _showImgPickDialog(context);
@@ -585,26 +587,49 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                       ),
                       16.height,
+                      Text(languages.hintFirstNameTxt,
+                          style: context.boldTextStyle()),
+                      8.height,
                       AppTextField(
                         textFieldType: TextFieldType.NAME,
                         controller: fNameCont,
                         focus: fNameFocus,
                         nextFocus: lNameFocus,
                         decoration: inputDecoration(context,
+                            fillColor: context.profileInputFillColor,
+                            borderRadius: 8,
+                            prefixIcon: ic_profile
+                                .iconImage(
+                                    context: context,
+                                    size: 16,
+                                    color: context.iconMuted)
+                                .paddingAll(14),
                             hintText: languages.hintFirstNameTxt),
-                        suffix: profile.iconImage(context: context,size: 10).paddingAll(14),
                       ),
                       16.height,
+                      Text(languages.hintLastNameTxt,
+                          style: context.boldTextStyle()),
+                      8.height,
                       AppTextField(
                         textFieldType: TextFieldType.NAME,
                         controller: lNameCont,
                         focus: lNameFocus,
                         nextFocus: userNameFocus,
                         decoration: inputDecoration(context,
+                            prefixIcon: ic_profile
+                                .iconImage(
+                                    context: context,
+                                    size: 16,
+                                    color: context.iconMuted)
+                                .paddingAll(14),
+                            borderRadius: 8,
+                            fillColor: context.profileInputFillColor,
                             hintText: languages.hintLastNameTxt),
-                        suffix: profile.iconImage(context: context,size: 10).paddingAll(14),
                       ),
                       16.height,
+                      Text(languages.hintUserNameTxt,
+                          style: context.boldTextStyle()),
+                      8.height,
                       AppTextField(
                         textFieldType: TextFieldType.NAME,
                         controller: userNameCont,
@@ -612,18 +637,35 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                         nextFocus: emailFocus,
                         enabled: false,
                         decoration: inputDecoration(context,
+                            prefixIcon: ic_profile
+                                .iconImage(
+                                    context: context,
+                                    size: 16,
+                                    color: context.iconMuted)
+                                .paddingAll(14),
+                            borderRadius: 8,
+                            fillColor: context.profileInputFillColor,
                             hintText: languages.hintUserNameTxt),
-                        suffix: profile.iconImage(context: context,size: 10).paddingAll(14),
                       ),
                       16.height,
+                      Text(languages.hintEmailAddressTxt,
+                          style: context.boldTextStyle()),
+                      8.height,
                       AppTextField(
                         textFieldType: TextFieldType.EMAIL_ENHANCED,
                         controller: emailCont,
                         focus: emailFocus,
                         nextFocus: mobileFocus,
                         decoration: inputDecoration(context,
+                            prefixIcon: ic_message
+                                .iconImage(
+                                    context: context,
+                                    size: 16,
+                                    color: context.iconMuted)
+                                .paddingAll(14),
+                            borderRadius: 8,
+                            fillColor: context.profileInputFillColor,
                             hintText: languages.hintEmailAddressTxt),
-                        suffix: ic_message.iconImage(context: context,size: 10).paddingAll(14),
                         onFieldSubmitted: (email) async {
                           if (emailCont.text.isNotEmpty) await verifyEmail();
                         },
@@ -639,20 +681,23 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                                   ? languages.verified
                                   : languages.verifyEmail,
                               style: isEmailVerified.validate()
-                                  ? secondaryTextStyle(color: Colors.green)
-                                  : secondaryTextStyle(),
+                                  ? context.primaryTextStyle(
+                                      color: context.primary)
+                                  : context.primaryTextStyle(),
                             ),
                             if (!isEmailVerified.validate())
-                              ic_pending.iconImage(context: context,
-                                  color: Colors.amber, size: 14)
+                              ic_pending.iconImage(
+                                  context: context,
+                                  color: context.starColor,
+                                  size: 14)
                             else
                               Icon(
                                 isEmailVerified.validate()
                                     ? Icons.check_circle
                                     : Icons.refresh,
                                 color: isEmailVerified.validate()
-                                    ? Colors.green
-                                    : Colors.grey,
+                                    ? context.primary
+                                    : context.textGrey,
                                 size: 16,
                               )
                           ],
@@ -664,72 +709,75 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                       ).paddingSymmetric(vertical: 6),
                       10.height,
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Country code ...
-                          Container(
-                            height: 48.0,
-                            decoration: BoxDecoration(
-                              color: context.cardColor,
-                              borderRadius: BorderRadius.circular(12.0),
+                      Text(languages.hintContactNumberTxt,
+                          style: context.boldTextStyle()),
+                      8.height,
+                      AppTextField(
+                        textFieldType: isAndroid
+                            ? TextFieldType.PHONE
+                            : TextFieldType.NAME,
+                        controller: mobileCont,
+                        focus: mobileFocus,
+                        decoration: inputDecoration(
+                          context,
+                          hintText: languages.hintContactNumberTxt,
+                          borderRadius: 8,
+                          fillColor: context.profileInputFillColor,
+                          prefixIcon: GestureDetector(
+                            onTap: () => changeCountry(),
+                            child: ValueListenableBuilder(
+                              valueListenable: valueNotifier,
+                              builder: (context, value, child) => Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "+${selectedCountryPicker.phoneCode.replaceAll('+', '')}",
+                                    style: context.boldTextStyle(size: 14),
+                                  ),
+                                  2.width,
+                                  Icon(
+                                    Icons.arrow_drop_down,
+                                    color: context.icon,
+                                    size: 20,
+                                  ),
+                                ],
+                              ),
                             ),
-                            child: Center(
-                              child: ValueListenableBuilder(
-                                  valueListenable: valueNotifier,
-                                  builder: (context, value, child) {
-                                    final code =
-                                        selectedCountryPicker.phoneCode;
-                                    final formattedCode =
-                                        code.startsWith('+') ? code : '+$code';
-                                    return Row(
-                                      children: [
-                                        Text(
-                                          formattedCode,
-                                          // selectedCountryPicker.phoneCode
-                                          //         .startsWith('+')
-                                          //     ? '+${RegExp(r'\d+').firstMatch(selectedCountryPicker.phoneCode)?.group(0) ?? ''}'
-                                          //     : '+${RegExp(r'\d+').firstMatch(selectedCountryPicker.phoneCode)?.group(0) ?? ''}',
-                                          style: primaryTextStyle(size: 12),
-                                        ).paddingOnly(left: 8),
-                                        const Icon(Icons.arrow_drop_down)
-                                      ],
-                                    );
-                                  }),
-                            ),
-                          ).onTap(() => changeCountry()),
-                          10.width,
-                          // Mobile number text field...
-                          AppTextField(
-                            textFieldType: isAndroid
-                                ? TextFieldType.PHONE
-                                : TextFieldType.NAME,
-                            controller: mobileCont,
-                            focus: mobileFocus,
-                            decoration: inputDecoration(context,
-                                    hintText: languages.hintContactNumberTxt)
-                                .copyWith(
-                              hintStyle: secondaryTextStyle(),
-                            ),
-                            suffix: calling.iconImage(context: context,size: 10).paddingAll(14),
-                            maxLength: 15,
-                          ).expand(),
-                        ],
+                          ).paddingAll(14),
+                        ),
+                        maxLength: 15,
+                        buildCounter: (context,
+                                {required currentLength,
+                                required isFocused,
+                                maxLength}) =>
+                            null,
                       ),
                       16.height,
+                      Text(
+                        languages.lblDesignation,
+                        style: context.boldTextStyle(),
+                      ),
+                      8.height,
                       AppTextField(
                         textFieldType: TextFieldType.NAME,
                         controller: designationCont,
                         isValidationRequired: false,
                         focus: designationFocus,
                         decoration: inputDecoration(context,
+                            fillColor: context.profileInputFillColor,
                             hintText: languages.lblDesignation),
                       ),
                       16.height,
+                      Text(
+                        languages.selectCountry,
+                        style: context.boldTextStyle(),
+                      ),
+                      8.height,
                       Row(
                         children: [
                           DropdownButtonFormField<CountryListResponse>(
                             decoration: inputDecoration(context,
+                                fillColor: context.profileInputFillColor,
                                 hintText: languages.selectCountry),
                             isExpanded: true,
                             menuMaxHeight: 300,
@@ -739,7 +787,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                               return DropdownMenuItem<CountryListResponse>(
                                 value: e,
                                 child: Text(e.name!,
-                                    style: primaryTextStyle(),
+                                    style: context.primaryTextStyle(),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis),
                               );
@@ -758,16 +806,17 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                           if (stateList.isNotEmpty)
                             DropdownButtonFormField<StateListResponse>(
                               decoration: inputDecoration(context,
+                                  fillColor: context.profileInputFillColor,
                                   hintText: languages.selectState),
                               isExpanded: true,
-                              dropdownColor: context.cardColor,
+                              dropdownColor: context.cardSecondary,
                               menuMaxHeight: 300,
                               initialValue: selectedState,
                               items: stateList.map((StateListResponse e) {
                                 return DropdownMenuItem<StateListResponse>(
                                   value: e,
                                   child: Text(e.name!,
-                                      style: primaryTextStyle(),
+                                      style: context.primaryTextStyle(),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis),
                                 );
@@ -788,9 +837,10 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                         Column(
                           children: [
                             DropdownButtonFormField<CityListResponse>(
-                              decoration: inputDecoration(context),
+                              decoration: inputDecoration(context,
+                                  fillColor: context.profileInputFillColor),
                               hint: Text(languages.selectCity,
-                                  style: primaryTextStyle()),
+                                  style: context.primaryTextStyle()),
                               isExpanded: true,
                               menuMaxHeight: 400,
                               initialValue: selectedCity,
@@ -800,7 +850,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                                   return DropdownMenuItem<CityListResponse>(
                                     value: e,
                                     child: Text(e.name!,
-                                        style: primaryTextStyle(),
+                                        style: context.primaryTextStyle(),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis),
                                   );
@@ -818,6 +868,9 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                       if (isUserTypeHandyman && serviceAddressList.isNotEmpty)
                         16.height,
+                      Text(languages.hintAddress,
+                          style: context.boldTextStyle()),
+                      8.height,
                       AppTextField(
                         controller: addressCont,
                         textFieldType: TextFieldType.MULTILINE,
@@ -825,6 +878,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                         focus: addressFocus,
                         minLines: 3,
                         decoration: inputDecoration(context,
+                            fillColor: context.profileInputFillColor,
                             hintText: languages.hintAddress),
                       ),
                       16.height,
@@ -841,7 +895,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                               splashFactory: InkSplash.splashFactory,
                             ),
                             child: ExpansionTile(
-                              iconColor: context.iconColor,
+                              iconColor: context.icon,
                               tilePadding:
                                   const EdgeInsets.symmetric(horizontal: 16),
                               childrenPadding:
@@ -850,7 +904,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                               dense: true,
                               visualDensity: VisualDensity.compact,
                               title: Text(languages.selectZones,
-                                  style: secondaryTextStyle()),
+                                  style: context.secondaryTextStyle()),
                               onExpansionChanged: (val) {
                                 isZoneTileExpanded = val;
                                 setState(() {});
@@ -873,21 +927,21 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                                       hoverColor: Colors.transparent,
                                       unselectedWidgetColor: appStore.isDarkMode
                                           ? context.dividerColor
-                                          : context.iconColor,
+                                          : context.icon,
                                     ),
                                     child: CheckboxListTile(
                                       checkboxShape: RoundedRectangleBorder(
                                           borderRadius: radius(4)),
-                                      activeColor: context.primaryColor,
+                                      activeColor: context.primary,
                                       checkColor: appStore.isDarkMode
-                                          ? context.iconColor
+                                          ? context.icon
                                           : context.cardColor,
                                       contentPadding:
                                           const EdgeInsets.symmetric(
                                               horizontal: 16),
                                       title: Text(zone.name.validate(),
-                                          style: secondaryTextStyle(
-                                              color: context.iconColor)),
+                                          style: context.secondaryTextStyle(
+                                              color: context.icon)),
                                       value: selectedZoneIds
                                           .contains(zone.id.toString()),
                                       onChanged: (val) {
@@ -913,112 +967,132 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                       16.height,
                       Text(languages.knownLanguages,
-                          style: secondaryTextStyle()),
+                          style: context.boldTextStyle()),
                       8.height,
                       Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
                         children: knownLanguages.map((e) {
-                          return Stack(
-                            children: [
-                              Container(
-                                decoration: boxDecorationWithRoundedCorners(
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(16)),
-                                  backgroundColor: appStore.isDarkMode
-                                      ? cardDarkColor
-                                      : primary.withValues(alpha: 0.1),
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 8),
-                                margin: const EdgeInsets.all(4),
-                                child: Text(e, style: primaryTextStyle()),
-                              ),
-                              Positioned(
-                                right: 1,
-                                child: const Icon(
-                                  Icons.cancel,
-                                  color: Colors.red,
+                          return Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 8),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: context.primary,
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(e,
+                                    style: context.primaryTextStyle(
+                                        color: context.onPrimary, size: 14)),
+                                6.width,
+                                Icon(
+                                  Icons.close,
+                                  color: context.onPrimary,
+                                  size: 16,
                                 ).onTap(() {
                                   knownLanguages.remove(e);
                                   setState(() {});
                                 }),
-                              ),
-                            ],
+                              ],
+                            ),
                           );
                         }).toList(),
                       ),
-                      TextButton(
-                        onPressed: () async {
-                          final String? res = await showInDialog(
-                            context,
-                            contentPadding: EdgeInsets.zero,
-                            builder: (p0) {
-                              return const AddKnownLanguagesComponent();
-                            },
-                          );
+                      8.height,
+                      Container(
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(radiusCircular(50)),
+                          color: context.profileInputFillColor,
+                        ),
+                        child: GestureDetector(
+                          onTap: () async {
+                            final String? res = await showInDialog(
+                              context,
+                              contentPadding: EdgeInsets.zero,
+                              builder: (p0) {
+                                return const AddKnownLanguagesComponent();
+                              },
+                            );
 
-                          if (res != null) {
-                            knownLanguages.add(res.trim());
-                            setState(() {});
-                          }
-                        },
-                        child: Text(languages.addKnownLanguage,
-                            style:
-                                primaryTextStyle(color: context.primaryColor)),
+                            if (res != null) {
+                              knownLanguages.add(res.trim());
+                              setState(() {});
+                            }
+                          },
+                          child: Text(languages.addKnownLanguage,
+                              style: context.primaryTextStyle(
+                                  color: context.primary)),
+                        ),
                       ),
                       16.height,
                       Text(languages.essentialSkills,
-                          style: secondaryTextStyle()),
+                          style: context.boldTextStyle()),
                       8.height,
                       Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
                         children: skills.map((e) {
-                          return Stack(
-                            children: [
-                              Container(
-                                decoration: boxDecorationWithRoundedCorners(
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(16)),
-                                  backgroundColor: appStore.isDarkMode
-                                      ? cardDarkColor
-                                      : primary.withValues(alpha: 0.1),
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 8),
-                                margin: const EdgeInsets.all(4),
-                                child: Text(e, style: primaryTextStyle()),
-                              ),
-                              Positioned(
-                                child: const Icon(
-                                  Icons.cancel,
-                                  color: Colors.red,
+                          return Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 6),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: context.primary,
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(e,
+                                    style: context.primaryTextStyle(
+                                        color: context.onPrimary, size: 14)),
+                                6.width,
+                                Icon(
+                                  Icons.close,
+                                  color: context.onPrimary,
+                                  size: 16,
                                 ).onTap(() {
                                   skills.remove(e);
                                   setState(() {});
                                 }),
-                              ),
-                            ],
+                              ],
+                            ),
                           );
                         }).toList(),
                       ),
-                      TextButton(
-                        onPressed: () async {
-                          final String? res = await showInDialog(
-                            context,
-                            contentPadding: const EdgeInsets.all(0),
-                            builder: (p0) {
-                              return const AddSkillComponent();
-                            },
-                          );
+                      8.height,
+                      Container(
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(radiusCircular(50)),
+                          color: context.profileInputFillColor,
+                        ),
+                        child: GestureDetector(
+                          onTap: () async {
+                            final String? res = await showInDialog(
+                              context,
+                              contentPadding: const EdgeInsets.all(0),
+                              builder: (p0) {
+                                return const AddSkillComponent();
+                              },
+                            );
 
-                          if (res != null) {
-                            skills.add(res.trim());
-                            setState(() {});
-                          }
-                        },
-                        child: Text(languages.addEssentialSkill,
-                            style:
-                                primaryTextStyle(color: context.primaryColor)),
+                            if (res != null) {
+                              skills.add(res.trim());
+                              setState(() {});
+                            }
+                          },
+                          child: Text(languages.addEssentialSkill,
+                              style: context.primaryTextStyle(
+                                  color: context.primary)),
+                        ),
                       ),
                       16.height,
+                      Text(languages.reasonsToChooseYour,
+                          style: context.boldTextStyle()),
+                      8.height,
                       AppTextField(
                         controller: whyChooseMeCont,
                         textFieldType: TextFieldType.NAME,
@@ -1041,6 +1115,8 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                         isValidationRequired: false,
                       ),
                       16.height,
+                      Text(languages.aboutYou, style: context.boldTextStyle()),
+                      8.height,
                       AppTextField(
                         controller: descriptionCont,
                         textFieldType: TextFieldType.MULTILINE,
@@ -1059,69 +1135,78 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                             appConfigurationStore.testWithoutKey,
                         loaderWidgetForChatGPT: const ChatGPTLoadingWidget(),
                         decoration: inputDecoration(context,
-                            hintText: languages.aboutYou),
+                            hintText: languages.writeHere),
                         isValidationRequired: false,
                       ),
                       16.height,
                       Text(languages.reasonsToChooseYour,
-                          style: secondaryTextStyle()),
+                          style: context.boldTextStyle()),
                       8.height,
                       Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
                         children: whyChooseMeReasons.map((e) {
-                          return Stack(
-                            children: [
-                              Container(
-                                decoration: boxDecorationWithRoundedCorners(
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(16)),
-                                  backgroundColor: appStore.isDarkMode
-                                      ? cardDarkColor
-                                      : primary.withValues(alpha: 0.1),
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 8),
-                                margin: const EdgeInsets.all(4),
-                                child: Text(e, style: primaryTextStyle()),
-                              ),
-                              Positioned(
-                                right: 1,
-                                child: const Icon(
-                                  Icons.cancel,
-                                  color: Colors.red,
+                          return Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 6),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: context.primary,
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(e,
+                                    style: context.primaryTextStyle(
+                                        color: context.onPrimary, size: 14)),
+                                6.width,
+                                Icon(
+                                  Icons.close,
+                                  color: context.onPrimary,
+                                  size: 16,
                                 ).onTap(() {
                                   whyChooseMeReasons.remove(e);
                                   setState(() {});
                                 }),
-                              ),
-                            ],
+                              ],
+                            ),
                           );
                         }).toList(),
                       ),
-                      TextButton(
-                        onPressed: () async {
-                          final String? res = await showInDialog(
-                            context,
-                            contentPadding: EdgeInsets.zero,
-                            builder: (p0) {
-                              return const AddReasonsComponent();
-                            },
-                          );
+                      8.height,
+                      Container(
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(radiusCircular(50)),
+                          color: context.profileInputFillColor,
+                        ),
+                        child: GestureDetector(
+                          onTap: () async {
+                            final String? res = await showInDialog(
+                              context,
+                              contentPadding: EdgeInsets.zero,
+                              builder: (p0) {
+                                return const AddReasonsComponent();
+                              },
+                            );
 
-                          if (res != null) {
-                            whyChooseMeReasons.add(res.trim());
-                            setState(() {});
-                          }
-                        },
-                        child: Text(languages.addReasons,
-                            style:
-                                primaryTextStyle(color: context.primaryColor)),
+                            if (res != null) {
+                              whyChooseMeReasons.add(res.trim());
+                              setState(() {});
+                            }
+                          },
+                          child: Text(languages.addReasons,
+                              style: context.primaryTextStyle(
+                                  color: context.primary)),
+                        ),
                       ),
                       28.height,
                       AppButton(
                         text: languages.saveChanges,
                         height: 40,
-                        color: primary,
-                        textStyle: boldTextStyle(color: white),
+                        color: context.primary,
+                        textStyle:
+                            context.boldTextStyle(color: context.onPrimary),
                         width: context.width() - context.navigationBarHeight,
                         onTap: () {
                           ifNotTester(context, () {
@@ -1149,8 +1234,8 @@ class EditProfileScreenState extends State<EditProfileScreen> {
     showCountryPicker(
       context: context,
       countryListTheme: CountryListThemeData(
-        textStyle: secondaryTextStyle(color: textSecondaryColorGlobal),
-        searchTextStyle: primaryTextStyle(),
+        textStyle: context.secondaryTextStyle(color: textSecondaryColorGlobal),
+        searchTextStyle: context.primaryTextStyle(),
         inputDecoration: InputDecoration(
           labelText: languages.search,
           prefixIcon: const Icon(Icons.search),

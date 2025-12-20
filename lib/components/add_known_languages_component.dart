@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../main.dart';
 import '../utils/common.dart';
-import '../utils/configs.dart';
 
 class AddKnownLanguagesComponent extends StatefulWidget {
   const AddKnownLanguagesComponent({Key? key}) : super(key: key);
@@ -36,7 +36,6 @@ class _AddKnownLanguagesComponentState
   Widget build(BuildContext context) {
     return Container(
       width: context.width(),
-      color: Colors.transparent,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -44,30 +43,31 @@ class _AddKnownLanguagesComponentState
             width: context.width(),
             decoration: boxDecorationWithRoundedCorners(
               borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(12), topRight: Radius.circular(12)),
-              backgroundColor: primary,
+                  topLeft: Radius.circular(8), topRight: Radius.circular(8)),
+              backgroundColor: context.primary,
             ),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(languages.addKnownLanguage,
-                        style: boldTextStyle(color: white))
+                        style: boldTextStyle(color: context.onPrimary))
                     .expand(),
-                const CloseButton(color: Colors.white),
+                CloseButton(color: context.onPrimary),
               ],
             ),
           ),
           AppTextField(
             textFieldType: TextFieldType.NAME,
             controller: knownLangCont,
-            decoration:
-                inputDecoration(context, hintText: languages.knownLanguages),
+            decoration: inputDecoration(context,
+                hintText: languages.knownLanguages,
+                fillColor: context.profileInputFillColor),
           ).paddingAll(16),
           AppButton(
             text: languages.btnSave,
-            color: primary,
-            textStyle: boldTextStyle(color: white),
+            color: context.primary,
+            textStyle: boldTextStyle(color: context.onPrimary),
             width: context.width() - context.navigationBarHeight,
             onTap: () {
               if (knownLangCont.text.isNotEmpty) {

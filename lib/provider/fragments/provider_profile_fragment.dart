@@ -734,9 +734,9 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
               16.height,
               SettingSection(
                 title: Text(languages.lblDangerZone.toUpperCase(),
-                    style: context.boldTextStyle(color: context.error)),
+                    style: context.boldTextStyle(color: context.primary)),
                 headingDecoration: BoxDecoration(
-                    color: context.error.withValues(alpha: 0.09),
+                    color: context.secondaryContainer,
                     borderRadius: const BorderRadiusDirectional.vertical(
                         top: Radius.circular(16))),
                 divider: const Offstage(),

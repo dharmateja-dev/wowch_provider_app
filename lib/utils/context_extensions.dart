@@ -319,6 +319,10 @@ extension ColorSchemeExtension on BuildContext {
   Color get cardSecondaryBorder =>
       isDarkMode ? const Color(0xFF2F2F2F) : const Color(0xFFD6D6D6);
 
+  /// Profile text field fill color - Light: #FFFFFF, Dark: #101D1C
+  Color get profileInputFillColor =>
+      isDarkMode ? const Color(0xFF101D1C) : const Color(0xFFFFFFFF);
+
   /// Status bar brightness (for SystemUiOverlayStyle)
   Brightness get statusBarBrightness =>
       isDarkMode ? Brightness.light : Brightness.dark;
