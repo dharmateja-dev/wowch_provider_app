@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class ThemeSelectionDaiLog extends StatefulWidget {
@@ -51,7 +52,7 @@ class ThemeSelectionDaiLogState extends State<ThemeSelectionDaiLog> {
             decoration: boxDecorationWithRoundedCorners(
               borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(8), topRight: Radius.circular(8)),
-              backgroundColor: primary,
+              backgroundColor: context.primary,
             ),
             padding:
                 const EdgeInsets.only(left: 24, right: 8, bottom: 8, top: 8),
@@ -59,19 +60,20 @@ class ThemeSelectionDaiLogState extends State<ThemeSelectionDaiLog> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(languages.chooseTheme,
-                    style: boldTextStyle(color: white, size: 16)),
+                    style: boldTextStyle(color: context.onPrimary, size: 16)),
                 IconButton(
                   onPressed: () {
                     finish(context);
                   },
-                  icon: const Icon(Icons.close, size: 22, color: white),
+                  icon: Icon(Icons.close, size: 24, color: context.onPrimary),
                 ),
               ],
             ),
           ),
+          const SizedBox(height: 12),
           AnimatedListView(
             shrinkWrap: true,
-            padding: const EdgeInsets.symmetric(vertical: 16),
+            padding: const EdgeInsets.symmetric(vertical: 12),
             listAnimationType: ListAnimationType.FadeIn,
             fadeInConfiguration: FadeInConfiguration(duration: 2.seconds),
             itemCount: themeModeList.length,
@@ -100,7 +102,7 @@ class ThemeSelectionDaiLogState extends State<ThemeSelectionDaiLog> {
                 },
                 child: RadioListTile(
                   value: index,
-                  activeColor: primary,
+                  activeColor: context.primary,
                   controlAffinity: ListTileControlAffinity.trailing,
                   title: Text(themeModeList[index], style: primaryTextStyle()),
                 ),

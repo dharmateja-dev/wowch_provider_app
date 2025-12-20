@@ -39,7 +39,7 @@ class LightThemeColors {
   static const Color secondaryGreen =
       Color(0xFF93C0AB); // Secondary brand (Light Greenish) / Primary container
   static const Color secondaryGreenLight =
-      Color(0xFFE9F2EF); // Secondary container
+      Color(0xFFE0EBE5); // Secondary container
   static const Color liteGreenContainerText =
       Color(0xFF9E9E9E); // Secondary text for lite green container
 

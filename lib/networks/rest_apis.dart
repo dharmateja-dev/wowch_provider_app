@@ -4,9 +4,9 @@ import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
+
 import 'package:handyman_provider_flutter/auth/sign_in_screen.dart';
-import 'package:handyman_provider_flutter/components/app_widgets.dart';
+
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/models/base_response.dart';
 import 'package:handyman_provider_flutter/models/booking_detail_response.dart';
@@ -55,6 +55,7 @@ import 'package:handyman_provider_flutter/provider/timeSlots/models/slot_data.da
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
 import 'package:handyman_provider_flutter/utils/model_keys.dart';
 import 'package:http/http.dart';
@@ -76,81 +77,51 @@ import '../utils/firebase_messaging_utils.dart';
 //region Auth API
 
 Future<void> logout(BuildContext context) async {
-  showInDialog(
+  showConfirmDialogCustom(
     context,
-    contentPadding: EdgeInsets.zero,
-    builder: (_) {
-      return Stack(
-        alignment: Alignment.center,
-        children: [
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.asset(
-                logout_logo,
-                width: context.width(),
-                fit: BoxFit.cover,
-              ),
-              32.height,
-              Text(languages.lblDeleteTitle, style: boldTextStyle(size: 18)),
-              16.height,
-              Text(languages.lblDeleteSubTitle, style: secondaryTextStyle()),
-              28.height,
-              Row(
-                children: [
-                  AppButton(
-                    child: Text(languages.lblNo, style: boldTextStyle()),
-                    color: appStore.isDarkMode
-                        ? context.scaffoldBackgroundColor
-                        : context.cardColor,
-                    elevation: 0,
-                    onTap: () {
-                      finish(context);
-                    },
-                  ).expand(),
-                  16.width,
-                  AppButton(
-                    child: Text(
-                      languages.lblYes,
-                      style: boldTextStyle(color: white),
-                    ),
-                    color: primary,
-                    elevation: 0,
-                    onTap: () async {
-                      if (await isNetworkAvailable()) {
-                        appStore.setLoading(true);
-                        logoutApi().then((value) async {}).catchError((e) {
-                          toast(e.toString());
-                        });
-                        await clearPreferences();
-                        if (appConfigurationStore.isInAppPurchaseEnable)
-                          await inAppPurchaseService.logoutToRevenueCate();
+    height: 80,
+    width: 290,
+    shape: appDialogShape(8),
+    title: languages.lblDeleteTitle,
+    subTitle: languages.lblDeleteSubTitle,
+    titleColor: context.dialogTitleColor,
+    subTitleColor: context.onSurface.withValues(alpha: 0.7),
+    backgroundColor: context.dialogBackgroundColor,
+    primaryColor: context.primary,
+    customCenterWidget: Image.asset(
+      ic_warning,
+      color: context.onSecondaryContainer,
+      height: 70,
+      width: 70,
+      fit: BoxFit.cover,
+    ),
+    positiveText: languages.lblYes,
+    positiveTextColor: context.onPrimary,
+    negativeText: languages.lblNo,
+    negativeTextColor: context.dialogCancelColor,
+    dialogType: DialogType.CONFIRMATION,
+    onAccept: (_) async {
+      if (await isNetworkAvailable()) {
+        appStore.setLoading(true);
+        logoutApi().then((value) async {}).catchError((e) {
+          toast(e.toString());
+        });
+        await clearPreferences();
+        if (appConfigurationStore.isInAppPurchaseEnable) {
+          await inAppPurchaseService.logoutToRevenueCate();
+        }
 
-                        appStore.setLoading(false);
+        appStore.setLoading(false);
 
-                        SignInScreen().launch(
-                          context,
-                          isNewTask: true,
-                          pageRouteAnimation: PageRouteAnimation.Fade,
-                        );
-                        //todo: localization
-                        toast("Your Account has logged out successfully.");
-                      } else {
-                        toast(errorInternetNotAvailable);
-                      }
-                    },
-                  ).expand(),
-                ],
-              ),
-            ],
-          ).paddingSymmetric(horizontal: 16, vertical: 24),
-          Observer(
-            builder: (_) => LoaderWidget()
-                .withSize(width: 60, height: 60)
-                .visible(appStore.isLoading),
-          ),
-        ],
-      );
+        SignInScreen().launch(
+          context,
+          isNewTask: true,
+          pageRouteAnimation: PageRouteAnimation.Fade,
+        );
+        toast("Your account has logged out successfully.");
+      } else {
+        toast(errorInternetNotAvailable);
+      }
     },
   );
 }
