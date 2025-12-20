@@ -167,8 +167,9 @@ class _HandymanProfileFragmentState extends State<HandymanProfileFragment> {
                 padding: const EdgeInsets.all(12),
                 decoration: boxDecorationWithRoundedCorners(
                   borderRadius: radius(),
-                  backgroundColor:
-                      appStore.isDarkMode ? context.cardColor : lightPrimaryColor,
+                  backgroundColor: appStore.isDarkMode
+                      ? context.cardColor
+                      : lightPrimaryColor,
                 ),
                 child: Row(
                   children: [
@@ -285,7 +286,8 @@ class _HandymanProfileFragmentState extends State<HandymanProfileFragment> {
                         color: context.cardColor,
                         borderRadius: const BorderRadiusDirectional.vertical(
                             bottom: Radius.circular(0))),
-                    leading: ic_un_fill_wallet.iconImage(size: 16),
+                    leading:
+                        ic_un_fill_wallet.iconImage(context: context, size: 16),
                     title: languages.walletBalance,
                     titleTextStyle: boldTextStyle(size: 12),
                     onTap: () {
@@ -305,7 +307,8 @@ class _HandymanProfileFragmentState extends State<HandymanProfileFragment> {
                           color: context.cardColor,
                           borderRadius: const BorderRadiusDirectional.vertical(
                               bottom: Radius.circular(16))),
-                      leading: ic_help_desk.iconImage(size: 18),
+                      leading:
+                          ic_help_desk.iconImage(context: context, size: 18),
                       title: languages.helpDesk,
                       titleTextStyle: boldTextStyle(size: 12),
                       trailing: Icon(Icons.chevron_right,
@@ -424,6 +427,7 @@ class _HandymanProfileFragmentState extends State<HandymanProfileFragment> {
                                   const BorderRadiusDirectional.vertical(
                                       bottom: Radius.circular(0))),
                           leading: ic_notification.iconImage(
+                              context: context,
                               size: appStore.userType == USER_TYPE_PROVIDER
                                   ? 16
                                   : 18),
@@ -543,7 +547,7 @@ class _HandymanProfileFragmentState extends State<HandymanProfileFragment> {
                         color: context.cardColor,
                         borderRadius: const BorderRadiusDirectional.vertical(
                             bottom: Radius.circular(0))),
-                    leading: ic_delete.iconImage(size: 16),
+                    leading: ic_delete.iconImage(context: context, size: 16),
                     paddingBeforeTrailing: 4,
                     title: languages.lblDeleteAccount,
                     titleTextStyle: boldTextStyle(size: 12),
@@ -588,7 +592,7 @@ class _HandymanProfileFragmentState extends State<HandymanProfileFragment> {
                         color: context.cardColor,
                         borderRadius: const BorderRadiusDirectional.vertical(
                             bottom: Radius.circular(16))),
-                    leading: ic_logout.iconImage(size: 16),
+                    leading: ic_logout.iconImage(context: context, size: 16),
                     paddingBeforeTrailing: 4,
                     title: languages.logout,
                     titleTextStyle: boldTextStyle(size: 12),

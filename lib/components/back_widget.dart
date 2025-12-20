@@ -5,8 +5,9 @@ class BackWidget extends StatelessWidget {
   final Color? color;
   final VoidCallback? onPressed;
   final double? iconSize;
+  final Color? iconColor;
 
-  BackWidget({this.color, this.onPressed, this.iconSize});
+  BackWidget({this.color, this.onPressed, this.iconSize, this.iconColor});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,8 @@ class BackWidget extends StatelessWidget {
         }
       },
       alignment: Alignment.center,
-      icon: Icon(Icons.arrow_back_ios, color: color ?? Colors.white, size: iconSize ?? 20),
+      icon: Icon(Icons.arrow_back_ios,
+          color: iconColor ?? Colors.white, size: iconSize ?? 20),
     );
   }
 }

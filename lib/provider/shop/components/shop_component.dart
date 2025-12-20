@@ -142,7 +142,7 @@ class ShopComponent extends StatelessWidget {
                     text: shop.buildFullAddress(),
                     expandedText: true,
                     prefix: ic_location.iconImage(
-                        size: 14, color: context.iconColor),
+                        context: context, size: 14, color: context.iconColor),
                     textStyle: secondaryTextStyle(),
                     spacing: 4,
                   ),
@@ -154,7 +154,7 @@ class ShopComponent extends StatelessWidget {
                         : '---',
                     expandedText: true,
                     prefix: ic_time_slots.iconImage(
-                        size: 14, color: context.iconColor),
+                        context: context, size: 14, color: context.iconColor),
                     textStyle: secondaryTextStyle(),
                     spacing: 4,
                   ),

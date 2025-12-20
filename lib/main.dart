@@ -139,23 +139,44 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     init();
   }
 
   void init() async {
     afterBuildCreated(() {
-      int val = getIntAsync(THEME_MODE_INDEX, defaultValue: THEME_MODE_SYSTEM);
-
-      if (val == THEME_MODE_LIGHT) {
-        appStore.setDarkMode(false);
-      } else if (val == THEME_MODE_DARK) {
-        appStore.setDarkMode(true);
-      }
+      _updateThemeFromPreference();
     });
+  }
+
+  void _updateThemeFromPreference() {
+    int val = getIntAsync(THEME_MODE_INDEX, defaultValue: THEME_MODE_SYSTEM);
+
+    if (val == THEME_MODE_LIGHT) {
+      appStore.setDarkMode(false);
+    } else if (val == THEME_MODE_DARK) {
+      appStore.setDarkMode(true);
+    } else if (val == THEME_MODE_SYSTEM) {
+      // Set theme based on system preference
+      final brightness =
+          WidgetsBinding.instance.platformDispatcher.platformBrightness;
+      appStore.setDarkMode(brightness == Brightness.dark);
+    }
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    // Called when system theme changes
+    int val = getIntAsync(THEME_MODE_INDEX, defaultValue: THEME_MODE_SYSTEM);
+    if (val == THEME_MODE_SYSTEM) {
+      final brightness =
+          WidgetsBinding.instance.platformDispatcher.platformBrightness;
+      appStore.setDarkMode(brightness == Brightness.dark);
+    }
   }
 
   @override
@@ -165,6 +186,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 

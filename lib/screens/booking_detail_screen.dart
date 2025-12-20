@@ -1661,7 +1661,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
             IconButton(
               style: const ButtonStyle(
                   padding: WidgetStatePropertyAll(EdgeInsets.zero)),
-              icon: ic_edit_square.iconImage(size: 18),
+              icon: ic_edit_square.iconImage(context: context, size: 18),
               visualDensity: VisualDensity.compact,
               onPressed: () async {
                 chargesList.clear();

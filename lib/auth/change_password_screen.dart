@@ -105,9 +105,9 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       focus: oldPasswordFocus,
                       obscureText: true,
                       suffixPasswordVisibleWidget:
-                          ic_show.iconImage(size: 10).paddingAll(14),
+                          ic_show.iconImage(context: context,size: 10).paddingAll(14),
                       suffixPasswordInvisibleWidget:
-                          ic_hide.iconImage(size: 10).paddingAll(14),
+                          ic_hide.iconImage(context: context,size: 10).paddingAll(14),
                       validator: (val) {
                         if (val == null || val.isEmpty) {
                           return languages.hintRequired;
@@ -127,9 +127,9 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       focus: newPasswordFocus,
                       obscureText: true,
                       suffixPasswordVisibleWidget:
-                          ic_show.iconImage(size: 10).paddingAll(14),
+                          ic_show.iconImage(context: context,size: 10).paddingAll(14),
                       suffixPasswordInvisibleWidget:
-                          ic_hide.iconImage(size: 10).paddingAll(14),
+                          ic_hide.iconImage(context: context,size: 10).paddingAll(14),
                       validator: (val) {
                         if (val == null || val.isEmpty) {
                           return languages.hintRequired;
@@ -149,9 +149,9 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       obscureText: true,
                       focus: reenterPasswordFocus,
                       suffixPasswordVisibleWidget:
-                          ic_show.iconImage(size: 10).paddingAll(14),
+                          ic_show.iconImage(context: context,size: 10).paddingAll(14),
                       suffixPasswordInvisibleWidget:
-                          ic_hide.iconImage(size: 10).paddingAll(14),
+                          ic_hide.iconImage(context: context,size: 10).paddingAll(14),
                       validator: (v) {
                         if (v == null || v.isEmpty) {
                           return languages.hintRequired;

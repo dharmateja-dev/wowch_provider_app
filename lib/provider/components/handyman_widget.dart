@@ -118,6 +118,7 @@ class _HandymanWidgetState extends State<HandymanWidget> {
                               backgroundColor: primary.withValues(alpha: 0.1),
                             ),
                             child: ic_message.iconImage(
+                              context: context,
                               size: 14,
                               color: primary,
                             ),

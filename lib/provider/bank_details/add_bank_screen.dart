@@ -154,7 +154,9 @@ class _AddBankScreenState extends State<AddBankScreen> {
                     nextFocus: branchNameFocus,
                     decoration:
                         inputDecoration(context, hintText: languages.bankName),
-                    suffix: ic_piggy_bank.iconImage(size: 10).paddingAll(14),
+                    suffix: ic_piggy_bank
+                        .iconImage(context: context, size: 10)
+                        .paddingAll(14),
                   ),
                   16.height,
                   AppTextField(
@@ -164,7 +166,9 @@ class _AddBankScreenState extends State<AddBankScreen> {
                     nextFocus: accNumberFocus,
                     decoration: inputDecoration(context,
                         hintText: languages.fullNameOnBankAccount),
-                    suffix: ic_piggy_bank.iconImage(size: 10).paddingAll(14),
+                    suffix: ic_piggy_bank
+                        .iconImage(context: context, size: 10)
+                        .paddingAll(14),
                   ),
                   16.height,
                   AppTextField(
@@ -175,7 +179,8 @@ class _AddBankScreenState extends State<AddBankScreen> {
                     decoration: inputDecoration(context,
                         hintText: languages.accountNumber, counter: false),
                     suffix: ic_password
-                        .iconImage(size: 10, fit: BoxFit.contain)
+                        .iconImage(
+                            context: context, size: 10, fit: BoxFit.contain)
                         .paddingAll(14),
                   ),
                   16.height,
@@ -186,7 +191,9 @@ class _AddBankScreenState extends State<AddBankScreen> {
                     nextFocus: contactNumberFocus,
                     decoration: inputDecoration(context,
                         hintText: languages.iFSCCode, counter: false),
-                    suffix: profile.iconImage(size: 10).paddingAll(14),
+                    suffix: profile
+                        .iconImage(context: context, size: 10)
+                        .paddingAll(14),
                     isValidationRequired: false,
                   ),
                   16.height,

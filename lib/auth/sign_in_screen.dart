@@ -5,16 +5,17 @@ import 'package:handyman_provider_flutter/auth/component/user_demo_mode_screen.d
 import 'package:handyman_provider_flutter/auth/forgot_password_dialog.dart';
 import 'package:handyman_provider_flutter/auth/sign_up_screen.dart';
 import 'package:handyman_provider_flutter/components/app_widgets.dart';
-import 'package:handyman_provider_flutter/components/selected_item_widget.dart';
+import 'package:handyman_provider_flutter/components/back_widget.dart';
 import 'package:handyman_provider_flutter/handyman/handyman_dashboard_screen.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/models/user_data.dart';
 import 'package:handyman_provider_flutter/provider/provider_dashboard_screen.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
-import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../networks/rest_apis.dart';
@@ -76,6 +77,20 @@ class _SignInScreenState extends State<SignInScreen> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
+        backgroundColor: context.scaffold,
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          leading: Navigator.of(context).canPop()
+              ? BackWidget(iconColor: context.icon)
+              : null,
+          scrolledUnderElevation: 0,
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarIconBrightness: context.statusBarBrightness,
+            statusBarColor: context.scaffold,
+          ),
+        ),
         body: AbsorbPointer(
           absorbing: appStore.isLoading,
           child: SizedBox(
@@ -92,48 +107,89 @@ class _SignInScreenState extends State<SignInScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: AppBar().preferredSize.height),
+                        (context.height() * 0.085).toInt().height,
                         // Hello again with Welcome text
                         _buildHelloAgainWithWelcomeText(),
-
                         AutofillGroup(
                           onDisposeAction: AutofillContextAction.commit,
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              Text(
+                                languages.hintEmailAddressTxt,
+                                style: context.boldTextStyle(size: 14),
+                              ),
+                              8.height,
                               // Enter email text field.
                               AppTextField(
+                                textStyle: context.primaryTextStyle(),
                                 textFieldType: TextFieldType.EMAIL_ENHANCED,
                                 controller: emailCont,
                                 focus: emailFocus,
                                 autoFocus: true,
                                 nextFocus: passwordFocus,
                                 errorThisFieldRequired: languages.hintRequired,
-                                decoration: inputDecoration(context,
-                                    hintText: languages.hintEmailAddressTxt),
-                                suffix: ic_message
-                                    .iconImage(size: 10)
-                                    .paddingAll(14),
+                                decoration: inputDecoration(
+                                  context,
+                                  prefixIcon: ic_message
+                                      .iconImage(
+                                        context: context,
+                                        color: context.iconMuted,
+                                        size: 10,
+                                      )
+                                      .paddingAll(14),
+                                  hintText: languages.hintEmailAddressTxt,
+                                  borderRadius: 8,
+                                  fillColor: context.fillColor,
+                                ),
                                 autoFillHints: [AutofillHints.email],
                                 onFieldSubmitted: (val) =>
                                     FocusScope.of(context)
                                         .requestFocus(passwordFocus),
                               ),
                               16.height,
+                              Text(
+                                languages.hintPassword,
+                                style: context.boldTextStyle(size: 14),
+                              ),
+                              8.height,
                               // Enter password text field
                               AppTextField(
+                                textStyle: context.primaryTextStyle(),
                                 textFieldType: TextFieldType.PASSWORD,
                                 controller: passwordCont,
                                 focus: passwordFocus,
                                 obscureText: true,
                                 errorThisFieldRequired: languages.hintRequired,
-                                suffixPasswordVisibleWidget:
-                                    ic_show.iconImage(size: 10).paddingAll(14),
-                                suffixPasswordInvisibleWidget:
-                                    ic_hide.iconImage(size: 10).paddingAll(14),
+                                suffixPasswordVisibleWidget: ic_show
+                                    .iconImage(
+                                      context: context,
+                                      color: context.iconMuted,
+                                      size: 10,
+                                    )
+                                    .paddingAll(14),
+                                suffixPasswordInvisibleWidget: ic_hide
+                                    .iconImage(
+                                      context: context,
+                                      color: context.iconMuted,
+                                      size: 10,
+                                    )
+                                    .paddingAll(14),
                                 errorMinimumPasswordLength:
                                     "${languages.errorPasswordLength} $passwordLengthGlobal",
-                                decoration: inputDecoration(context,
-                                    hintText: languages.hintPassword),
+                                decoration: inputDecoration(
+                                  context,
+                                  hintText: languages.hintPassword,
+                                  prefixIcon: ic_passwordIcon
+                                      .iconImage(
+                                        context: context,
+                                        color: context.iconMuted,
+                                        size: 10,
+                                      )
+                                      .paddingAll(14),
+                                  borderRadius: 8,
+                                  fillColor: context.fillColor,
+                                ),
                                 autoFillHints: [AutofillHints.password],
                                 isValidationRequired: true,
                                 validator: (val) {
@@ -153,7 +209,6 @@ class _SignInScreenState extends State<SignInScreen> {
                             ],
                           ),
                         ),
-
                         _buildForgotRememberWidget(),
                         _buildButtonWidget(),
                         16.height,
@@ -194,18 +249,20 @@ class _SignInScreenState extends State<SignInScreen> {
 
   //region Widgets
   Widget _buildHelloAgainWithWelcomeText() {
-    return Column(
-      children: [
-        32.height,
-        Text(languages.lblLoginTitle, style: boldTextStyle(size: 18)).center(),
-        16.height,
-        Text(
-          languages.lblLoginSubtitle,
-          style: secondaryTextStyle(size: 14),
-          textAlign: TextAlign.center,
-        ).paddingSymmetric(horizontal: 32).center(),
-        64.height,
-      ],
+    return Container(
+      child: Column(
+        children: [
+          Text(languages.lblLoginTitle, style: boldTextStyle(size: 24))
+              .center(),
+          16.height,
+          Text(
+            languages.lblLoginSubtitle,
+            style: primaryTextStyle(size: 16),
+            textAlign: TextAlign.center,
+          ).paddingSymmetric(horizontal: 16).center(),
+          64.height,
+        ],
+      ),
     );
   }
 
@@ -217,38 +274,42 @@ class _SignInScreenState extends State<SignInScreen> {
           children: [
             Row(
               children: [
-                2.width,
-                SelectedItemWidget(isSelected: isRemember).onTap(() async {
-                  await setValue(IS_REMEMBERED, isRemember);
-                  isRemember = !isRemember;
-                  setState(() {});
-                }),
-                TextButton(
-                  onPressed: () async {
+                Checkbox(
+                  value: isRemember,
+                  onChanged: (value) async {
                     await setValue(IS_REMEMBERED, isRemember);
                     isRemember = !isRemember;
                     setState(() {});
                   },
-                  child:
-                      Text(languages.rememberMe, style: secondaryTextStyle()),
+                  activeColor: context.primary,
+                  checkColor: context.onPrimary,
+                  side: BorderSide(color: context.primary, width: 1.5),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),
                 ),
+                Text(languages.rememberMe, style: context.primaryTextStyle()),
               ],
             ),
-            TextButton(
-              child: Text(
-                languages.forgotPassword,
-                style:
-                    boldTextStyle(color: primary, fontStyle: FontStyle.italic),
-                textAlign: TextAlign.right,
-              ),
-              onPressed: () {
+            GestureDetector(
+              onTap: () {
                 showInDialog(
                   context,
                   contentPadding: EdgeInsets.zero,
+                  dialogAnimation: DialogAnimation.SLIDE_TOP_BOTTOM,
+                  backgroundColor: context.dialogBackgroundColor,
                   builder: (_) => ForgotPasswordScreen(),
                 );
               },
-            ).flexible()
+              child: Text(
+                languages.forgotPassword,
+                style: context.boldTextStyle(
+                  color: context.primary,
+                  fontStyle: FontStyle.italic,
+                ),
+                textAlign: TextAlign.right,
+              ),
+            ).flexible(),
           ],
         ),
         32.height,
@@ -261,32 +322,30 @@ class _SignInScreenState extends State<SignInScreen> {
       children: [
         AppButton(
           text: languages.signIn,
-          height: 40,
-          color: primary,
-          textStyle: boldTextStyle(color: white),
+          color: context.primary,
+          textColor: context.onPrimary,
           width: context.width() - context.navigationBarHeight,
           onTap: () {
             _handleLogin();
           },
         ),
-        16.height,
+        32.height,
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(languages.doNotHaveAccount, style: secondaryTextStyle()),
-            TextButton(
-              onPressed: () {
+            Text(languages.doNotHaveAccount, style: context.primaryTextStyle()),
+            8.width,
+            GestureDetector(
+              onTap: () {
+                hideKeyboard(context);
                 SignUpScreen().launch(context);
               },
               child: Text(
                 languages.signUp,
-                style: boldTextStyle(
-                  color: primary,
-                  decoration: TextDecoration.underline,
-                  fontStyle: FontStyle.italic,
-                ),
+                style: context.boldTextStyle(
+                    color: context.primary, fontStyle: FontStyle.italic),
               ),
-            )
+            ),
           ],
         ),
       ],

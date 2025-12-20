@@ -65,12 +65,16 @@ class _PackageComponentState extends State<PackageComponent> {
               decoration: boxDecorationWithRoundedCorners(
                 borderRadius: radius(),
                 backgroundColor: context.cardColor,
-                border: appStore.isDarkMode ? Border.all(color: context.dividerColor) : null,
+                border: appStore.isDarkMode
+                    ? Border.all(color: context.dividerColor)
+                    : null,
               ),
               child: Row(
                 children: [
                   CachedImageWidget(
-                    url: data.imageAttachments.validate().isNotEmpty ? data.imageAttachments!.first.validate() : "",
+                    url: data.imageAttachments.validate().isNotEmpty
+                        ? data.imageAttachments!.first.validate()
+                        : "",
                     height: 60,
                     fit: BoxFit.cover,
                     radius: defaultRadius,
@@ -88,7 +92,7 @@ class _PackageComponentState extends State<PackageComponent> {
                       ),
                     ],
                   ).expand(),
-                  ic_info.iconImage(size: 25),
+                  ic_info.iconImage(context: context, size: 25),
                 ],
               ).onTap(() {
                 showModalBottomSheet(
@@ -96,13 +100,19 @@ class _PackageComponentState extends State<PackageComponent> {
                   context: context,
                   isScrollControlled: true,
                   isDismissible: true,
-                  shape: RoundedRectangleBorder(borderRadius: radiusOnly(topLeft: defaultRadius, topRight: defaultRadius)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: radiusOnly(
+                          topLeft: defaultRadius, topRight: defaultRadius)),
                   builder: (_) {
                     return DraggableScrollableSheet(
                       initialChildSize: 0.50,
                       minChildSize: 0.2,
                       maxChildSize: 1,
-                      builder: (context, scrollController) => PackageInfoComponent(packageData: data, scrollController: scrollController, isFromServiceDetail: true),
+                      builder: (context, scrollController) =>
+                          PackageInfoComponent(
+                              packageData: data,
+                              scrollController: scrollController,
+                              isFromServiceDetail: true),
                     );
                   },
                 );

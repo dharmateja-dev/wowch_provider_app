@@ -226,7 +226,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           errorThisFieldRequired: languages.hintRequired,
           decoration:
               inputDecoration(context, hintText: languages.hintFirstNameTxt),
-          suffix: profile.iconImage(size: 10).paddingAll(14),
+          suffix: profile.iconImage(context: context,size: 10).paddingAll(14),
         ),
         16.height,
         // Last name text field...
@@ -237,7 +237,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           nextFocus: userNameFocus,
           errorThisFieldRequired: languages.hintRequired,
           decoration: inputDecoration(context, hintText: languages.hintLastNameTxt),
-          suffix: profile.iconImage(size: 10).paddingAll(14),
+          suffix: profile.iconImage(context: context,size: 10).paddingAll(14),
         ),
         16.height,
         // User name test field...
@@ -248,7 +248,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           nextFocus: emailFocus,
           errorThisFieldRequired: languages.hintRequired,
           decoration: inputDecoration(context, hintText: languages.hintUserNameTxt),
-          suffix: profile.iconImage(size: 10).paddingAll(14),
+          suffix: profile.iconImage(context: context,size: 10).paddingAll(14),
         ),
         16.height,
         // Email text field...
@@ -260,7 +260,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           errorThisFieldRequired: languages.hintRequired,
           decoration:
               inputDecoration(context, hintText: languages.hintEmailAddressTxt),
-          suffix: ic_message.iconImage(size: 10).paddingAll(14),
+          suffix: ic_message.iconImage(context: context,size: 10).paddingAll(14),
         ),
         16.height,
         Row(
@@ -304,7 +304,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 hintStyle: secondaryTextStyle(),
               ),
               maxLength: 15,
-              suffix: calling.iconImage(size: 10).paddingAll(14),
+              suffix: calling.iconImage(context: context,size: 10).paddingAll(14),
             ).expand(),
           ],
         ),
@@ -317,7 +317,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           focus: designationFocus,
           nextFocus: passwordFocus,
           decoration: inputDecoration(context, hintText: languages.lblDesignation),
-          suffix: profile.iconImage(size: 10).paddingAll(14),
+          suffix: profile.iconImage(context: context,size: 10).paddingAll(14),
         ),
         16.height,
         // User role text field...
@@ -592,9 +592,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
           focus: passwordFocus,
           obscureText: true,
           suffixPasswordVisibleWidget:
-              ic_show.iconImage(size: 10).paddingAll(14),
+              ic_show.iconImage(context: context,size: 10).paddingAll(14),
           suffixPasswordInvisibleWidget:
-              ic_hide.iconImage(size: 10).paddingAll(14),
+              ic_hide.iconImage(context: context,size: 10).paddingAll(14),
           errorThisFieldRequired: languages.hintRequired,
           decoration: inputDecoration(context, hintText: languages.hintPassword),
           isValidationRequired: true,

@@ -260,13 +260,13 @@ class _AddEditShopScreenState extends State<AddEditShopScreen> {
             shopDetails = value.shopDetail;
             nameController.text = shopDetails!.name;
             addressController.text = shopDetails!.address;
-            regNoController.text = shopDetails!.registrationNumber ;
+            regNoController.text = shopDetails!.registrationNumber;
             latitudeController.text =
-                shopDetails!.latitude.validate().toString() ;
+                shopDetails!.latitude.validate().toString();
             longitudeController.text =
-                shopDetails!.longitude.validate().toString() ;
-            emailController.text = shopDetails!.email ;
-            mobileController.text = shopDetails!.contactNumber ;
+                shopDetails!.longitude.validate().toString();
+            emailController.text = shopDetails!.email;
+            mobileController.text = shopDetails!.contactNumber;
             try {
               final phoneData =
                   shopDetails!.contactNumber.extractPhoneCodeAndNumber;
@@ -933,7 +933,9 @@ class _AddEditShopScreenState extends State<AddEditShopScreen> {
                             .copyWith(
                           hintStyle: secondaryTextStyle(),
                         ),
-                        suffix: calling.iconImage(size: 10).paddingAll(14),
+                        suffix: calling
+                            .iconImage(context: context, size: 10)
+                            .paddingAll(14),
                         maxLength: 15,
                       ).expand(),
                     ],

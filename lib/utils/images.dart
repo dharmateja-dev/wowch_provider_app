@@ -80,8 +80,11 @@ const ic_add = 'assets/icons/ic_add.png';
 const ic_piggy_bank = 'assets/icons/ic_piggy_bank.png';
 const ic_scan = 'assets/icons/ic_scan.png';
 const ic_password = 'assets/icons/ic_password.png';
-const ic_diagonal_left_down_arrow = 'assets/icons/ic_diagonal_left_down_arrow.png';
-const ic_diagonal_right_up_arrow = 'assets/icons/ic_diagonal_right_up_arrow.png';
+const ic_passwordIcon = 'assets/icons/ic_PasswordIcon.png';
+const ic_diagonal_left_down_arrow =
+    'assets/icons/ic_diagonal_left_down_arrow.png';
+const ic_diagonal_right_up_arrow =
+    'assets/icons/ic_diagonal_right_up_arrow.png';
 const indicator_2 = 'assets/images/indicator_2.png';
 const ic_fill_textMsg = "assets/icons/ic_fill_textMsg.png";
 const ic_profile = 'assets/icons/ic_profile.png';

@@ -181,7 +181,8 @@ class _HelpDeskListScreenState extends State<HelpDeskListScreen> {
                                 : '${languages.noRecordsFoundFor} ${selectedTab.name.toLowerCase()} ${languages.queries}',
                             imageWidget:
                                 selectedTab.status == HelpDeskStatus.open
-                                    ? ic_help_desk_outline.iconImage(size: 60)
+                                    ? ic_help_desk_outline.iconImage(
+                                        context: context, size: 60)
                                     : const EmptyStateWidget(),
                             retryText:
                                 selectedTab.status == HelpDeskStatus.open &&

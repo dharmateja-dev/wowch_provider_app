@@ -388,7 +388,9 @@ class HandymanAddUpdateScreenState extends State<HandymanAddUpdateScreen> {
                         hintText: languages.hintFirstNameTxt,
                         fillColor: context.scaffoldBackgroundColor,
                       ),
-                      suffix: profile.iconImage(size: 10).paddingAll(14),
+                      suffix: profile
+                          .iconImage(context: context, size: 10)
+                          .paddingAll(14),
                     ),
                     16.height,
                     AppTextField(
@@ -404,7 +406,9 @@ class HandymanAddUpdateScreenState extends State<HandymanAddUpdateScreen> {
                         hintText: languages.hintLastNameTxt,
                         fillColor: context.scaffoldBackgroundColor,
                       ),
-                      suffix: profile.iconImage(size: 10).paddingAll(14),
+                      suffix: profile
+                          .iconImage(context: context, size: 10)
+                          .paddingAll(14),
                     ),
                     16.height,
                     AppTextField(
@@ -420,7 +424,9 @@ class HandymanAddUpdateScreenState extends State<HandymanAddUpdateScreen> {
                         hintText: languages.hintUserNameTxt,
                         fillColor: context.scaffoldBackgroundColor,
                       ),
-                      suffix: profile.iconImage(size: 10).paddingAll(14),
+                      suffix: profile
+                          .iconImage(context: context, size: 10)
+                          .paddingAll(14),
                     ),
                     16.height,
                     AppTextField(
@@ -436,7 +442,9 @@ class HandymanAddUpdateScreenState extends State<HandymanAddUpdateScreen> {
                         hintText: languages.hintEmailAddressTxt,
                         fillColor: context.scaffoldBackgroundColor,
                       ),
-                      suffix: ic_message.iconImage(size: 10).paddingAll(14),
+                      suffix: ic_message
+                          .iconImage(context: context, size: 10)
+                          .paddingAll(14),
                     ),
                     16.height,
                     IgnorePointer(
@@ -482,8 +490,9 @@ class HandymanAddUpdateScreenState extends State<HandymanAddUpdateScreen> {
                                 hintText: languages.hintContactNumberTxt,
                                 fillColor: context.scaffoldBackgroundColor,
                               ),
-                              suffix:
-                                  calling.iconImage(size: 10).paddingAll(14),
+                              suffix: calling
+                                  .iconImage(context: context, size: 10)
+                                  .paddingAll(14),
                               validator: (mobileCont) {
                                 if (mobileCont!.isEmpty)
                                   return languages.lblPleaseEnterMobileNumber;

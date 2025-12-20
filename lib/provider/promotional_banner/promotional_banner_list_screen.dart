@@ -184,6 +184,7 @@ class _PromotionalBannerListScreenState
                                         selectedTab.status ==
                                             PROMOTIONAL_BANNER_PENDING)
                                     ? ic_outline_banner.iconImage(
+                                        context: context,
                                         size: 60,
                                         color: appStore.isDarkMode
                                             ? white.withValues(alpha: 0.9)

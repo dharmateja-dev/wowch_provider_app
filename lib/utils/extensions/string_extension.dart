@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:handyman_provider_flutter/components/app_widgets.dart';
 import 'package:handyman_provider_flutter/main.dart';
-import 'package:handyman_provider_flutter/utils/colors.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/images.dart';
 import 'package:path/path.dart' as path;
 import '../app_configuration.dart';
 import '../constant.dart';
@@ -9,14 +9,20 @@ import '../constant.dart';
 const int averageWordsPerMinute = 180;
 
 extension intExt on String {
-  Widget iconImage({double? size, Color? color, BoxFit? fit}) {
+  Widget iconImage({
+      double? size,
+      Color? color,
+      BoxFit? fit,
+      required BuildContext context}) {
     return Image.asset(
       this,
       height: size ?? 24,
       width: size ?? 24,
       fit: fit ?? BoxFit.cover,
-      color: color ?? (appStore.isDarkMode ? Colors.white : appTextSecondaryColor),
-      errorBuilder: (context, error, stackTrace) => placeHolderWidget(height: size ?? 24, width: size ?? 24, fit: fit ?? BoxFit.cover),
+      color: color ?? context.icon,
+      errorBuilder: (context, error, stackTrace) {
+        return Image.asset(ic_no_photo, height: size ?? 24, width: size ?? 24);
+      },
     );
   }
 
@@ -75,11 +81,13 @@ extension intExt on String {
 
   String get getFileExtension => path.extension(Uri.parse(this).path);
 
-  String get getFileNameWithoutExtension => path.basenameWithoutExtension(Uri.parse(this).path);
+  String get getFileNameWithoutExtension =>
+      path.basenameWithoutExtension(Uri.parse(this).path);
 
   String get getFileName => path.basename(Uri.parse(this).path);
 
-  String get getChatFileName => path.basename(Uri.parse(this).path).replaceFirst("$CHAT_FILES%2F", "");
+  String get getChatFileName =>
+      path.basename(Uri.parse(this).path).replaceFirst("$CHAT_FILES%2F", "");
 
   String toHelpDeskStatus({String? method}) {
     final String temp = toLowerCase();

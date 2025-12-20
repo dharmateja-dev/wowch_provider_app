@@ -592,7 +592,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                         nextFocus: lNameFocus,
                         decoration: inputDecoration(context,
                             hintText: languages.hintFirstNameTxt),
-                        suffix: profile.iconImage(size: 10).paddingAll(14),
+                        suffix: profile.iconImage(context: context,size: 10).paddingAll(14),
                       ),
                       16.height,
                       AppTextField(
@@ -602,7 +602,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                         nextFocus: userNameFocus,
                         decoration: inputDecoration(context,
                             hintText: languages.hintLastNameTxt),
-                        suffix: profile.iconImage(size: 10).paddingAll(14),
+                        suffix: profile.iconImage(context: context,size: 10).paddingAll(14),
                       ),
                       16.height,
                       AppTextField(
@@ -613,7 +613,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                         enabled: false,
                         decoration: inputDecoration(context,
                             hintText: languages.hintUserNameTxt),
-                        suffix: profile.iconImage(size: 10).paddingAll(14),
+                        suffix: profile.iconImage(context: context,size: 10).paddingAll(14),
                       ),
                       16.height,
                       AppTextField(
@@ -623,7 +623,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                         nextFocus: mobileFocus,
                         decoration: inputDecoration(context,
                             hintText: languages.hintEmailAddressTxt),
-                        suffix: ic_message.iconImage(size: 10).paddingAll(14),
+                        suffix: ic_message.iconImage(context: context,size: 10).paddingAll(14),
                         onFieldSubmitted: (email) async {
                           if (emailCont.text.isNotEmpty) await verifyEmail();
                         },
@@ -643,7 +643,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                                   : secondaryTextStyle(),
                             ),
                             if (!isEmailVerified.validate())
-                              ic_pending.iconImage(
+                              ic_pending.iconImage(context: context,
                                   color: Colors.amber, size: 14)
                             else
                               Icon(
@@ -711,7 +711,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                                 .copyWith(
                               hintStyle: secondaryTextStyle(),
                             ),
-                            suffix: calling.iconImage(size: 10).paddingAll(14),
+                            suffix: calling.iconImage(context: context,size: 10).paddingAll(14),
                             maxLength: 15,
                           ).expand(),
                         ],

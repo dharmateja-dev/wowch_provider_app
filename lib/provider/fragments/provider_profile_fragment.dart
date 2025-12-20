@@ -243,7 +243,8 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                 16.height,
                 SettingItemWidget(
                   decoration: BoxDecoration(color: context.cardColor),
-                  leading: ic_un_fill_wallet.iconImage(size: 16),
+                  leading:
+                      ic_un_fill_wallet.iconImage(context: context, size: 16),
                   title: languages.walletBalance,
                   titleTextStyle: boldTextStyle(size: 12),
                   padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
@@ -282,7 +283,7 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                 16.height,
                 SettingItemWidget(
                   decoration: BoxDecoration(color: context.cardColor),
-                  leading: ic_document.iconImage(size: 16),
+                  leading: ic_document.iconImage(context: context, size: 16),
                   title: languages.lblShopDocument,
                   titleTextStyle: boldTextStyle(size: 12),
                   padding: EdgeInsets.only(top: 16, left: 16, right: 16),
@@ -414,7 +415,7 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                 if (appStore.isLoggedIn && rolesAndPermissionStore.helpDeskList)
                   SettingItemWidget(
                     decoration: BoxDecoration(color: context.cardColor),
-                    leading: ic_help_desk.iconImage(size: 16),
+                    leading: ic_help_desk.iconImage(context: context, size: 16),
                     title: languages.helpDesk,
                     titleTextStyle: boldTextStyle(size: 12),
                     trailing: Icon(Icons.chevron_right,
@@ -853,6 +854,7 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                     color: context.cardColor,
                   ),
                   leading: ic_delete.iconImage(
+                      context: context,
                       size: 16,
                       color:
                           appStore.isDarkMode ? white : appTextSecondaryColor),
@@ -897,7 +899,7 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                       color: context.cardColor,
                       borderRadius: const BorderRadiusDirectional.vertical(
                           bottom: Radius.circular(16))),
-                  leading: ic_logout.iconImage(size: 12),
+                  leading: ic_logout.iconImage(context: context, size: 12),
                   paddingBeforeTrailing: 4,
                   title: languages.logout,
                   titleTextStyle: boldTextStyle(size: 12),

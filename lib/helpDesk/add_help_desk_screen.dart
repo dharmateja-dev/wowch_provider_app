@@ -110,8 +110,9 @@ class _AddHelpDeskScreenState extends State<AddHelpDeskScreen> {
                             hintText: languages.eGDamagedFurniture,
                           ),
                           maxLength: 120,
-                          suffix:
-                              ic_document.iconImage(size: 10).paddingAll(14),
+                          suffix: ic_document
+                              .iconImage(context: context, size: 10)
+                              .paddingAll(14),
                         ),
                         16.height,
                         Text(languages.hintDescription,

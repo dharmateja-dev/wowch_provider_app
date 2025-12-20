@@ -107,7 +107,8 @@ class _AddExtraChargesScreenState extends State<AddExtraChargesScreen> {
                             style: ButtonStyle(
                                 padding:
                                     WidgetStatePropertyAll(EdgeInsets.zero)),
-                            icon: ic_edit_square.iconImage(size: 18),
+                            icon: ic_edit_square.iconImage(
+                                context: context, size: 18),
                             visualDensity: VisualDensity.compact,
                             onPressed: () async {
                               openDialog(data: data, indexOfextraCharge: i);
@@ -118,7 +119,9 @@ class _AddExtraChargesScreenState extends State<AddExtraChargesScreen> {
                                 padding:
                                     WidgetStatePropertyAll(EdgeInsets.zero)),
                             icon: ic_delete.iconImage(
-                                size: 18, color: Colors.redAccent),
+                                context: context,
+                                size: 18,
+                                color: Colors.redAccent),
                             visualDensity: VisualDensity.compact,
                             onPressed: () async {
                               showConfirmDialogCustom(

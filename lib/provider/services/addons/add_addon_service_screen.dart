@@ -240,7 +240,8 @@ class _AddAddonServiceScreenState extends State<AddAddonServiceScreen> {
                                     borderRadius: radius()),
                                 child: Column(
                                   children: [
-                                    ic_no_photo.iconImage(size: 46),
+                                    ic_no_photo.iconImage(
+                                        context: context, size: 46),
                                     8.height,
                                     Text(languages.chooseImage,
                                         style: secondaryTextStyle()),

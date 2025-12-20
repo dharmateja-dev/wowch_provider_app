@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class UserDemoModeScreen extends StatefulWidget {
@@ -47,13 +48,23 @@ class _UserDemoModeScreenState extends State<UserDemoModeScreen> {
                 children: List.generate(
                   demoLoginName.length,
                   (index) {
+                    // Unselected: bg=#F2F4F5, border=#D6D6D6
+                    // Selected: bg=transparent, border=primary, text=primary
+                    final isSelected = btnIndex == index;
                     return OutlinedButton(
                       style: OutlinedButton.styleFrom(
-                          side: BorderSide(
-                              color: btnIndex == index
-                                  ? primary
-                                  : gray.withValues(alpha: 0.2),
-                              width: 1)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                        backgroundColor: isSelected
+                            ? Colors.transparent
+                            : const Color(0xFFF2F4F5),
+                        side: BorderSide(
+                            color: isSelected
+                                ? context.primary
+                                : const Color(0xFFD6D6D6),
+                            width: 1),
+                      ),
                       onPressed: () {
                         btnIndex = index;
                         setState(() {});
@@ -71,7 +82,11 @@ class _UserDemoModeScreenState extends State<UserDemoModeScreen> {
                         }
                       },
                       child: Text(demoLoginName[index],
-                          style: boldTextStyle(color: primary, size: 12),
+                          style: boldTextStyle(
+                              color: isSelected
+                                  ? context.primary
+                                  : context.onSurface,
+                              size: 12),
                           textAlign: TextAlign.center),
                     ).withWidth(context.width() / 2 - 24);
                   },

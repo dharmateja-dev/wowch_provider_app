@@ -152,7 +152,7 @@ class _HandymanDashboardScreenState extends State<HandymanDashboardScreen> {
           showBack: false,
           actions: [
             IconButton(
-              icon: ic_info.iconImage(color: Colors.white),
+              icon: ic_info.iconImage(context: context, color: Colors.white),
               onPressed: () async {
                 showModalBottomSheet(
                   context: context,
@@ -168,7 +168,8 @@ class _HandymanDashboardScreenState extends State<HandymanDashboardScreen> {
               icon: Stack(
                 clipBehavior: Clip.none,
                 children: [
-                  ic_notification.iconImage(size: 20, color: white),
+                  ic_notification.iconImage(
+                      context: context, size: 20, color: white),
                   Positioned(
                     top: -10,
                     right: -4,
@@ -199,7 +200,8 @@ class _HandymanDashboardScreenState extends State<HandymanDashboardScreen> {
             ),
             if (isCurrentFragmentIsBooking)
               IconButton(
-                icon: ic_filter.iconImage(color: white, size: 22),
+                icon: ic_filter.iconImage(
+                    context: context, color: white, size: 22),
                 onPressed: () async {
                   BookingFilterScreen().launch(context).then((value) {
                     if (value != null) {
@@ -226,15 +228,17 @@ class _HandymanDashboardScreenState extends State<HandymanDashboardScreen> {
               selectedIndex: currentIndex,
               destinations: [
                 NavigationDestination(
-                  icon: ic_home.iconImage(color: appTextSecondaryColor),
-                  selectedIcon:
-                      ic_fill_home.iconImage(color: context.primaryColor),
+                  icon: ic_home.iconImage(
+                      context: context, color: appTextSecondaryColor),
+                  selectedIcon: ic_fill_home.iconImage(
+                      context: context, color: context.primaryColor),
                   label: languages.home,
                 ),
                 NavigationDestination(
-                  icon: total_booking.iconImage(color: appTextSecondaryColor),
-                  selectedIcon:
-                      fill_ticket.iconImage(color: context.primaryColor),
+                  icon: total_booking.iconImage(
+                      context: context, color: appTextSecondaryColor),
+                  selectedIcon: fill_ticket.iconImage(
+                      context: context, color: context.primaryColor),
                   label: languages.lblBooking,
                 ),
                 if (appConfigurationStore.isEnableChat)
@@ -253,14 +257,15 @@ class _HandymanDashboardScreenState extends State<HandymanDashboardScreen> {
                           ? IgnorePointer(
                               child: ImageBorder(
                                   src: appStore.userProfileImage, height: 26))
-                          : profile.iconImage(color: appTextSecondaryColor),
+                          : profile.iconImage(
+                              context: context, color: appTextSecondaryColor),
                       selectedIcon: (appStore.isLoggedIn &&
                               appStore.userProfileImage.isNotEmpty)
                           ? IgnorePointer(
                               child: ImageBorder(
                                   src: appStore.userProfileImage, height: 26))
                           : ic_fill_profile.iconImage(
-                              color: context.primaryColor),
+                              context: context, color: context.primaryColor),
                       label: languages.lblProfile,
                     );
                   },

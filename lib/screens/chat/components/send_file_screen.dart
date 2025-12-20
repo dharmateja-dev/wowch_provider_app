@@ -94,7 +94,10 @@ class _SendFilePreviewScreenState extends State<SendFilePreviewScreen> {
                           decoration: boxDecorationRoundedWithShadow(100,
                               backgroundColor: context.cardColor),
                           child: ic_delete
-                              .iconImage(size: 16, color: Colors.redAccent)
+                              .iconImage(
+                                  context: context,
+                                  size: 16,
+                                  color: Colors.redAccent)
                               .paddingAll(8)
                               .onTap(() {
                             showConfirmDialogCustom(

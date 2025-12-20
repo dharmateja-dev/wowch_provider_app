@@ -147,7 +147,8 @@ class ProviderDashboardScreenState extends State<ProviderDashboardScreen> {
                   icon: Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      ic_notification.iconImage(color: white, size: 20),
+                      ic_notification.iconImage(
+                          context: context, color: white, size: 20),
                       Positioned(
                         top: -14,
                         right: -6,
@@ -188,7 +189,8 @@ class ProviderDashboardScreenState extends State<ProviderDashboardScreen> {
                       return Stack(
                         children: [
                           IconButton(
-                            icon: ic_filter.iconImage(color: white, size: 20),
+                            icon: ic_filter.iconImage(
+                                context: context, color: white, size: 20),
                             onPressed: () async {
                               BookingFilterScreen()
                                   .launch(context)
@@ -245,14 +247,17 @@ class ProviderDashboardScreenState extends State<ProviderDashboardScreen> {
                   selectedIndex: currentIndex,
                   destinations: [
                     NavigationDestination(
-                      icon: ic_home.iconImage(color: appTextSecondaryColor),
-                      selectedIcon: ic_home.iconImage(color: primary),
+                      icon: ic_home.iconImage(
+                          context: context, color: appTextSecondaryColor),
+                      selectedIcon:
+                          ic_home.iconImage(context: context, color: primary),
                       label: languages.home,
                     ),
                     NavigationDestination(
-                      icon:
-                          total_booking.iconImage(color: appTextSecondaryColor),
-                      selectedIcon: total_booking.iconImage(color: primary),
+                      icon: total_booking.iconImage(
+                          context: context, color: appTextSecondaryColor),
+                      selectedIcon: total_booking.iconImage(
+                          context: context, color: primary),
                       label: languages.lblBooking,
                     ),
                     if (appConfigurationStore.isEnableChat)
@@ -263,7 +268,8 @@ class ProviderDashboardScreenState extends State<ProviderDashboardScreen> {
                           width: 20,
                           color: appTextSecondaryColor,
                         ),
-                        selectedIcon: chat.iconImage(color: primary),
+                        selectedIcon:
+                            chat.iconImage(context: context, color: primary),
                         label: languages.lblChat,
                       ),
                     Observer(
@@ -278,7 +284,9 @@ class ProviderDashboardScreenState extends State<ProviderDashboardScreen> {
                                     height: 26,
                                   ),
                                 )
-                              : profile.iconImage(color: appTextSecondaryColor),
+                              : profile.iconImage(
+                                  context: context,
+                                  color: appTextSecondaryColor),
                           selectedIcon: (appStore.isLoggedIn &&
                                   appStore.userProfileImage.isNotEmpty)
                               ? IgnorePointer(
@@ -289,6 +297,7 @@ class ProviderDashboardScreenState extends State<ProviderDashboardScreen> {
                                   ),
                                 )
                               : ic_fill_profile.iconImage(
+                                  context: context,
                                   color: context.primaryColor,
                                 ),
                           label: languages.lblProfile,

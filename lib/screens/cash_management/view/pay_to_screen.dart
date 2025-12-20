@@ -172,8 +172,9 @@ class _PayToScreenState extends State<PayToScreen> {
                         textFieldType: TextFieldType.NUMBER,
                         decoration: inputDecoration(context,
                             hintText: languages.refNumber,
-                            prefixIcon:
-                                ic_document.iconImage(size: 10).paddingAll(14)),
+                            prefixIcon: ic_document
+                                .iconImage(context: context, size: 10)
+                                .paddingAll(14)),
                       ),
                     ),
                     16.height,

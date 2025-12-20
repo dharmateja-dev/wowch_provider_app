@@ -178,7 +178,7 @@ class _WithdrawRequestState extends State<WithdrawRequest> {
                     languages.chooseWithdrawalMethod,
                     style: secondaryTextStyle(size: 12),
                   ),
-                  icon: ic_down_arrow.iconImage(size: 16),
+                  icon: ic_down_arrow.iconImage(context: context, size: 16),
                   dropdownColor: context.cardColor,
                   items: withdrawalMethodList.map((String e) {
                     return DropdownMenuItem<String>(
@@ -232,7 +232,7 @@ class _WithdrawRequestState extends State<WithdrawRequest> {
                       languages.egCentralNationalBank,
                       style: secondaryTextStyle(size: 12),
                     ),
-                    icon: ic_down_arrow.iconImage(size: 16),
+                    icon: ic_down_arrow.iconImage(context: context, size: 16),
                     dropdownColor: context.cardColor,
                     items: bankHistoryList.map((BankHistory e) {
                       return DropdownMenuItem<BankHistory>(
