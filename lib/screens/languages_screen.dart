@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/components/back_widget.dart';
+import 'package:handyman_provider_flutter/components/base_scaffold_widget.dart';
+import 'package:handyman_provider_flutter/components/custom_language_list_widget.dart';
 import 'package:handyman_provider_flutter/main.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../utils/constant.dart';
@@ -44,16 +47,10 @@ class LanguagesScreenState extends State<LanguagesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: appBarWidget(
-        languages.language,
-        textColor: white,
-        elevation: 0.0,
-        color: context.primaryColor,
-        backWidget: BackWidget(),
-      ),
-      body: LanguageListWidget(
-        widgetType: WidgetType.LIST,
+    return AppScaffold(
+      appBarTitle: languages.language,
+      scaffoldBackgroundColor: context.scaffoldSecondary,
+      body: CustomLanguageListWidget(
         onLanguageChange: (v) async {
           appStore.setLanguage(v.languageCode!).then((v) {
             refreshList();
