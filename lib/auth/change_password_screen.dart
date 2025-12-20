@@ -7,9 +7,11 @@ import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
 import 'package:handyman_provider_flutter/utils/model_keys.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
@@ -78,10 +80,11 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBarWidget(
+        center: true,
         languages.changePassword,
         backWidget: BackWidget(),
-        textColor: white,
-        color: context.primaryColor,
+        textColor: context.onPrimary,
+        color: context.primary,
         elevation: 0.0,
       ),
       body: Stack(
@@ -97,17 +100,28 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(languages.changePasswordTitle,
-                        style: secondaryTextStyle()),
+                        style: context.primaryTextStyle()),
                     24.height,
+                    Text(languages.hintOldPasswordTxt,
+                        style: context.boldTextStyle()),
+                    8.height,
                     AppTextField(
                       textFieldType: TextFieldType.PASSWORD,
                       controller: oldPasswordCont,
                       focus: oldPasswordFocus,
                       obscureText: true,
-                      suffixPasswordVisibleWidget:
-                          ic_show.iconImage(context: context,size: 10).paddingAll(14),
-                      suffixPasswordInvisibleWidget:
-                          ic_hide.iconImage(context: context,size: 10).paddingAll(14),
+                      suffixPasswordVisibleWidget: ic_show
+                          .iconImage(
+                              context: context,
+                              size: 10,
+                              color: context.iconMuted)
+                          .paddingAll(14),
+                      suffixPasswordInvisibleWidget: ic_hide
+                          .iconImage(
+                              context: context,
+                              size: 10,
+                              color: context.iconMuted)
+                          .paddingAll(14),
                       validator: (val) {
                         if (val == null || val.isEmpty) {
                           return languages.hintRequired;
@@ -118,18 +132,37 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       },
                       nextFocus: newPasswordFocus,
                       decoration: inputDecoration(context,
-                          hintText: languages.hintOldPasswordTxt),
+                          borderRadius: 8,
+                          hintText: languages.hintOldPasswordTxt,
+                          prefixIcon: ic_passwordIcon
+                              .iconImage(
+                                context: context,
+                                color: context.iconMuted,
+                                size: 14,
+                              )
+                              .paddingAll(14)),
                     ),
                     16.height,
+                    Text(languages.hintNewPasswordTxt,
+                        style: context.boldTextStyle()),
+                    8.height,
                     AppTextField(
                       textFieldType: TextFieldType.PASSWORD,
                       controller: newPasswordCont,
                       focus: newPasswordFocus,
                       obscureText: true,
-                      suffixPasswordVisibleWidget:
-                          ic_show.iconImage(context: context,size: 10).paddingAll(14),
-                      suffixPasswordInvisibleWidget:
-                          ic_hide.iconImage(context: context,size: 10).paddingAll(14),
+                      suffixPasswordVisibleWidget: ic_show
+                          .iconImage(
+                              context: context,
+                              size: 14,
+                              color: context.iconMuted)
+                          .paddingAll(14),
+                      suffixPasswordInvisibleWidget: ic_hide
+                          .iconImage(
+                              context: context,
+                              size: 14,
+                              color: context.iconMuted)
+                          .paddingAll(14),
                       validator: (val) {
                         if (val == null || val.isEmpty) {
                           return languages.hintRequired;
@@ -140,18 +173,37 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       },
                       nextFocus: reenterPasswordFocus,
                       decoration: inputDecoration(context,
-                          hintText: languages.hintNewPasswordTxt),
+                          borderRadius: 8,
+                          hintText: languages.hintNewPasswordTxt,
+                          prefixIcon: ic_passwordIcon
+                              .iconImage(
+                                context: context,
+                                color: context.iconMuted,
+                                size: 14,
+                              )
+                              .paddingAll(14)),
                     ),
                     16.height,
+                    Text(languages.hintReenterPasswordTxt,
+                        style: context.boldTextStyle()),
+                    8.height,
                     AppTextField(
                       textFieldType: TextFieldType.PASSWORD,
                       controller: reenterPasswordCont,
                       obscureText: true,
                       focus: reenterPasswordFocus,
-                      suffixPasswordVisibleWidget:
-                          ic_show.iconImage(context: context,size: 10).paddingAll(14),
-                      suffixPasswordInvisibleWidget:
-                          ic_hide.iconImage(context: context,size: 10).paddingAll(14),
+                      suffixPasswordVisibleWidget: ic_show
+                          .iconImage(
+                              context: context,
+                              size: 14,
+                              color: context.iconMuted)
+                          .paddingAll(14),
+                      suffixPasswordInvisibleWidget: ic_hide
+                          .iconImage(
+                              context: context,
+                              size: 14,
+                              color: context.iconMuted)
+                          .paddingAll(14),
                       validator: (v) {
                         if (v == null || v.isEmpty) {
                           return languages.hintRequired;
@@ -168,7 +220,15 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         });
                       },
                       decoration: inputDecoration(context,
-                          hintText: languages.hintReenterPasswordTxt),
+                          borderRadius: 8,
+                          hintText: languages.hintReenterPasswordTxt,
+                          prefixIcon: ic_passwordIcon
+                              .iconImage(
+                                context: context,
+                                color: context.iconMuted,
+                                size: 14,
+                              )
+                              .paddingAll(14)),
                     ),
                     24.height,
                     AppButton(
