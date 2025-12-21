@@ -133,7 +133,7 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
             });
           },
           child: DottedBorderWidget(
-            color: context.primaryColor,
+            color: context.primary,
             radius: defaultRadius,
             child: Container(
               padding: const EdgeInsets.all(10),
@@ -142,7 +142,7 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
               width: widget.width,
               decoration: boxDecorationWithShadow(
                 blurRadius: 0,
-                backgroundColor: context.cardColor,
+                backgroundColor: context.uploadCardBackground,
                 borderRadius: radius(),
               ),
               child: imageFiles.isNotEmpty
@@ -154,11 +154,11 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
                     )
                   : Column(
                       children: [
-                        ic_no_photo.iconImage(context: context, size: 46),
+                        ic_gallery_add.iconImage(context: context, size: 35),
                         8.height,
                         Text(
                           languages.chooseImage,
-                          style: secondaryTextStyle(),
+                          style: context.primaryTextStyle(),
                         ),
                       ],
                     ),
@@ -170,7 +170,7 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
           widget.isMultipleImages
               ? languages.selectImgNote
               : languages.noteYouCanUpload,
-          style: secondaryTextStyle(size: 10),
+          style: context.primaryTextStyle(size: 12),
         ),
         16.height,
         HorizontalList(
@@ -195,8 +195,7 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
                     onPressed: () {
                       widget.onRemoveClick!.call(imageFiles[index].path);
                     },
-                    icon:
-                        const Icon(Icons.dangerous_outlined, color: Colors.red),
+                    icon: Icon(Icons.dangerous_outlined, color: context.error),
                   ),
                 ),
               ],

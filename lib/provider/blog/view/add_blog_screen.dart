@@ -11,7 +11,9 @@ import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/provider/blog/blog_repository.dart';
 import 'package:handyman_provider_flutter/provider/blog/model/blog_response_model.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/model_keys.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../../components/chat_gpt_loder.dart';
@@ -140,170 +142,209 @@ class _AddBlogScreenState extends State<AddBlogScreen> {
 
   //endregion
 
-  // region form Widget
-  Widget buildFormWidget() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: boxDecorationWithRoundedCorners(
-        borderRadius: radius(),
-        backgroundColor: context.cardColor,
-      ),
-      child: Form(
-        key: formKey,
-        child: Column(
-          children: [
-            AppTextField(
-              textFieldType: TextFieldType.NAME,
-              controller: titleCont,
-              focus: titleFocus,
-              nextFocus: descriptionFocus,
-              isValidationRequired: true,
-              errorThisFieldRequired: languages.hintRequired,
-              decoration: inputDecoration(context,
-                  hintText: languages.enterBlogTitle,
-                  fillColor: context.scaffoldBackgroundColor),
-            ),
-            16.height,
-            AppTextField(
-              textFieldType: TextFieldType.MULTILINE,
-              minLines: 5,
-              maxLines: 10,
-              controller: descriptionCont,
-              focus: descriptionFocus,
-              isValidationRequired: true,
-              enableChatGPT: appConfigurationStore.chatGPTStatus,
-              promptFieldInputDecorationChatGPT:
-                  inputDecoration(context).copyWith(
-                hintText: languages.writeHere,
-                fillColor: context.scaffoldBackgroundColor,
-                filled: true,
-              ),
-              testWithoutKeyChatGPT: appConfigurationStore.testWithoutKey,
-              loaderWidgetForChatGPT: const ChatGPTLoadingWidget(),
-              errorThisFieldRequired: languages.hintRequired,
-              decoration: inputDecoration(
-                context,
-                hintText: languages.hintDescription,
-                fillColor: context.scaffoldBackgroundColor,
-              ),
-            ),
-            16.height,
-            DropdownButtonFormField<StaticDataModel>(
-              isExpanded: true,
-              dropdownColor: context.cardColor,
-              initialValue: blogStatusModel != null
-                  ? blogStatusModel
-                  : statusListStaticData.first,
-              items: statusListStaticData.map((StaticDataModel data) {
-                return DropdownMenuItem<StaticDataModel>(
-                  value: data,
-                  child: Text(data.value.validate(), style: primaryTextStyle()),
-                );
-              }).toList(),
-              decoration: inputDecoration(context,
-                  fillColor: context.scaffoldBackgroundColor,
-                  hintText: languages.lblStatus),
-              onChanged: (StaticDataModel? value) async {
-                blogStatus = value!.key.validate();
-                setState(() {});
-              },
-              validator: (value) {
-                if (value == null) return errorThisFieldRequired;
-                return null;
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  //endregion
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarWidget(
-        isUpdate ? languages.updateBlog : languages.addBlog,
-        color: context.primaryColor,
-        textColor: white,
-        backWidget: BackWidget(),
+      backgroundColor: context.scaffoldSecondary,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: context.primary,
+        leading: BackWidget(color: context.onPrimary),
+        title: Text(
+          isUpdate ? languages.updateBlog : languages.addBlog,
+          style: context.boldTextStyle(color: context.onPrimary, size: 18),
+        ),
+        centerTitle: true,
       ),
       body: Stack(
         children: [
-          SingleChildScrollView(
-            padding: const EdgeInsets.only(
-                top: 16, left: 16.0, right: 16.0, bottom: 25.0),
-            child: Column(
-              children: [
-                CustomImagePicker(
-                  key: uniqueKey,
-                  onRemoveClick: (value) {
-                    if (tempAttachments.validate().isNotEmpty &&
-                        imageFiles.isNotEmpty) {
-                      showConfirmDialogCustom(
-                        context,
-                        dialogType: DialogType.DELETE,
-                        positiveText: languages.lblDelete,
-                        negativeText: languages.lblCancel,
-                        onAccept: (p0) {
-                          imageFiles
-                              .removeWhere((element) => element.path == value);
-                          removeAttachment(
-                              id: tempAttachments
-                                  .validate()
-                                  .firstWhere((element) => element.url == value)
-                                  .id
-                                  .validate());
-                        },
+          Form(
+            key: formKey,
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Image Picker Section
+                  Text(languages.lblImage, style: context.boldTextStyle()),
+                  8.height,
+                  CustomImagePicker(
+                    key: uniqueKey,
+                    onRemoveClick: (value) {
+                      if (tempAttachments.validate().isNotEmpty &&
+                          imageFiles.isNotEmpty) {
+                        showConfirmDialogCustom(
+                          context,
+                          dialogType: DialogType.DELETE,
+                          title: languages.confirmationRequestTxt,
+                          titleColor: context.dialogTitleColor,
+                          backgroundColor: context.dialogBackgroundColor,
+                          primaryColor: context.error,
+                          shape: appDialogShape(8),
+                          positiveText: languages.lblDelete,
+                          negativeText: languages.lblCancel,
+                          onAccept: (p0) {
+                            imageFiles.removeWhere(
+                                (element) => element.path == value);
+                            removeAttachment(
+                                id: tempAttachments
+                                    .validate()
+                                    .firstWhere(
+                                        (element) => element.url == value)
+                                    .id
+                                    .validate());
+                          },
+                        );
+                      } else {
+                        showConfirmDialogCustom(
+                          context,
+                          dialogType: DialogType.DELETE,
+                          title: languages.confirmationRequestTxt,
+                          titleColor: context.dialogTitleColor,
+                          backgroundColor: context.dialogBackgroundColor,
+                          primaryColor: context.error,
+                          shape: appDialogShape(8),
+                          positiveText: languages.lblDelete,
+                          negativeText: languages.lblCancel,
+                          onAccept: (p0) {
+                            imageFiles.removeWhere(
+                                (element) => element.path == value);
+                            if (isUpdate) {
+                              uniqueKey = UniqueKey();
+                            }
+                            setState(() {});
+                          },
+                        );
+                      }
+                    },
+                    selectedImages: widget.data != null
+                        ? imageFiles
+                            .validate()
+                            .map((e) => e.path.validate())
+                            .toList()
+                        : null,
+                    onFileSelected: (List<File> files) async {
+                      imageFiles = files;
+                      setState(() {});
+                    },
+                  ),
+
+                  16.height,
+
+                  // Title Field
+                  Text(languages.lblTitle, style: context.boldTextStyle()),
+                  8.height,
+                  AppTextField(
+                    textFieldType: TextFieldType.NAME,
+                    controller: titleCont,
+                    focus: titleFocus,
+                    nextFocus: descriptionFocus,
+                    isValidationRequired: true,
+                    errorThisFieldRequired: languages.hintRequired,
+                    decoration: inputDecoration(
+                      context,
+                      hintText: languages.enterBlogTitle,
+                      fillColor: context.profileInputFillColor,
+                      borderRadius: 8,
+                    ),
+                  ),
+
+                  16.height,
+
+                  // Description Field
+                  Text(languages.hintDescription,
+                      style: context.boldTextStyle()),
+                  8.height,
+                  AppTextField(
+                    textFieldType: TextFieldType.MULTILINE,
+                    minLines: 5,
+                    maxLines: 10,
+                    controller: descriptionCont,
+                    focus: descriptionFocus,
+                    isValidationRequired: true,
+                    enableChatGPT: appConfigurationStore.chatGPTStatus,
+                    promptFieldInputDecorationChatGPT:
+                        inputDecoration(context).copyWith(
+                      hintText: languages.writeHere,
+                      fillColor: context.profileInputFillColor,
+                      filled: true,
+                    ),
+                    testWithoutKeyChatGPT: appConfigurationStore.testWithoutKey,
+                    loaderWidgetForChatGPT: const ChatGPTLoadingWidget(),
+                    errorThisFieldRequired: languages.hintRequired,
+                    decoration: inputDecoration(
+                      context,
+                      hintText: languages.hintDescription,
+                      fillColor: context.profileInputFillColor,
+                      borderRadius: 8,
+                    ),
+                  ),
+
+                  16.height,
+
+                  // Status Dropdown
+                  Text(languages.lblStatus, style: context.boldTextStyle()),
+                  8.height,
+                  DropdownButtonFormField<StaticDataModel>(
+                    isExpanded: true,
+                    dropdownColor: context.cardSecondary,
+                    initialValue: blogStatusModel != null
+                        ? blogStatusModel
+                        : statusListStaticData.first,
+                    items: statusListStaticData.map((StaticDataModel data) {
+                      return DropdownMenuItem<StaticDataModel>(
+                        value: data,
+                        child: Text(
+                          data.value.validate(),
+                          style: context.primaryTextStyle(),
+                        ),
                       );
-                    } else {
-                      showConfirmDialogCustom(
-                        context,
-                        dialogType: DialogType.DELETE,
-                        positiveText: languages.lblDelete,
-                        negativeText: languages.lblCancel,
-                        onAccept: (p0) {
-                          imageFiles
-                              .removeWhere((element) => element.path == value);
-                          if (isUpdate) {
-                            uniqueKey = UniqueKey();
-                          }
-                          setState(() {});
-                        },
-                      );
-                    }
-                  },
-                  selectedImages: widget.data != null
-                      ? imageFiles
-                          .validate()
-                          .map((e) => e.path.validate())
-                          .toList()
-                      : null,
-                  onFileSelected: (List<File> files) async {
-                    imageFiles = files;
-                    setState(() {});
-                  },
-                ),
-                buildFormWidget(),
-                AppButton(
-                  text: languages.btnSave,
-                  height: 40,
-                  color: context.primaryColor,
-                  textStyle: boldTextStyle(color: white),
-                  width: context.width() - context.navigationBarHeight,
-                  onTap: () {
-                    ifNotTester(context, () {
-                      checkValidation();
-                    });
-                  },
-                ),
-              ],
+                    }).toList(),
+                    decoration: inputDecoration(
+                      context,
+                      fillColor: context.profileInputFillColor,
+                      hintText: languages.lblStatus,
+                      borderRadius: 8,
+                    ),
+                    icon: Icon(Icons.keyboard_arrow_down, color: context.icon),
+                    onChanged: (StaticDataModel? value) async {
+                      blogStatus = value!.key.validate();
+                      setState(() {});
+                    },
+                    validator: (value) {
+                      if (value == null) return errorThisFieldRequired;
+                      return null;
+                    },
+                  ),
+
+                  100.height,
+                ],
+              ),
             ),
           ),
+
+          // Save Button
+          Positioned(
+            bottom: 16,
+            left: 16,
+            right: 16,
+            child: AppButton(
+              text: languages.btnSave,
+              color: context.primary,
+              textStyle: boldTextStyle(color: context.onPrimary),
+              width: context.width(),
+              onTap: () {
+                ifNotTester(context, () {
+                  checkValidation();
+                });
+              },
+            ),
+          ),
+
+          // Loader
           Observer(
-              builder: (_) =>
-                  LoaderWidget().center().visible(appStore.isLoading)),
+            builder: (_) => LoaderWidget().center().visible(appStore.isLoading),
+          ),
         ],
       ),
     );

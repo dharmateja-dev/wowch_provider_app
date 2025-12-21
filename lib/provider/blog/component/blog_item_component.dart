@@ -3,9 +3,10 @@ import 'package:handyman_provider_flutter/components/cached_image_widget.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/provider/blog/blog_repository.dart';
 import 'package:handyman_provider_flutter/provider/blog/model/blog_response_model.dart';
-import 'package:handyman_provider_flutter/provider/blog/view/add_blog_screen.dart';
 import 'package:handyman_provider_flutter/provider/blog/view/blog_detail_screen.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class BlogItemComponent extends StatefulWidget {
@@ -49,102 +50,67 @@ class _BlogItemComponentState extends State<BlogItemComponent> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(12),
-      margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       decoration: boxDecorationWithRoundedCorners(
-        borderRadius: radius(),
-        backgroundColor: context.cardColor,
-        border: appStore.isDarkMode ? Border.all(color: context.dividerColor) : null,
+        borderRadius: radius(12),
+        backgroundColor: context.cardSecondary,
+        border: Border.all(color: context.cardSecondaryBorder),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CachedImageWidget(
-            url: widget.blogData!.imageAttachments.validate().isNotEmpty ? widget.blogData!.imageAttachments!.first.validate() : '',
-            fit: BoxFit.cover,
-            height: 85,
-            width: 85,
-            radius: defaultRadius,
+          // Blog Image
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: CachedImageWidget(
+              url: widget.blogData!.imageAttachments.validate().isNotEmpty
+                  ? widget.blogData!.imageAttachments!.first.validate()
+                  : '',
+              fit: BoxFit.cover,
+              height: 80,
+              width: 80,
+            ),
           ),
-          16.width,
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                widget.blogData!.title.validate(),
-                style: boldTextStyle(),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              2.height,
-              Text(parseHtmlString(widget.blogData!.description.validate()), style: secondaryTextStyle(), maxLines: 2, overflow: TextOverflow.ellipsis),
-              4.height,
-              if (rolesAndPermissionStore.blogEdit || rolesAndPermissionStore.blogDelete)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    if (rolesAndPermissionStore.blogEdit)
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: boxDecorationDefault(
-                          shape: BoxShape.circle,
-                          color: Colors.blueAccent.withValues(alpha: 0.5),
-                        ),
-                        child: const Icon(Icons.edit, size: 12, color: white),
-                      ).onTap(
-                        () {
-                          ifNotTester(context, () async {
-                            bool? res = await AddBlogScreen(data: widget.blogData).launch(context, pageRouteAnimation: PageRouteAnimation.Fade);
-                            if (res ?? false) {
-                              widget.callBack!.call();
-                            }
-                          });
-                        },
-                        hoverColor: Colors.transparent,
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                      ),
-                    12.width,
-                    if (rolesAndPermissionStore.blogDelete)
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: boxDecorationDefault(
-                          shape: BoxShape.circle,
-                          color: Colors.redAccent.withValues(alpha: 0.5),
-                        ),
-                        child: const Icon(Icons.delete, size: 12, color: white),
-                      ).onTap(
-                        () {
-                          ifNotTester(context, () async {
-                            showConfirmDialogCustom(
-                              context,
-                              dialogType: DialogType.DELETE,
-                              title: languages.deleteBlogTitle,
-                              positiveText: languages.lblDelete,
-                              negativeText: languages.lblCancel,
-                              onAccept: (v) async {
-                                await deleteBlog(widget.blogData!.id.validate());
-                              },
-                            );
-                          });
-                        },
-                        hoverColor: Colors.transparent,
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                      ),
-                    4.width,
-                  ],
+          12.width,
+
+          // Blog Content
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Title
+                Text(
+                  widget.blogData!.title.validate(),
+                  style: context.boldTextStyle(size: 14),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
-            ],
-          ).expand(),
+                6.height,
+
+                // Description
+                Text(
+                  parseHtmlString(widget.blogData!.description.validate()),
+                  style: context.secondaryTextStyle(
+                    size: 12,
+                    color: context.textGrey,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
         ],
-      ).onTap(
-        () {
-          BlogDetailScreen(blogId: widget.blogData!.id.validate()).launch(context);
-        },
-        hoverColor: Colors.transparent,
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
       ),
+    ).onTap(
+      () {
+        BlogDetailScreen(blogId: widget.blogData!.id.validate())
+            .launch(context);
+      },
+      hoverColor: Colors.transparent,
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
     );
   }
 }
