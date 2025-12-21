@@ -153,6 +153,8 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
                       fit: BoxFit.cover,
                     )
                   : Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         ic_gallery_add.iconImage(context: context, size: 35),
                         8.height,

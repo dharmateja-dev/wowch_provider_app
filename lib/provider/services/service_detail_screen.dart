@@ -14,12 +14,68 @@ import 'package:handyman_provider_flutter/provider/shop/components/shop_componen
 import 'package:handyman_provider_flutter/screens/rating_view_all_screen.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/demo_mode.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../components/back_widget.dart';
 import '../../components/empty_error_state_widget.dart';
 import '../../utils/colors.dart';
 import 'shimmer/service_detail_shimmer.dart';
+
+/// Demo service detail for UI testing
+ServiceDetailResponse getDemoServiceDetail(int serviceId) {
+  return ServiceDetailResponse(
+    serviceDetail: ServiceData(
+      id: serviceId,
+      name: 'Custom Cake Creations',
+      categoryName: 'Food & Bakery',
+      price: 1500,
+      discount: 10,
+      duration: '2',
+      type: SERVICE_TYPE_FIXED,
+      totalRating: 4.5,
+      totalReview: 25,
+      description:
+          'Delicious custom cakes for all occasions - birthdays, weddings, anniversaries, and more. We use premium ingredients and offer various flavors, designs, and sizes to match your event perfectly.',
+      status: 1,
+      providerName: 'Demo Provider',
+    ),
+    ratingData: [
+      RatingData(
+        id: 1,
+        rating: 5,
+        review:
+            'Excellent service! The cake was delicious and beautifully decorated.',
+        customerName: 'John Doe',
+        createdAt: '2024-01-15',
+      ),
+      RatingData(
+        id: 2,
+        rating: 4,
+        review: 'Great taste and on-time delivery. Will order again!',
+        customerName: 'Jane Smith',
+        createdAt: '2024-01-10',
+      ),
+    ],
+    serviceFaq: [
+      ServiceFaq(
+        id: 1,
+        title: 'How far in advance should I place my order?',
+        description:
+            'We recommend placing your order at least 3-5 days in advance for custom cakes.',
+      ),
+      ServiceFaq(
+        id: 2,
+        title: 'Do you offer eggless options?',
+        description: 'Yes, we offer eggless cake options at no extra charge.',
+      ),
+    ],
+    zones: [
+      Zones(id: 1, name: 'Downtown'),
+      Zones(id: 2, name: 'Suburb Area'),
+    ],
+  );
+}
 
 class ServiceDetailScreen extends StatefulWidget {
   final int serviceId;
@@ -33,6 +89,8 @@ class ServiceDetailScreen extends StatefulWidget {
 class ServiceDetailScreenState extends State<ServiceDetailScreen> {
   PageController pageController = PageController();
 
+  Future<ServiceDetailResponse>? _serviceFuture;
+
   @override
   void initState() {
     super.initState();
@@ -41,6 +99,13 @@ class ServiceDetailScreenState extends State<ServiceDetailScreen> {
 
   void init() async {
     setStatusBarColor(transparentColor, delayInMilliSeconds: 1000);
+
+    if (DEMO_MODE_ENABLED) {
+      _serviceFuture = Future.value(getDemoServiceDetail(widget.serviceId));
+    } else {
+      _serviceFuture =
+          getServiceDetail({'service_id': widget.serviceId.validate()});
+    }
   }
 
   Widget serviceFaqWidget({required List<ServiceFaq> data}) {
@@ -354,7 +419,7 @@ class ServiceDetailScreenState extends State<ServiceDetailScreen> {
           imageWidget: const ErrorStateWidget(),
           retryText: languages.reload,
           onRetry: () {
-            getServiceDetail({'service_id': widget.serviceId.validate()});
+            init();
             setState(() {});
           },
         ),
@@ -365,11 +430,14 @@ class ServiceDetailScreenState extends State<ServiceDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<ServiceDetailResponse>(
-      initialData: listOfCachedData
-          .firstWhere((element) => element?.$1 == widget.serviceId.validate(),
-              orElse: () => null)
-          ?.$2,
-      future: getServiceDetail({'service_id': widget.serviceId.validate()}),
+      initialData: DEMO_MODE_ENABLED
+          ? null
+          : listOfCachedData
+              .firstWhere(
+                  (element) => element?.$1 == widget.serviceId.validate(),
+                  orElse: () => null)
+              ?.$2,
+      future: _serviceFuture,
       builder: (context, snap) {
         return buildBodyWidget(snap);
       },

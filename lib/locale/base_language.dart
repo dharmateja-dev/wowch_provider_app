@@ -1824,4 +1824,8 @@ abstract class Languages {
   String get lblWhyChooseMe;
 
   String get lblShortLineAboutWhyChooseMe;
+
+  String get select;
+
+  String get noteYouCanUploadImages;
 }

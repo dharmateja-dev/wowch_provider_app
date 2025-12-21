@@ -2802,4 +2802,11 @@ class LanguageAr extends Languages {
   @override
   String get lblShortLineAboutWhyChooseMe =>
       'اكتب سطرًا قصيرًا عن سبب اختيار العملاء لك';
+
+  @override
+  String get select => 'اختر';
+
+  @override
+  String get noteYouCanUploadImages =>
+      'ملاحظة: يمكنك تحميل صور بامتداد \'jpg\', \'png\', \'jpeg\' ويمكنك تحديد صور متعددة';
 }

@@ -10,6 +10,7 @@ import 'package:handyman_provider_flutter/provider/services/add_services.dart';
 import 'package:handyman_provider_flutter/provider/services/service_detail_screen.dart';
 import 'package:handyman_provider_flutter/provider/services/shimmer/service_list_shimmer.dart';
 import 'package:handyman_provider_flutter/utils/colors.dart';
+import 'package:handyman_provider_flutter/utils/demo_mode.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
 import 'package:handyman_provider_flutter/utils/model_keys.dart';
@@ -19,6 +20,78 @@ import '../../components/empty_error_state_widget.dart';
 import '../../utils/configs.dart';
 import '../../utils/constant.dart';
 import 'model/service_list_approval_status_model.dart';
+
+/// Demo services data for UI testing
+List<ServiceData> get demoServicesList => [
+      ServiceData(
+        id: 1,
+        name: 'Custom Cake Creations',
+        categoryName: 'Food & Bakery',
+        price: 1500,
+        discount: 10,
+        duration: '2',
+        type: SERVICE_TYPE_FIXED,
+        totalRating: 4.5,
+        totalReview: 25,
+        description:
+            'Delicious custom cakes for all occasions - birthdays, weddings, anniversaries, and more.',
+        status: 1,
+      ),
+      ServiceData(
+        id: 2,
+        name: 'Office Cleaning',
+        categoryName: 'Cleaning',
+        price: 2000,
+        discount: 15,
+        duration: '3',
+        type: SERVICE_TYPE_HOURLY,
+        totalRating: 4.8,
+        totalReview: 42,
+        description:
+            'Professional office cleaning services to keep your workspace spotless.',
+        status: 1,
+      ),
+      ServiceData(
+        id: 3,
+        name: 'Full Home Sanitization',
+        categoryName: 'Cleaning',
+        price: 3500,
+        discount: 20,
+        duration: '4',
+        type: SERVICE_TYPE_FIXED,
+        totalRating: 4.9,
+        totalReview: 58,
+        description: 'Complete home sanitization with eco-friendly products.',
+        status: 1,
+      ),
+      ServiceData(
+        id: 4,
+        name: 'Plumbing Repair',
+        categoryName: 'Plumbing',
+        price: 500,
+        discount: 0,
+        duration: '1',
+        type: SERVICE_TYPE_HOURLY,
+        totalRating: 4.2,
+        totalReview: 15,
+        description:
+            'Expert plumbing repair services for leaks, clogs, and installations.',
+        status: 1,
+      ),
+      ServiceData(
+        id: 5,
+        name: 'AC Service & Repair',
+        categoryName: 'Appliance Repair',
+        price: 800,
+        discount: 5,
+        duration: '2',
+        type: SERVICE_TYPE_FIXED,
+        totalRating: 4.6,
+        totalReview: 33,
+        description: 'AC maintenance, gas refilling, and repair services.',
+        status: 1,
+      ),
+    ];
 
 class ServiceListScreen extends StatefulWidget {
   final int shopId;
@@ -73,6 +146,14 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
   }
 
   void getServiceListAPI({String status = ""}) {
+    if (DEMO_MODE_ENABLED) {
+      // Use demo data
+      services = demoServicesList;
+      future = Future.value(services);
+      setState(() {});
+      return;
+    }
+
     future = getSearchList(
       page,
       status: status.toLowerCase() != SERVICE_ALL ? status.toLowerCase() : '',

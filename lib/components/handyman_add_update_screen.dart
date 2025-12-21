@@ -18,6 +18,7 @@ import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart
 import 'package:handyman_provider_flutter/utils/images.dart';
 import 'package:handyman_provider_flutter/utils/model_keys.dart';
 import 'package:handyman_provider_flutter/utils/text_styles.dart';
+import 'package:handyman_provider_flutter/utils/demo_mode.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../provider/earning/handyman_payout_list_screen.dart';
@@ -109,6 +110,11 @@ class HandymanAddUpdateScreenState extends State<HandymanAddUpdateScreen> {
   }
 
   Future<void> init() async {
+    if (DEMO_MODE_ENABLED) {
+      // Use demo data and skip API calls
+      appStore.setLoading(false);
+      return;
+    }
     getAddressList();
     getCommissionList();
   }
@@ -266,263 +272,389 @@ class HandymanAddUpdateScreenState extends State<HandymanAddUpdateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: context.cardColor,
-        appBar: appBarWidget(
+    return Scaffold(
+      backgroundColor: context.scaffoldSecondary,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: context.primary,
+        leading: BackWidget(color: context.onPrimary),
+        title: Text(
           isUpdate ? languages.lblUpdate : languages.lblAddHandyman,
-          textColor: white,
-          color: context.primaryColor,
-          backWidget: BackWidget(),
-          showBack: true,
-          actions: [
-            IconButton(
-              onPressed: () {
-                if (widget.data != null) {
-                  HandymanPayoutListScreen(user: widget.data!).launch(context);
+          style: context.boldTextStyle(color: context.onPrimary, size: 18),
+        ),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () {
+              if (widget.data != null) {
+                HandymanPayoutListScreen(user: widget.data!).launch(context);
+              }
+            },
+            icon: Icon(Icons.payments_outlined,
+                size: 24, color: context.onPrimary),
+            tooltip: languages.handymanPayoutList,
+          ).visible(isUpdate),
+          if (isUpdate && rolesAndPermissionStore.handymanDelete)
+            PopupMenuButton(
+              icon: Icon(Icons.more_vert, size: 24, color: context.onPrimary),
+              color: context.cardSecondary,
+              onSelected: (selection) async {
+                if (selection == 1) {
+                  showConfirmDialogCustom(
+                    context,
+                    height: 80,
+                    width: 290,
+                    shape: appDialogShape(8),
+                    dialogType: DialogType.DELETE,
+                    title: languages.lblDoYouWantToDelete,
+                    titleColor: context.dialogTitleColor,
+                    backgroundColor: context.dialogBackgroundColor,
+                    primaryColor: context.error,
+                    customCenterWidget: Image.asset(
+                      ic_warning,
+                      color: context.dialogIconColor,
+                      height: 70,
+                      width: 70,
+                      fit: BoxFit.cover,
+                    ),
+                    positiveText: languages.lblDelete,
+                    positiveTextColor: context.onPrimary,
+                    negativeText: languages.lblCancel,
+                    negativeTextColor: context.dialogCancelColor,
+                    onAccept: (_) {
+                      ifNotTester(context, () {
+                        removeHandyman(widget.data!.id.validate());
+                      });
+                    },
+                  );
+                } else if (selection == 2) {
+                  showConfirmDialogCustom(
+                    context,
+                    height: 80,
+                    width: 290,
+                    shape: appDialogShape(8),
+                    dialogType: DialogType.CONFIRMATION,
+                    title: languages.lblDoYouWantToRestore,
+                    titleColor: context.dialogTitleColor,
+                    backgroundColor: context.dialogBackgroundColor,
+                    primaryColor: context.primary,
+                    customCenterWidget: Image.asset(
+                      ic_warning,
+                      color: context.dialogIconColor,
+                      height: 70,
+                      width: 70,
+                      fit: BoxFit.cover,
+                    ),
+                    positiveText: languages.lblRestore,
+                    positiveTextColor: context.onPrimary,
+                    negativeText: languages.lblCancel,
+                    negativeTextColor: context.dialogCancelColor,
+                    onAccept: (_) {
+                      ifNotTester(context, () {
+                        restoreHandymanData();
+                      });
+                    },
+                  );
+                } else if (selection == 3) {
+                  showConfirmDialogCustom(
+                    context,
+                    height: 80,
+                    width: 290,
+                    shape: appDialogShape(8),
+                    dialogType: DialogType.DELETE,
+                    title: languages.lblDoYouWantToDeleteForcefully,
+                    titleColor: context.dialogTitleColor,
+                    backgroundColor: context.dialogBackgroundColor,
+                    primaryColor: context.error,
+                    customCenterWidget: Image.asset(
+                      ic_warning,
+                      color: context.dialogIconColor,
+                      height: 70,
+                      width: 70,
+                      fit: BoxFit.cover,
+                    ),
+                    positiveText: languages.lblDelete,
+                    positiveTextColor: context.onPrimary,
+                    negativeText: languages.lblCancel,
+                    negativeTextColor: context.dialogCancelColor,
+                    onAccept: (_) {
+                      ifNotTester(context, () {
+                        forceDeleteHandymanData();
+                      });
+                    },
+                  );
                 }
               },
-              icon: const Icon(Icons.payments_outlined, size: 24, color: white),
-              tooltip: languages.handymanPayoutList,
-            ).visible(isUpdate),
-            if (isUpdate && rolesAndPermissionStore.handymanDelete)
-              PopupMenuButton(
-                icon: const Icon(Icons.more_vert, size: 24, color: white),
-                onSelected: (selection) async {
-                  if (selection == 1) {
-                    showConfirmDialogCustom(
-                      context,
-                      dialogType: DialogType.DELETE,
-                      title: languages.lblDoYouWantToDelete,
-                      positiveText: languages.lblDelete,
-                      negativeText: languages.lblCancel,
-                      onAccept: (_) {
-                        ifNotTester(context, () {
-                          removeHandyman(widget.data!.id.validate());
-                        });
-                      },
-                    );
-                  } else if (selection == 2) {
-                    showConfirmDialogCustom(
-                      context,
-                      dialogType: DialogType.DELETE,
-                      title: languages.lblDoYouWantToRestore,
-                      positiveText: languages.lblRestore,
-                      negativeText: languages.lblCancel,
-                      onAccept: (_) {
-                        ifNotTester(context, () {
-                          restoreHandymanData();
-                        });
-                      },
-                    );
-                  } else if (selection == 3) {
-                    showConfirmDialogCustom(
-                      context,
-                      dialogType: DialogType.DELETE,
-                      title: languages.lblDoYouWantToDeleteForcefully,
-                      positiveText: languages.lblDelete,
-                      negativeText: languages.lblCancel,
-                      onAccept: (_) {
-                        ifNotTester(context, () {
-                          forceDeleteHandymanData();
-                        });
-                      },
-                    );
-                  }
-                },
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    value: 1,
-                    enabled: widget.data!.deletedAt == null,
-                    textStyle: boldTextStyle(
-                        color: widget.data!.deletedAt == null
-                            ? textPrimaryColorGlobal
-                            : null),
-                    child: Text(languages.lblDelete),
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  value: 1,
+                  enabled: widget.data!.deletedAt == null,
+                  child: Text(
+                    languages.lblDelete,
+                    style: context.boldTextStyle(
+                      color: widget.data!.deletedAt == null
+                          ? context.onSurface
+                          : context.textGrey,
+                    ),
                   ),
-                  PopupMenuItem(
-                    value: 2,
-                    textStyle: boldTextStyle(
-                        color: widget.data!.deletedAt != null
-                            ? textPrimaryColorGlobal
-                            : null),
-                    enabled: widget.data!.deletedAt != null,
-                    child: Text(languages.lblRestore),
+                ),
+                PopupMenuItem(
+                  value: 2,
+                  enabled: widget.data!.deletedAt != null,
+                  child: Text(
+                    languages.lblRestore,
+                    style: context.boldTextStyle(
+                      color: widget.data!.deletedAt != null
+                          ? context.onSurface
+                          : context.textGrey,
+                    ),
                   ),
-                  PopupMenuItem(
-                    textStyle: boldTextStyle(),
-                    value: 3,
-                    enabled: widget.data!.deletedAt != null,
-                    child: Text(languages.lblForceDelete),
+                ),
+                PopupMenuItem(
+                  value: 3,
+                  enabled: widget.data!.deletedAt != null,
+                  child: Text(
+                    languages.lblForceDelete,
+                    style: context.boldTextStyle(
+                      color: widget.data!.deletedAt != null
+                          ? context.error
+                          : context.textGrey,
+                    ),
                   ),
-                ],
-              ),
-          ],
-        ),
-        body: Stack(
-          children: [
-            SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Form(
-                key: formKey,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (isUpdate)
-                      CachedImageWidget(
+                ),
+              ],
+            ),
+        ],
+      ),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Form(
+              key: formKey,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Profile Image
+                  if (isUpdate)
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: context.primary.withOpacity(0.3),
+                          width: 3,
+                        ),
+                      ),
+                      child: CachedImageWidget(
                         url: widget.data!.profileImage.validate(value: profile),
                         height: 100,
+                        width: 100,
                         circle: true,
                         fit: BoxFit.cover,
-                      ).center(),
-                    30.height,
-                    AppTextField(
-                      textFieldType: TextFieldType.NAME,
-                      controller: fNameCont,
-                      focus: fNameFocus,
-                      enabled: isUpdate
-                          ? rolesAndPermissionStore.handymanEdit
-                          : true,
-                      nextFocus: lNameFocus,
+                      ),
+                    ).center(),
+
+                  24.height,
+
+                  // First Name
+                  Text(languages.hintFirstNameTxt,
+                      style: context.boldTextStyle()),
+                  8.height,
+                  AppTextField(
+                    textFieldType: TextFieldType.NAME,
+                    controller: fNameCont,
+                    focus: fNameFocus,
+                    enabled:
+                        isUpdate ? rolesAndPermissionStore.handymanEdit : true,
+                    nextFocus: lNameFocus,
+                    decoration: inputDecoration(
+                      context,
+                      prefixIcon: ic_profile
+                          .iconImage(
+                              context: context,
+                              color: context.iconMuted,
+                              size: 12)
+                          .paddingAll(14),
+                      hintText: languages.hintFirstNameTxt,
+                      fillColor: context.profileInputFillColor,
+                      borderRadius: 8,
+                    ),
+                  ),
+
+                  16.height,
+
+                  // Last Name
+                  Text(languages.hintLastNameTxt,
+                      style: context.boldTextStyle()),
+                  8.height,
+                  AppTextField(
+                    textFieldType: TextFieldType.NAME,
+                    controller: lNameCont,
+                    focus: lNameFocus,
+                    enabled:
+                        isUpdate ? rolesAndPermissionStore.handymanEdit : true,
+                    nextFocus: userNameFocus,
+                    decoration: inputDecoration(
+                      context,
+                      hintText: languages.hintLastNameTxt,
+                      fillColor: context.profileInputFillColor,
+                      prefixIcon: ic_profile
+                          .iconImage(
+                              context: context,
+                              color: context.iconMuted,
+                              size: 12)
+                          .paddingAll(14),
+                      borderRadius: 8,
+                    ),
+                  ),
+
+                  16.height,
+
+                  // Username
+                  Text(languages.hintUserNameTxt,
+                      style: context.boldTextStyle()),
+                  8.height,
+                  AppTextField(
+                    textFieldType: TextFieldType.USERNAME,
+                    controller: userNameCont,
+                    focus: userNameFocus,
+                    nextFocus: emailFocus,
+                    enabled:
+                        isUpdate ? rolesAndPermissionStore.handymanEdit : true,
+                    decoration: inputDecoration(
+                      context,
+                      hintText: languages.hintUserNameTxt,
+                      fillColor: context.profileInputFillColor,
+                      prefixIcon: ic_profile
+                          .iconImage(
+                              context: context,
+                              color: context.iconMuted,
+                              size: 12)
+                          .paddingAll(14),
+                      borderRadius: 8,
+                    ),
+                  ),
+
+                  16.height,
+
+                  // Email
+                  Text(languages.hintEmailAddressTxt,
+                      style: context.boldTextStyle()),
+                  8.height,
+                  AppTextField(
+                    textFieldType: TextFieldType.EMAIL_ENHANCED,
+                    controller: emailCont,
+                    focus: emailFocus,
+                    nextFocus: mobileFocus,
+                    enabled:
+                        isUpdate ? rolesAndPermissionStore.handymanEdit : true,
+                    decoration: inputDecoration(
+                      context,
+                      hintText: languages.hintEmailAddressTxt,
+                      fillColor: context.profileInputFillColor,
+                      prefixIcon: ic_message
+                          .iconImage(
+                              context: context,
+                              color: context.iconMuted,
+                              size: 12)
+                          .paddingAll(14),
+                      borderRadius: 8,
+                    ),
+                  ),
+
+                  16.height,
+
+                  // Contact Number
+                  Text(languages.hintContactNumberTxt,
+                      style: context.boldTextStyle()),
+                  8.height,
+                  IgnorePointer(
+                    ignoring: isUpdate
+                        ? !rolesAndPermissionStore.handymanEdit
+                        : false,
+                    child: AppTextField(
+                      textFieldType:
+                          isAndroid ? TextFieldType.PHONE : TextFieldType.NAME,
+                      controller: mobileCont,
+                      focus: mobileFocus,
+                      nextFocus: designationFocus,
                       decoration: inputDecoration(
                         context,
-                        hintText: languages.hintFirstNameTxt,
-                        fillColor: context.scaffoldBackgroundColor,
-                      ),
-                      suffix: profile
-                          .iconImage(context: context, size: 10)
-                          .paddingAll(14),
-                    ),
-                    16.height,
-                    AppTextField(
-                      textFieldType: TextFieldType.NAME,
-                      controller: lNameCont,
-                      focus: lNameFocus,
-                      enabled: isUpdate
-                          ? rolesAndPermissionStore.handymanEdit
-                          : true,
-                      nextFocus: userNameFocus,
-                      decoration: inputDecoration(
-                        context,
-                        hintText: languages.hintLastNameTxt,
-                        fillColor: context.scaffoldBackgroundColor,
-                      ),
-                      suffix: profile
-                          .iconImage(context: context, size: 10)
-                          .paddingAll(14),
-                    ),
-                    16.height,
-                    AppTextField(
-                      textFieldType: TextFieldType.USERNAME,
-                      controller: userNameCont,
-                      focus: userNameFocus,
-                      nextFocus: emailFocus,
-                      enabled: isUpdate
-                          ? rolesAndPermissionStore.handymanEdit
-                          : true,
-                      decoration: inputDecoration(
-                        context,
-                        hintText: languages.hintUserNameTxt,
-                        fillColor: context.scaffoldBackgroundColor,
-                      ),
-                      suffix: profile
-                          .iconImage(context: context, size: 10)
-                          .paddingAll(14),
-                    ),
-                    16.height,
-                    AppTextField(
-                      textFieldType: TextFieldType.EMAIL_ENHANCED,
-                      controller: emailCont,
-                      focus: emailFocus,
-                      nextFocus: mobileFocus,
-                      enabled: isUpdate
-                          ? rolesAndPermissionStore.handymanEdit
-                          : true,
-                      decoration: inputDecoration(
-                        context,
-                        hintText: languages.hintEmailAddressTxt,
-                        fillColor: context.scaffoldBackgroundColor,
-                      ),
-                      suffix: ic_message
-                          .iconImage(context: context, size: 10)
-                          .paddingAll(14),
-                    ),
-                    16.height,
-                    IgnorePointer(
-                      ignoring: isUpdate
-                          ? !rolesAndPermissionStore.handymanEdit
-                          : false,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            height: 48.0,
-                            decoration: BoxDecoration(
-                              color: context.scaffoldBackgroundColor,
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                            child: Center(
-                              child: ValueListenableBuilder(
-                                valueListenable: valueNotifier,
-                                builder: (context, value, child) => Row(
-                                  children: [
-                                    Text(
-                                      '+${RegExp(r'\d+').firstMatch(selectedCountry.phoneCode)?.group(0) ?? ''}',
-                                      style: primaryTextStyle(size: 12),
-                                    ).paddingOnly(left: 8),
-                                    const Icon(Icons.arrow_drop_down)
-                                  ],
+                        hintText: languages.addYourPhoneNumber,
+                        fillColor: context.profileInputFillColor,
+                        borderRadius: 8,
+                        prefixIcon: GestureDetector(
+                          onTap: () => changeCountry(),
+                          child: ValueListenableBuilder(
+                            valueListenable: valueNotifier,
+                            builder: (context, value, child) => Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  "+${selectedCountry.phoneCode}",
+                                  style: context.boldTextStyle(size: 14),
                                 ),
-                              ),
-                            ),
-                          )
-                              .onTap(
-                                () => changeCountry(),
-                              )
-                              .paddingOnly(right: 10.0),
-                          Expanded(
-                            child: AppTextField(
-                              textFieldType: TextFieldType.PHONE,
-                              controller: mobileCont,
-                              focus: mobileFocus,
-                              nextFocus: designationFocus,
-                              decoration: inputDecoration(
-                                context,
-                                hintText: languages.hintContactNumberTxt,
-                                fillColor: context.scaffoldBackgroundColor,
-                              ),
-                              suffix: calling
-                                  .iconImage(context: context, size: 10)
-                                  .paddingAll(14),
-                              validator: (mobileCont) {
-                                if (mobileCont!.isEmpty)
-                                  return languages.lblPleaseEnterMobileNumber;
-                                return null;
-                              },
+                                2.width,
+                                Icon(
+                                  Icons.arrow_drop_down,
+                                  color: context.icon,
+                                  size: 20,
+                                ),
+                              ],
                             ),
                           ),
-                        ],
+                        ).paddingAll(14),
                       ),
+                      maxLength: 15,
+                      buildCounter: (context,
+                              {required currentLength,
+                              required isFocused,
+                              maxLength}) =>
+                          null,
+                      validator: (mobileCont) {
+                        if (mobileCont!.isEmpty)
+                          return languages.lblPleaseEnterMobileNumber;
+                        return null;
+                      },
                     ),
-                    16.height,
-                    AppTextField(
-                      textFieldType: TextFieldType.NAME,
-                      controller: designationCont,
-                      isValidationRequired: false,
-                      enabled: isUpdate
-                          ? rolesAndPermissionStore.handymanEdit
-                          : true,
-                      focus: designationFocus,
-                      nextFocus: passwordFocus,
-                      decoration: inputDecoration(
-                        context,
-                        hintText: languages.lblDesignation,
-                        fillColor: context.scaffoldBackgroundColor,
-                      ),
+                  ),
+
+                  16.height,
+
+                  // Designation
+                  Text(languages.lblDesignation,
+                      style: context.boldTextStyle()),
+                  8.height,
+                  AppTextField(
+                    textFieldType: TextFieldType.NAME,
+                    controller: designationCont,
+                    isValidationRequired: false,
+                    enabled:
+                        isUpdate ? rolesAndPermissionStore.handymanEdit : true,
+                    focus: designationFocus,
+                    nextFocus: passwordFocus,
+                    decoration: inputDecoration(
+                      context,
+                      hintText: languages.lblDesignation,
+                      fillColor: context.profileInputFillColor,
+                      borderRadius: 8,
+                      prefixIcon: ic_profile
+                          .iconImage(
+                              context: context,
+                              color: context.iconMuted,
+                              size: 12)
+                          .paddingAll(14),
                     ),
-                    16.height,
-                    // Select commission text field...
+                  ),
+
+                  16.height,
+
+                  // Commission Dropdown
+                  if (commissionList.isNotEmpty) ...[
+                    Text(languages.lblSelectCommission,
+                        style: context.boldTextStyle()),
+                    8.height,
                     IgnorePointer(
                       ignoring: isUpdate
                           ? !rolesAndPermissionStore.handymanEdit
@@ -531,10 +663,13 @@ class HandymanAddUpdateScreenState extends State<HandymanAddUpdateScreen> {
                         decoration: inputDecoration(
                           context,
                           hintText: languages.lblSelectCommission,
-                          fillColor: context.scaffoldBackgroundColor,
+                          fillColor: context.profileInputFillColor,
+                          borderRadius: 8,
                         ),
                         isExpanded: true,
-                        dropdownColor: context.cardColor,
+                        dropdownColor: context.cardSecondary,
+                        icon: Icon(Icons.keyboard_arrow_down,
+                            color: context.icon),
                         initialValue: selectedHandymanCommission,
                         items: commissionList.map((data) {
                           return DropdownMenuItem<UserTypeData>(
@@ -542,17 +677,18 @@ class HandymanAddUpdateScreenState extends State<HandymanAddUpdateScreen> {
                             child: Row(
                               children: [
                                 Text(data.name.toString(),
-                                    style: primaryTextStyle()),
+                                    style: context.primaryTextStyle()),
                                 4.width,
                                 if (data.type == COMMISSION_TYPE_PERCENT)
                                   Text(
                                     '(${data.commission.toString()}%)',
-                                    style: primaryTextStyle(),
+                                    style: context.secondaryTextStyle(),
                                   )
                                 else if (data.type == COMMISSION_TYPE_FIXED)
                                   Text(
-                                      '(${data.commission.validate().toPriceFormat()})',
-                                      style: primaryTextStyle()),
+                                    '(${data.commission.validate().toPriceFormat()})',
+                                    style: context.secondaryTextStyle(),
+                                  ),
                               ],
                             ),
                           );
@@ -564,8 +700,15 @@ class HandymanAddUpdateScreenState extends State<HandymanAddUpdateScreen> {
                           setState(() {});
                         },
                       ),
-                    ).visible(commissionList.isNotEmpty),
+                    ),
                     16.height,
+                  ],
+
+                  // Service Zone Dropdown
+                  if (providerZoneList.isNotEmpty) ...[
+                    Text(languages.selectServiceZone,
+                        style: context.boldTextStyle()),
+                    8.height,
                     IgnorePointer(
                       ignoring: isUpdate
                           ? !rolesAndPermissionStore.handymanEdit
@@ -574,17 +717,20 @@ class HandymanAddUpdateScreenState extends State<HandymanAddUpdateScreen> {
                         decoration: inputDecoration(
                           context,
                           hintText: languages.selectServiceZone,
-                          fillColor: context.scaffoldBackgroundColor,
+                          fillColor: context.profileInputFillColor,
+                          borderRadius: 8,
                         ),
                         isExpanded: true,
-                        dropdownColor: context.cardColor,
+                        dropdownColor: context.cardSecondary,
+                        icon: Icon(Icons.keyboard_arrow_down,
+                            color: context.icon),
                         initialValue: selectedServiceZone,
                         items: providerZoneList.map((data) {
                           return DropdownMenuItem<ZoneResponse>(
                             value: data,
                             child: Text(
                               data.name.validate(),
-                              style: primaryTextStyle(),
+                              style: context.primaryTextStyle(),
                             ),
                           );
                         }).toList(),
@@ -594,8 +740,15 @@ class HandymanAddUpdateScreenState extends State<HandymanAddUpdateScreen> {
                           setState(() {});
                         },
                       ),
-                    ).visible(providerZoneList.isNotEmpty),
-                    16.height.visible(!isUpdate),
+                    ),
+                    16.height,
+                  ],
+
+                  // Password (only for new handyman)
+                  if (!isUpdate) ...[
+                    Text(languages.hintPassword,
+                        style: context.boldTextStyle()),
+                    8.height,
                     AppTextField(
                       textFieldType: TextFieldType.PASSWORD,
                       controller: passwordCont,
@@ -604,10 +757,29 @@ class HandymanAddUpdateScreenState extends State<HandymanAddUpdateScreen> {
                           ? rolesAndPermissionStore.handymanEdit
                           : true,
                       obscureText: true,
+                      suffixPasswordVisibleWidget: ic_show
+                          .iconImage(
+                              context: context,
+                              size: 10,
+                              color: context.iconMuted)
+                          .paddingAll(14),
+                      suffixPasswordInvisibleWidget: ic_hide
+                          .iconImage(
+                              context: context,
+                              size: 10,
+                              color: context.iconMuted)
+                          .paddingAll(14),
                       decoration: inputDecoration(
                         context,
                         hintText: languages.hintPassword,
-                        fillColor: context.scaffoldBackgroundColor,
+                        fillColor: context.profileInputFillColor,
+                        borderRadius: 8,
+                        prefixIcon: ic_passwordIcon
+                            .iconImage(
+                                context: context,
+                                size: 10,
+                                color: context.iconMuted)
+                            .paddingAll(14),
                       ),
                       isValidationRequired: true,
                       validator: (val) {
@@ -623,67 +795,93 @@ class HandymanAddUpdateScreenState extends State<HandymanAddUpdateScreen> {
                           register();
                         });
                       },
-                    ).visible(!isUpdate),
+                    ),
                     16.height,
-                    if (isUpdate)
-                      Column(
+                  ],
+
+                  // Registration Info (for update mode)
+                  if (isUpdate) ...[
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: context.cardSecondary,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: context.cardSecondaryBorder),
+                      ),
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                              '${widget.data!.displayName} ${languages.lblRegistered} ${DateTime.parse(widget.data!.createdAt!).timeAgo}\n${formatBookingDate(widget.data!.createdAt)}',
-                              style: secondaryTextStyle()),
+                            '${widget.data!.displayName} ${languages.lblRegistered} ${DateTime.parse(widget.data!.createdAt!).timeAgo}',
+                            style: context.secondaryTextStyle(),
+                          ),
+                          4.height,
+                          Text(
+                            formatBookingDate(widget.data!.createdAt),
+                            style: context.secondaryTextStyle(size: 12),
+                          ),
                           if (widget.data!.emailVerifiedAt
                               .validate()
-                              .isNotEmpty)
-                            TextIcon(
-                              text: languages.lblEmailIsVerified,
-                              textStyle: primaryTextStyle(color: Colors.green),
-                              prefix: Container(
-                                padding: const EdgeInsets.all(2),
-                                decoration: const BoxDecoration(
+                              .isNotEmpty) ...[
+                            8.height,
+                            Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(2),
+                                  decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: Colors.green),
-                                child: const Icon(Icons.check,
-                                    color: Colors.white, size: 14),
-                              ),
-                            ).paddingTop(8),
+                                    color: context.primary,
+                                  ),
+                                  child: Icon(Icons.check,
+                                      color: context.onPrimary, size: 14),
+                                ),
+                                8.width,
+                                Expanded(
+                                  child: Text(
+                                    languages.lblEmailIsVerified,
+                                    style: context.primaryTextStyle(
+                                        color: context.primary),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ],
                       ),
-                    24.height,
-                    Observer(
-                      builder: (context) => AppButton(
-                        text: languages.btnSave,
-                        height: 40,
-                        color: primary,
-                        textColor: white,
-                        width: context.width() - context.navigationBarHeight,
-                        onTap: appStore.isLoading
-                            ? null
-                            : () {
-                                register();
-                                /*   ifNotTester(context, () {
-                                  if (isUpdate) {
-                                    if (rolesAndPermissionStore.handymanEdit) {
-                                      register();
-                                    } else {
-                                      toast(languages.permissionDeniedUnableTo);
-                                    }
-                                  } else {
-                                    register();
-                                  }
-                                });*/
-                              },
-                      ),
-                    )
+                    ),
                   ],
-                ),
+
+                  100.height,
+                ],
               ),
             ),
-            Observer(
-                builder: (_) =>
-                    LoaderWidget().center().visible(appStore.isLoading)),
-          ],
-        ),
+          ),
+
+          // Save Button
+          Positioned(
+            bottom: 16,
+            left: 16,
+            right: 16,
+            child: Observer(
+              builder: (context) => AppButton(
+                text: languages.btnSave,
+                color: context.primary,
+                textStyle: boldTextStyle(color: context.onPrimary),
+                width: context.width(),
+                onTap: appStore.isLoading
+                    ? null
+                    : () {
+                        register();
+                      },
+              ),
+            ),
+          ),
+
+          // Loader
+          Observer(
+            builder: (_) => LoaderWidget().center().visible(appStore.isLoading),
+          ),
+        ],
       ),
     );
   }
@@ -720,11 +918,10 @@ class HandymanAddUpdateScreenState extends State<HandymanAddUpdateScreen> {
           prefixIcon: Icon(Icons.search, color: context.searchHintColor),
         ),
       ),
-      showPhoneCode:
-          true, // optional. Shows phone code before the country name.
+      showPhoneCode: true,
       onSelect: (Country country) {
         selectedCountry = country;
-        valueNotifier.value = !valueNotifier.value; // ✅ this triggers rebuild
+        valueNotifier.value = !valueNotifier.value;
       },
     );
   }

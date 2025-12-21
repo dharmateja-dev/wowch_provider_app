@@ -2893,4 +2893,11 @@ class LanguageFr extends Languages {
   @override
   String get lblShortLineAboutWhyChooseMe =>
       'Écrivez une courte ligne expliquant pourquoi les clients devraient vous choisir';
+
+  @override
+  String get select => 'Sélectionner';
+
+  @override
+  String get noteYouCanUploadImages =>
+      'Note: Vous pouvez télécharger des images avec les extensions \'jpg\', \'png\', \'jpeg\' et vous pouvez sélectionner plusieurs images';
 }

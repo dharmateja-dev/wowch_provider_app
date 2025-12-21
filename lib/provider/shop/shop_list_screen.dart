@@ -12,9 +12,63 @@ import 'package:handyman_provider_flutter/provider/shop/add_edit_shop_screen.dar
 import 'package:handyman_provider_flutter/provider/shop/components/shop_component.dart';
 import 'package:handyman_provider_flutter/provider/shop/shimmer/shop_list_shimmer.dart';
 import 'package:handyman_provider_flutter/provider/shop/shop_detail_screen.dart';
-import 'package:handyman_provider_flutter/utils/colors.dart';
-import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/common.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/demo_mode.dart';
+import 'package:handyman_provider_flutter/models/service_model.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
+
+/// Demo shop data for UI testing
+List<ShopModel> get demoShopList => [
+      ShopModel(
+        id: 1,
+        name: 'Ayush',
+        address: '65A, Indrapuri, Bhopal, M...',
+        shopStartTime: '9:00 AM',
+        shopEndTime: '6:16 PM',
+        cityName: 'Bhopal',
+        stateName: 'Madhya Pradesh',
+        countryName: 'India',
+        shopImage: [],
+        services: [
+          ServiceData(id: 1, name: 'Custom Cake Creations'),
+          ServiceData(id: 2, name: 'Office Cleaning'),
+          ServiceData(id: 3, name: 'Full Home Sanitization'),
+        ],
+      ),
+      ShopModel(
+        id: 2,
+        name: 'Prime Home Services',
+        address: '123 Main Street, Downtown',
+        shopStartTime: '8:00 AM',
+        shopEndTime: '8:00 PM',
+        cityName: 'Mumbai',
+        stateName: 'Maharashtra',
+        countryName: 'India',
+        shopImage: [],
+        services: [
+          ServiceData(id: 4, name: 'Deep Cleaning'),
+          ServiceData(id: 5, name: 'Pest Control'),
+        ],
+      ),
+      ShopModel(
+        id: 3,
+        name: 'Quick Fix Station',
+        address: '456 Oak Avenue, Residency',
+        shopStartTime: '10:00 AM',
+        shopEndTime: '7:00 PM',
+        cityName: 'Delhi',
+        stateName: 'Delhi',
+        countryName: 'India',
+        shopImage: [],
+        services: [
+          ServiceData(id: 6, name: 'Plumbing Repair'),
+          ServiceData(id: 7, name: 'Electrical Work'),
+          ServiceData(id: 8, name: 'AC Service'),
+        ],
+      ),
+    ];
 
 class ShopListScreen extends StatefulWidget {
   final bool fromShopDocument;
@@ -69,6 +123,14 @@ class _ShopListScreenState extends State<ShopListScreen> {
   }
 
   Future<void> getShops({bool showLoader = true}) async {
+    if (DEMO_MODE_ENABLED) {
+      // Use demo data
+      shops = demoShopList;
+      future = Future.value(shops);
+      setState(() {});
+      return;
+    }
+
     appStore.setLoading(showLoader);
     future = getShopList(
       page,
@@ -119,12 +181,16 @@ class _ShopListScreenState extends State<ShopListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarWidget(
-        getScreenTitle(),
-        textColor: white,
-        color: context.primaryColor,
-        backWidget: BackWidget(),
-        textSize: APP_BAR_TEXT_SIZE,
+      backgroundColor: context.scaffoldSecondary,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: context.primary,
+        leading: BackWidget(color: context.onPrimary),
+        title: Text(
+          getScreenTitle(),
+          style: context.boldTextStyle(color: context.onPrimary, size: 18),
+        ),
+        centerTitle: true,
         actions: [
           IconButton(
             onPressed: () async {
@@ -132,7 +198,7 @@ class _ShopListScreenState extends State<ShopListScreen> {
                   .launch(context, pageRouteAnimation: PageRouteAnimation.Fade);
               if (result == true) setPageToOne();
             },
-            icon: Icon(Icons.add, size: 28, color: white),
+            icon: Icon(Icons.add, size: 28, color: context.onPrimary),
             tooltip: languages.addNewShop,
           ),
         ],
@@ -141,33 +207,38 @@ class _ShopListScreenState extends State<ShopListScreen> {
         children: [
           Column(
             children: [
-              AppTextField(
-                textFieldType: TextFieldType.OTHER,
-                controller: searchController,
-                decoration: InputDecoration(
-                  hintText: languages.lblSearchHere,
-                  prefixIcon:
-                      Icon(Icons.search, color: context.iconColor, size: 20),
-                  suffixIcon: searchController.text.isNotEmpty
-                      ? IconButton(
-                          icon: Icon(Icons.clear,
-                              color: context.iconColor, size: 20),
-                          onPressed: () {
-                            searchController.clear();
-                            setPageToOne();
-                          },
-                        )
-                      : null,
-                  hintStyle: secondaryTextStyle(),
-                  border: OutlineInputBorder(
-                      borderRadius: radius(8),
-                      borderSide:
-                          BorderSide(width: 0, style: BorderStyle.none)),
-                  filled: true,
-                  contentPadding: EdgeInsets.all(16),
-                  fillColor: appStore.isDarkMode ? cardDarkColor : cardColor,
+              // Search Field
+              Container(
+                margin:
+                    EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 8),
+                child: AppTextField(
+                  textFieldType: TextFieldType.OTHER,
+                  controller: searchController,
+                  onChanged: (value) {
+                    setPageToOne();
+                  },
+                  decoration: inputDecoration(
+                    context,
+                    hintText: languages.lblSearchHere,
+                    fillColor: context.profileInputFillColor,
+                    borderRadius: 8,
+                    prefixIcon:
+                        Icon(Icons.search, color: context.iconMuted, size: 20)
+                            .paddingAll(14),
+                  ).copyWith(
+                    suffixIcon: searchController.text.isNotEmpty
+                        ? IconButton(
+                            icon: Icon(Icons.clear,
+                                color: context.iconMuted, size: 20),
+                            onPressed: () {
+                              searchController.clear();
+                              setPageToOne();
+                            },
+                          )
+                        : null,
+                  ),
                 ),
-              ).paddingOnly(left: 16, right: 16, top: 16, bottom: 8),
+              ),
               SnapHelperWidget<List<ShopModel>>(
                 future: future,
                 errorBuilder: (error) {
@@ -226,11 +297,12 @@ class _ShopListScreenState extends State<ShopListScreen> {
 
                             return Container(
                               decoration: BoxDecoration(
+                                color: context.cardSecondary,
                                 borderRadius: radius(12),
                                 border: Border.all(
                                   color: selectedShopId == shop.id
-                                      ? context.primaryColor
-                                      : Colors.grey.withOpacity(0.3),
+                                      ? context.primary
+                                      : context.cardSecondaryBorder,
                                   width: 1,
                                 ),
                               ),
@@ -266,8 +338,6 @@ class _ShopListScreenState extends State<ShopListScreen> {
                                   ShopDetailScreen(shopId: shop.id)
                                       .launch(context);
                                 }
-                                // await ShopDetailScreen(shopId: shop.id)
-                                //     .launch(context);
                               },
                               borderRadius: radius(),
                             );
@@ -282,9 +352,9 @@ class _ShopListScreenState extends State<ShopListScreen> {
                 AppButton(
                   margin: EdgeInsets.only(bottom: 12),
                   width: context.width() - context.navigationBarHeight,
-                  text: 'Select',
-                  color: context.primaryColor,
-                  textColor: Colors.white,
+                  text: languages.select,
+                  color: context.primary,
+                  textStyle: boldTextStyle(color: context.onPrimary),
                   onTap: () {
                     final selectedShop =
                         shops.firstWhere((e) => e.id == selectedShopId);
@@ -295,9 +365,9 @@ class _ShopListScreenState extends State<ShopListScreen> {
                 AppButton(
                   margin: EdgeInsets.only(bottom: 12),
                   width: context.width() - context.navigationBarHeight,
-                  text: 'Select Shops',
-                  color: context.primaryColor,
-                  textColor: Colors.white,
+                  text: languages.lblSelectShops,
+                  color: context.primary,
+                  textStyle: boldTextStyle(color: context.onPrimary),
                   onTap: () {
                     finish(context, selectedShops); // return multiple shops
                   },

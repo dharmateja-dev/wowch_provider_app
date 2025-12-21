@@ -2831,4 +2831,11 @@ class LanguageEn extends Languages {
   @override
   String get lblShortLineAboutWhyChooseMe =>
       'Write a short line about why customers should choose you';
+
+  @override
+  String get select => 'Select';
+
+  @override
+  String get noteYouCanUploadImages =>
+      'Note: You can upload images with \'jpg\', \'png\', \'jpeg\' extensions & you can select multiple images';
 }

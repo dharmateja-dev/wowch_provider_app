@@ -2873,4 +2873,11 @@ class LanguageDe extends Languages {
   @override
   String get lblShortLineAboutWhyChooseMe =>
       'Schreiben Sie eine kurze Zeile darüber, warum Kunden Sie wählen sollten';
+
+  @override
+  String get select => 'Auswählen';
+
+  @override
+  String get noteYouCanUploadImages =>
+      'Hinweis: Sie können Bilder mit der Erweiterung \'jpg\', \'png\', \'jpeg\' hochladen und Sie können mehrere Bilder auswählen';
 }

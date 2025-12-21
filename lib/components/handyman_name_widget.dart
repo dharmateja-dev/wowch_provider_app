@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../utils/images.dart';
@@ -31,20 +33,25 @@ class HandymanNameWidget extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
-                  color: isHandymanAvailable! ? Colors.lightGreen : redColor,
+                  color: isHandymanAvailable!
+                      ? context.primaryLiteColor
+                      : context.error,
                   shape: BoxShape.circle,
                 ),
               ),
               8.width,
             ],
           ),
-        Marquee(child: Text(name, style: boldTextStyle(size: size), maxLines: 1)).flexible(),
+        Marquee(
+                child: Text(name,
+                    style: context.boldTextStyle(size: size), maxLines: 1))
+            .flexible(),
         if (showVerifiedBadge) ...[
           4.width,
-          const ImageIcon(
+          ImageIcon(
             AssetImage(ic_verified),
             size: 14,
-            color: Colors.green,
+            color: context.primary,
           )
         ],
       ],

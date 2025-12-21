@@ -9,6 +9,7 @@ import 'package:handyman_provider_flutter/screens/chat/user_chat_screen.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
 import 'package:handyman_provider_flutter/utils/model_keys.dart';
@@ -50,28 +51,29 @@ class _HandymanWidgetState extends State<HandymanWidget> {
         Container(
           width: widget.width,
           decoration: boxDecorationWithRoundedCorners(
-            borderRadius: radius(),
-            backgroundColor:
-                appStore.isDarkMode ? context.scaffoldBackgroundColor : white,
-          ),
+              borderRadius: radius(),
+              backgroundColor: context.cardSecondary,
+              border: Border.all(color: context.cardSecondaryBorder)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
                 decoration: boxDecorationWithRoundedCorners(
                   borderRadius: radius(),
-                  backgroundColor: primary.withValues(alpha: 0.2),
+                  backgroundColor: context.primary.withValues(alpha: 0.2),
                 ),
                 child: CachedImageWidget(
                   url: widget.data!.profileImage!.isNotEmpty
                       ? widget.data!.profileImage.validate()
                       : '',
                   width: context.width(),
-                  height: 110,
+                  height: 120,
                   fit: BoxFit.cover,
                 ).cornerRadiusWithClipRRectOnly(
                   topRight: defaultRadius.toInt(),
                   topLeft: defaultRadius.toInt(),
+                  bottomLeft: defaultRadius.toInt(),
+                  bottomRight: defaultRadius.toInt(),
                 ),
               ),
               Column(
@@ -82,7 +84,7 @@ class _HandymanWidgetState extends State<HandymanWidget> {
                     isHandymanAvailable: widget.data!.isHandymanAvailable,
                     size: 14,
                   ).center(),
-                  16.height,
+                  12.height,
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -96,11 +98,12 @@ class _HandymanWidgetState extends State<HandymanWidget> {
                             padding: const EdgeInsets.all(8),
                             decoration: boxDecorationWithRoundedCorners(
                               boxShape: BoxShape.circle,
-                              backgroundColor: primary.withValues(alpha: 0.1),
+                              backgroundColor:
+                                  context.primary.withValues(alpha: 0.1),
                             ),
                             child: Image.asset(
                               calling,
-                              color: primary,
+                              color: context.primary,
                               height: 14,
                               width: 14,
                             ),
@@ -115,12 +118,13 @@ class _HandymanWidgetState extends State<HandymanWidget> {
                             padding: const EdgeInsets.all(8),
                             decoration: boxDecorationWithRoundedCorners(
                               boxShape: BoxShape.circle,
-                              backgroundColor: primary.withValues(alpha: 0.1),
+                              backgroundColor:
+                                  context.primary.withValues(alpha: 0.1),
                             ),
                             child: ic_message.iconImage(
                               context: context,
                               size: 14,
-                              color: primary,
+                              color: context.primary,
                             ),
                           ),
                         ),
@@ -146,11 +150,12 @@ class _HandymanWidgetState extends State<HandymanWidget> {
                             padding: const EdgeInsets.all(8),
                             decoration: boxDecorationWithRoundedCorners(
                               boxShape: BoxShape.circle,
-                              backgroundColor: primary.withValues(alpha: 0.1),
+                              backgroundColor:
+                                  context.primary.withValues(alpha: 0.1),
                             ),
                             child: Image.asset(
                               textMsg,
-                              color: primary,
+                              color: context.primary,
                               height: 14,
                               width: 14,
                             ),
@@ -159,7 +164,7 @@ class _HandymanWidgetState extends State<HandymanWidget> {
                     ],
                   ).fit(),
                 ],
-              ).paddingSymmetric(vertical: 16),
+              ).paddingSymmetric(vertical: 12),
             ],
           ),
         ).onTap(
@@ -179,14 +184,17 @@ class _HandymanWidgetState extends State<HandymanWidget> {
           top: 8,
           child: Container(
             padding: const EdgeInsets.all(8),
-            decoration: boxDecorationWithRoundedCorners(
-              boxShape: BoxShape.circle,
-              backgroundColor: context.cardColor,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: context.cardSecondary,
+              border: Border.all(color: context.cardSecondaryBorder),
             ),
             alignment: Alignment.center,
-            child: !widget.data!.isActive
-                ? Image.asset(block, width: 18, height: 18)
-                : Image.asset(unBlock, width: 18, height: 18),
+            child: Icon(
+              Icons.power_settings_new_rounded,
+              size: 18,
+              color: widget.data!.isActive ? context.primary : context.error,
+            ),
           ).onTap(() {
             ifNotTester(context, () {
               if (!widget.data!.isActive) {

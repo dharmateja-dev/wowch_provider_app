@@ -2844,4 +2844,11 @@ class LanguageHi extends Languages {
   @override
   String get lblShortLineAboutWhyChooseMe =>
       'लिखें कि ग्राहकों को आपको क्यों चुनना चाहिए';
+
+  @override
+  String get select => 'चुनें';
+
+  @override
+  String get noteYouCanUploadImages =>
+      'नोट: आप \'jpg\', \'png\', \'jpeg\' एक्सटेंशन के साथ छवियां अपलोड कर सकते हैं और आप एकाधिक छवियों का चयन कर सकते हैं';
 }

@@ -7,10 +7,11 @@ import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/models/service_model.dart';
 import 'package:handyman_provider_flutter/utils/colors.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
-import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/color_extension.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../networks/rest_apis.dart';
@@ -36,14 +37,16 @@ class ServiceComponent extends StatelessWidget {
       duration: 400.milliseconds,
       decoration: boxDecorationWithRoundedCorners(
         borderRadius: radius(),
-        backgroundColor: appStore.isDarkMode ? cardDarkColor : cardColor,
+        backgroundColor: context.cardSecondary,
+        border: Border.all(color: context.cardSecondaryBorder),
       ),
       width: width ?? context.width(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Image Section with Price Badge
           SizedBox(
-            height: 205,
+            height: 140,
             width: context.width(),
             child: Stack(
               clipBehavior: Clip.none,
@@ -53,154 +56,166 @@ class ServiceComponent extends StatelessWidget {
                       ? data.imageAttachments.validate().first.validate()
                       : "",
                   fit: BoxFit.cover,
-                  height: 180,
+                  height: 140,
                   width: context.width(),
                 ).cornerRadiusWithClipRRectOnly(
                     topRight: defaultRadius.toInt(),
-                    topLeft: defaultRadius.toInt()),
+                    topLeft: defaultRadius.toInt(),
+                    bottomRight: defaultRadius.toInt(),
+                    bottomLeft: defaultRadius.toInt()),
                 // Status badges container - allows wrapping to next line when needed
-                Positioned(
-                  top: 12,
-                  left: 12,
-                  right: 12,
-                  child: Container(
-                    constraints: BoxConstraints(
-                      maxWidth: context.width() -
-                          24, // Full width minus left/right padding
-                    ),
-                    child: Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      // Vertical spacing between rows when wrapping
-                      alignment: WrapAlignment.start,
-                      crossAxisAlignment: WrapCrossAlignment.start,
-                      children: [
-                        // Category/Subcategory Badge
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 4),
-                          constraints: BoxConstraints(
-                            maxWidth: showApprovalStatus
-                                ? context.width() * 0.25
-                                : context.width() * 0.35,
-                          ),
-                          decoration: boxDecorationWithShadow(
-                            backgroundColor:
-                                context.cardColor.withValues(alpha: 0.9),
-                            borderRadius: radius(24),
-                          ),
-                          child: Marquee(
-                            directionMarguee: DirectionMarguee.oneDirection,
-                            child: Text(
-                              "${data.subCategoryName.validate().isNotEmpty ? data.subCategoryName.validate() : data.categoryName.validate()}"
-                                  .toUpperCase(),
-                              style: boldTextStyle(
-                                  color: appStore.isDarkMode ? white : primary,
-                                  size: 12),
-                            ).paddingSymmetric(horizontal: 4, vertical: 2),
-                          ),
-                        ),
+                // Positioned(
+                //   top: 10,
+                //   left: 10,
+                //   right: 10,
+                //   child: Container(
+                //     constraints: BoxConstraints(
+                //       maxWidth: context.width() -
+                //           24, // Full width minus left/right padding
+                //     ),
+                //     child: Wrap(
+                //       spacing: 8,
+                //       runSpacing: 8,
+                //       // Vertical spacing between rows when wrapping
+                //       alignment: WrapAlignment.start,
+                //       crossAxisAlignment: WrapCrossAlignment.start,
+                //       children: [
+                //         // Category/Subcategory Badge
+                //         Container(
+                //           padding: const EdgeInsets.symmetric(
+                //               horizontal: 8, vertical: 4),
+                //           constraints: BoxConstraints(
+                //             maxWidth: showApprovalStatus
+                //                 ? context.width() * 0.25
+                //                 : context.width() * 0.35,
+                //           ),
+                //           decoration: boxDecorationWithShadow(
+                //             backgroundColor:
+                //                 context.cardSecondary.withValues(alpha: 0.9),
+                //             borderRadius: radius(24),
+                //           ),
+                //           child: Marquee(
+                //             directionMarguee: DirectionMarguee.oneDirection,
+                //             child: Text(
+                //               "${data.subCategoryName.validate().isNotEmpty ? data.subCategoryName.validate() : data.categoryName.validate()}"
+                //                   .toUpperCase(),
+                //               style: context.boldTextStyle(
+                //                   color: context.primary, size: 12),
+                //               maxLines: 2,
+                //             ).paddingSymmetric(horizontal: 4, vertical: 2),
+                //           ),
+                //         ),
 
-                        // Shop Visit Type Icon
-                        if (data.visitType == VISIT_OPTION_SHOP)
-                          Container(
-                            decoration: boxDecorationDefault(
-                              color: primary,
-                              borderRadius: radius(20),
-                            ),
-                            child: Container(
-                              padding:
-                                  EdgeInsets.all(6), // 🔹 Reduced from 6 to 4
-                              child: Image.asset(
-                                Assets.iconsIcDefaultShop,
-                                height: 12,
-                                color: Colors.white,
-                              ),
-                              decoration: boxDecorationDefault(
-                                shape: BoxShape.circle,
-                                color: primary,
-                              ),
-                            ),
-                          ),
+                //         // Shop Visit Type Icon
+                //         if (data.visitType == VISIT_OPTION_SHOP)
+                //           Container(
+                //             decoration: boxDecorationDefault(
+                //               color: context.primary,
+                //               borderRadius: radius(20),
+                //             ),
+                //             child: Container(
+                //               padding: EdgeInsets.all(6),
+                //               child: Image.asset(
+                //                 Assets.iconsIcDefaultShop,
+                //                 height: 12,
+                //                 color: context.onPrimary,
+                //               ),
+                //               decoration: boxDecorationDefault(
+                //                 shape: BoxShape.circle,
+                //                 color: context.primary,
+                //               ),
+                //             ),
+                //           ),
 
-                        // Approval Status Badge
-                        if (showApprovalStatus)
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 4),
-                            constraints: BoxConstraints(
-                              maxWidth: context.width() * 0.25,
-                            ),
-                            decoration: boxDecorationDefault(
-                              color: data.serviceRequestStatus
-                                  .validate()
-                                  .getServiceApprovalStatusColor,
-                              borderRadius: radius(24),
-                            ),
-                            child: Marquee(
-                              directionMarguee: DirectionMarguee.oneDirection,
-                              child: Text(
-                                data.serviceRequestStatus
-                                    .validate()
-                                    .toServiceApprovalStatus,
-                                style: boldTextStyle(color: white, size: 12),
-                              ).paddingSymmetric(horizontal: 4, vertical: 2),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
-                if (data.isOnlineService)
-                  const Positioned(
-                    top: 20,
-                    right: 12,
-                    child: Icon(Icons.circle, color: Colors.green, size: 12),
-                  ),
+                //         // Approval Status Badge
+                //         if (showApprovalStatus)
+                //           Container(
+                //             padding: EdgeInsets.symmetric(
+                //                 horizontal: 8, vertical: 4),
+                //             constraints: BoxConstraints(
+                //               maxWidth: context.width() * 0.25,
+                //             ),
+                //             decoration: boxDecorationDefault(
+                //               color: data.serviceRequestStatus
+                //                   .validate()
+                //                   .getServiceApprovalStatusColor,
+                //               borderRadius: radius(24),
+                //             ),
+                //             child: Marquee(
+                //               directionMarguee: DirectionMarguee.oneDirection,
+                //               child: Text(
+                //                 data.serviceRequestStatus
+                //                     .validate()
+                //                     .toServiceApprovalStatus,
+                //                 style: boldTextStyle(color: white, size: 12),
+                //               ).paddingSymmetric(horizontal: 4, vertical: 2),
+                //             ),
+                //           ),
+                //       ],
+                //     ),
+                //   ),
+                // ),
+                // if (data.isOnlineService)
+                //   const Positioned(
+                //     top: 20,
+                //     right: 12,
+                //     child: Icon(Icons.circle, color: Colors.green, size: 12),
+                //   ),
                 Positioned(
-                  bottom: 12,
-                  right: 8,
+                  bottom: -10,
+                  right: 6,
                   child: Container(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: boxDecorationWithShadow(
-                      backgroundColor: primary,
+                      backgroundColor: context.primary,
                       borderRadius: radius(24),
-                      border: Border.all(color: context.cardColor, width: 2),
+                      border:
+                          Border.all(color: context.cardSecondary, width: 2),
                     ),
                     child: PriceWidget(
                       price: data.price.validate(),
                       isHourlyService:
                           data.type.validate() == SERVICE_TYPE_HOURLY,
-                      color: Colors.white,
-                      hourlyTextColor: Colors.white,
+                      color: context.onPrimary,
+                      hourlyTextColor: context.onPrimary,
                       size: 14,
                       isFreeService: data.isFreeService,
                     ),
                   ),
                 ),
-                Positioned(
-                  bottom: 0,
-                  left: 16,
-                  child: DisabledRatingBarWidget(
-                      rating: data.totalRating.validate(), size: 14),
+              ],
+            ),
+          ),
+
+          // Content Section (Stars + Name)
+          Padding(
+            padding: EdgeInsets.all(8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                8.height,
+                // Star Rating
+                DisabledRatingBarWidget(
+                  rating: data.totalRating.validate(),
+                  size: 18,
+                ),
+                8.height,
+                // Service Name
+                Text(
+                  data.name.validate(),
+                  style: context.boldTextStyle(size: 14),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
           ),
+
+          // Service Status Section (if applicable)
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              8.height,
-              Marquee(
-                directionMarguee: DirectionMarguee.oneDirection,
-                child: Text(data.name.validate(), style: boldTextStyle())
-                    .paddingSymmetric(horizontal: 16),
-              ),
-
-              16.height,
-
-              /// Service Approval and Rejection UI
               if (data.serviceRequestStatus == SERVICE_PENDING)
                 RichText(
                   text: TextSpan(
