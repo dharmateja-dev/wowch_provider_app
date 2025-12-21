@@ -14,7 +14,6 @@ import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
-import 'package:handyman_provider_flutter/utils/extensions/num_extenstions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
 import 'package:handyman_provider_flutter/utils/model_keys.dart';
@@ -708,16 +707,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
     showCountryPicker(
       context: context,
       countryListTheme: CountryListThemeData(
-        textStyle: secondaryTextStyle(color: textSecondaryColorGlobal),
-        searchTextStyle: primaryTextStyle(),
+        borderRadius: BorderRadius.circular(0),
+        bottomSheetHeight: 600,
+        textStyle: context.primaryTextStyle(),
+        searchTextStyle: context.primaryTextStyle(
+          color: context.searchTextColor,
+        ),
+        backgroundColor: context.bottomSheetBackgroundColor,
         inputDecoration: InputDecoration(
-          labelText: languages.search,
-          prefixIcon: const Icon(Icons.search),
+          fillColor: context.searchFillColor,
+          filled: true,
           border: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: const Color(0xFF8C98A8).withValues(alpha: 0.2),
-            ),
+            borderSide: BorderSide(color: Colors.transparent),
           ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.transparent),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.transparent),
+          ),
+          hintText: languages.search,
+          hintStyle: context.primaryTextStyle(
+            size: 14,
+            color: context.searchHintColor,
+          ),
+          prefixIcon: Icon(Icons.search, color: context.searchHintColor),
         ),
       ),
       showPhoneCode: true,

@@ -62,8 +62,14 @@ class _SignInScreenState extends State<SignInScreen> {
 
   void init() async {
     if (await isIqonicProduct) {
-      emailCont.text = getStringAsync(USER_EMAIL);
-      passwordCont.text = getStringAsync(USER_PASSWORD);
+      // In demo mode, start with empty fields - user can use demo buttons
+      if (DEMO_MODE_ENABLED) {
+        emailCont.text = '';
+        passwordCont.text = '';
+      } else {
+        emailCont.text = getStringAsync(USER_EMAIL);
+        passwordCont.text = getStringAsync(USER_PASSWORD);
+      }
       setState(() {});
     }
   }
@@ -212,8 +218,8 @@ class _SignInScreenState extends State<SignInScreen> {
                         _buildForgotRememberWidget(),
                         _buildButtonWidget(),
                         16.height,
-                        // Show demo login options when demo mode is enabled
-                        if (DEMO_MODE_ENABLED)
+                        // Show demo login options only when explicitly enabled
+                        if (DEMO_MODE_ENABLED && SHOW_DEMO_BUTTONS)
                           UserDemoModeScreen(
                             onChanged: (email, password) {
                               if (email.isNotEmpty && password.isNotEmpty) {
@@ -395,21 +401,24 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   /// Demo Login Handler
-  /// Uses dummy user data and sets up login state without backend
+  /// Simulates real login by validating credentials and setting up user data
+  /// Works with any valid email format when DEMO_MODE_ENABLED is true
   Future<void> _handleDemoLogin() async {
     appStore.setLoading(true);
 
-    // Small delay to simulate network call
-    await Future.delayed(const Duration(milliseconds: 500));
+    // Simulate network delay for realistic feel
+    await Future.delayed(const Duration(milliseconds: 800));
 
-    // Determine demo user based on the email field (not the constant)
-    // This allows switching between Provider and Handyman using the demo buttons
-    UserData demoUser;
-    if (emailCont.text.trim() == DEFAULT_HANDYMAN_EMAIL) {
-      demoUser = DemoData.demoHandymanUser;
-    } else {
-      demoUser = DemoData.demoProviderUser;
+    // Validate credentials
+    if (!DemoData.validateCredentials(
+        emailCont.text.trim(), passwordCont.text.trim())) {
+      appStore.setLoading(false);
+      toast('Invalid email or password');
+      return;
     }
+
+    // Get user based on email - determines Provider or Handyman
+    UserData demoUser = DemoData.getUserForEmail(emailCont.text.trim());
 
     // Save demo user data to app store
     await appStore.setUserId(demoUser.id ?? 1);

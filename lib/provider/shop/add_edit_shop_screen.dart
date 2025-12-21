@@ -19,9 +19,11 @@ import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
 import 'package:handyman_provider_flutter/utils/model_keys.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class AddEditShopScreen extends StatefulWidget {
@@ -539,16 +541,31 @@ class _AddEditShopScreenState extends State<AddEditShopScreen> {
     showCountryPicker(
       context: context,
       countryListTheme: CountryListThemeData(
-        textStyle: secondaryTextStyle(color: textSecondaryColorGlobal),
-        searchTextStyle: primaryTextStyle(),
+        borderRadius: BorderRadius.circular(0),
+        bottomSheetHeight: 600,
+        textStyle: context.primaryTextStyle(),
+        searchTextStyle: context.primaryTextStyle(
+          color: context.searchTextColor,
+        ),
+        backgroundColor: context.bottomSheetBackgroundColor,
         inputDecoration: InputDecoration(
-          labelText: languages.search,
-          prefixIcon: const Icon(Icons.search),
+          fillColor: context.searchFillColor,
+          filled: true,
           border: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: const Color(0xFF8C98A8).withValues(alpha: 0.2),
-            ),
+            borderSide: BorderSide(color: Colors.transparent),
           ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.transparent),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.transparent),
+          ),
+          hintText: languages.search,
+          hintStyle: context.primaryTextStyle(
+            size: 14,
+            color: context.searchHintColor,
+          ),
+          prefixIcon: Icon(Icons.search, color: context.searchHintColor),
         ),
       ),
       showPhoneCode: true,
@@ -656,7 +673,7 @@ class _AddEditShopScreenState extends State<AddEditShopScreen> {
                     suffix: Icon(
                       Icons.storefront_outlined,
                       size: 20,
-                      color: context.iconColor,
+                      color: context.icon,
                     ).paddingAll(14),
                     nextFocus: registrationNumberFocus,
                     isValidationRequired: true,
@@ -673,7 +690,7 @@ class _AddEditShopScreenState extends State<AddEditShopScreen> {
                     suffix: Icon(
                       Icons.badge_outlined,
                       size: 20,
-                      color: context.iconColor,
+                      color: context.icon,
                     ).paddingAll(14),
                     textStyle: primaryTextStyle(),
                     isValidationRequired: true,
@@ -788,7 +805,7 @@ class _AddEditShopScreenState extends State<AddEditShopScreen> {
                     suffix: Icon(
                       Icons.location_on_outlined,
                       size: 20,
-                      color: context.iconColor,
+                      color: context.icon,
                     ).paddingAll(14),
                     nextFocus: registrationNumberFocus,
                     isValidationRequired: true,
@@ -805,7 +822,7 @@ class _AddEditShopScreenState extends State<AddEditShopScreen> {
                     suffix: Icon(
                       Icons.map_outlined,
                       size: 20,
-                      color: context.iconColor,
+                      color: context.icon,
                     ).paddingAll(14),
                     nextFocus: longitudeFocus,
                   ),
@@ -820,7 +837,7 @@ class _AddEditShopScreenState extends State<AddEditShopScreen> {
                     suffix: Icon(
                       Icons.map_outlined,
                       size: 20,
-                      color: context.iconColor,
+                      color: context.icon,
                     ).paddingAll(14),
                     isValidationRequired: true,
                     errorThisFieldRequired: languages.hintRequired,
@@ -853,7 +870,7 @@ class _AddEditShopScreenState extends State<AddEditShopScreen> {
                     suffix: Icon(
                       Icons.map_outlined,
                       size: 20,
-                      color: context.iconColor,
+                      color: context.icon,
                     ).paddingAll(14),
                     onTap: () async {
                       final picked = await showTimePicker(
@@ -881,7 +898,7 @@ class _AddEditShopScreenState extends State<AddEditShopScreen> {
                     suffix: Icon(
                       Icons.map_outlined,
                       size: 20,
-                      color: context.iconColor,
+                      color: context.icon,
                     ).paddingAll(14),
                     onTap: () async {
                       final picked = await showTimePicker(
@@ -952,7 +969,7 @@ class _AddEditShopScreenState extends State<AddEditShopScreen> {
                     suffix: Icon(
                       Icons.email_outlined,
                       size: 20,
-                      color: context.iconColor,
+                      color: context.icon,
                     ).paddingAll(14),
                     isValidationRequired: true,
                     errorThisFieldRequired: languages.hintRequired,
@@ -1007,7 +1024,7 @@ class _AddEditShopScreenState extends State<AddEditShopScreen> {
                                           unselectedWidgetColor:
                                               appStore.isDarkMode
                                                   ? context.dividerColor
-                                                  : context.iconColor,
+                                                  : context.icon,
                                         ),
                                         child: CheckboxListTile(
                                           checkboxShape: RoundedRectangleBorder(
@@ -1018,7 +1035,7 @@ class _AddEditShopScreenState extends State<AddEditShopScreen> {
                                           visualDensity: VisualDensity.compact,
                                           dense: true,
                                           checkColor: appStore.isDarkMode
-                                              ? context.iconColor
+                                              ? context.icon
                                               : context.cardColor,
                                           title: Marquee(
                                             child: Text(

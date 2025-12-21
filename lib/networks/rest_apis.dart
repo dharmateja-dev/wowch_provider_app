@@ -56,6 +56,8 @@ import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/demo_data.dart';
+import 'package:handyman_provider_flutter/utils/demo_mode.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
 import 'package:handyman_provider_flutter/utils/model_keys.dart';
 import 'package:http/http.dart';
@@ -445,17 +447,36 @@ Future<List<CityListResponse>> getCityList(Map request) async {
 //region Category API
 Future<CategoryResponse> getCategoryList(
     {String perPage = '', String? languageCode}) async {
-  return CategoryResponse.fromJson(
-    await handleResponse(
-      await buildHttpResponse(
-        'category-list?per_page=$perPage',
-        method: HttpMethodType.GET,
-        header: languageCode != null
-            ? buildHeaderTokensForLanguage(languageCode)
-            : null,
+  try {
+    return CategoryResponse.fromJson(
+      await handleResponse(
+        await buildHttpResponse(
+          'category-list?per_page=$perPage',
+          method: HttpMethodType.GET,
+          header: languageCode != null
+              ? buildHeaderTokensForLanguage(languageCode)
+              : null,
+        ),
       ),
-    ),
-  );
+    );
+  } catch (e) {
+    // Demo mode fallback
+    if (DEMO_MODE_ENABLED) {
+      log('Demo mode: Using demo category list');
+      return CategoryResponse.fromJson({
+        'data': demoCategories
+            .map((cat) => {
+                  'id': cat['id'],
+                  'name': cat['name'],
+                  'category_image': cat['category_image'],
+                  'color': cat['color'],
+                  'status': cat['status'],
+                })
+            .toList(),
+      });
+    }
+    throw e;
+  }
 }
 //endregion
 
@@ -564,7 +585,26 @@ Future<DashboardResponse> providerDashboard({
     appStore.setLoading(false);
   } catch (e) {
     appStore.setLoading(false);
-    completer.completeError(e);
+
+    // Demo mode fallback - return demo data when API fails
+    if (DEMO_MODE_ENABLED) {
+      log('Demo mode: Using demo provider dashboard data');
+      final demoData = DemoDashboardData.providerDashboard;
+
+      cachedProviderDashboardResponse = demoData;
+
+      appStore.setTotalHandyman(demoData.totalActiveHandyman.validate());
+      appStore
+          .setNotificationCount(demoData.notificationUnreadCount.validate());
+
+      if (demoData.commission != null) {
+        setValue(DASHBOARD_COMMISSION, jsonEncode(demoData.commission));
+      }
+
+      completer.complete(demoData);
+    } else {
+      completer.completeError(e);
+    }
   }
 
   return completer.future;
@@ -629,7 +669,28 @@ Future<HandymanDashBoardResponse> handymanDashboard({
 
     completer.complete(data);
   } catch (e) {
-    completer.completeError(e);
+    // Demo mode fallback - return demo data when API fails
+    if (DEMO_MODE_ENABLED) {
+      log('Demo mode: Using demo handyman dashboard data');
+      final demoData = DemoDashboardData.handymanDashboard;
+
+      cachedHandymanDashboardResponse = demoData;
+
+      appStore
+          .setCompletedBooking(demoData.completedBooking.validate().toInt());
+      appStore.setHandymanAvailability(demoData.isHandymanAvailable.validate());
+      appStore
+          .setNotificationCount(demoData.notificationUnreadCount.validate());
+
+      if (demoData.commission != null) {
+        setValue(DASHBOARD_COMMISSION, jsonEncode(demoData.commission));
+      }
+
+      appStore.setLoading(false);
+      completer.complete(demoData);
+    } else {
+      completer.completeError(e);
+    }
   }
 
   return completer.future;
@@ -679,6 +740,22 @@ Future<List<UserData>> getHandyman({
     appStore.setLoading(false);
   } catch (e) {
     appStore.setLoading(false);
+
+    // Demo mode fallback
+    if (DEMO_MODE_ENABLED) {
+      log('Demo mode: Using demo handyman/user list');
+      if (page == 1) list.clear();
+
+      if (userTypeHandyman == IS_USER) {
+        list.addAll(demoCustomers);
+        cachedUserData = list;
+      } else {
+        list.addAll(demoHandymen);
+        cachedHandymanList = list;
+      }
+      lastPageCallback?.call(true);
+      return list;
+    }
 
     throw e;
   }
@@ -787,33 +864,58 @@ Future<ServiceResponse> getServiceList(
   int? categoryId,
   bool isCategoryWise = false,
 }) async {
-  if (isCategoryWise) {
-    return ServiceResponse.fromJson(
-      await handleResponse(
-        await buildHttpResponse(
-          'service-list?per_page=$PER_PAGE_ITEM&category_id=$categoryId&page=$page&provider_id=$providerId',
-          method: HttpMethodType.GET,
+  try {
+    if (isCategoryWise) {
+      return ServiceResponse.fromJson(
+        await handleResponse(
+          await buildHttpResponse(
+            'service-list?per_page=$PER_PAGE_ITEM&category_id=$categoryId&page=$page&provider_id=$providerId',
+            method: HttpMethodType.GET,
+          ),
         ),
-      ),
-    );
-  } else if (isSearch) {
-    return ServiceResponse.fromJson(
-      await handleResponse(
-        await buildHttpResponse(
-          'service-list?per_page=$PER_PAGE_ITEM&page=$page&search=$searchTxt&provider_id=$providerId',
-          method: HttpMethodType.GET,
+      );
+    } else if (isSearch) {
+      return ServiceResponse.fromJson(
+        await handleResponse(
+          await buildHttpResponse(
+            'service-list?per_page=$PER_PAGE_ITEM&page=$page&search=$searchTxt&provider_id=$providerId',
+            method: HttpMethodType.GET,
+          ),
         ),
-      ),
-    );
-  } else {
-    return ServiceResponse.fromJson(
-      await handleResponse(
-        await buildHttpResponse(
-          'service-list?per_page=$PER_PAGE_ITEM&page=$page&provider_id=$providerId',
-          method: HttpMethodType.GET,
+      );
+    } else {
+      return ServiceResponse.fromJson(
+        await handleResponse(
+          await buildHttpResponse(
+            'service-list?per_page=$PER_PAGE_ITEM&page=$page&provider_id=$providerId',
+            method: HttpMethodType.GET,
+          ),
         ),
-      ),
-    );
+      );
+    }
+  } catch (e) {
+    // Demo mode fallback
+    if (DEMO_MODE_ENABLED) {
+      log('Demo mode: Using demo service list');
+      List<ServiceData> services = demoServices;
+
+      // Filter by category if needed
+      if (isCategoryWise && categoryId != null) {
+        services = services.where((s) => s.categoryId == categoryId).toList();
+      }
+
+      // Search filter
+      if (isSearch && searchTxt != null && searchTxt.isNotEmpty) {
+        services = services
+            .where((s) =>
+                s.name?.toLowerCase().contains(searchTxt.toLowerCase()) ??
+                false)
+            .toList();
+      }
+
+      return ServiceResponse(data: services);
+    }
+    throw e;
   }
 }
 
@@ -1050,6 +1152,27 @@ Future<List<BookingData>> getBookingList(
     return bookings;
   } catch (e) {
     appStore.setLoading(false);
+
+    // Demo mode fallback - return demo bookings when API fails
+    if (DEMO_MODE_ENABLED) {
+      log('Demo mode: Using demo booking list data');
+      List<BookingData> demoBookingList = demoBookings;
+
+      // Filter by status if provided
+      if (bookingStatus.isNotEmpty &&
+          bookingStatus != BOOKING_PAYMENT_STATUS_ALL) {
+        demoBookingList =
+            demoBookingList.where((b) => b.status == bookingStatus).toList();
+      }
+
+      if (page == 1) bookings.clear();
+      bookings.addAll(demoBookingList);
+      lastPageCallback?.call(true); // Demo data is always last page
+
+      cachedBookingList = bookings;
+
+      return bookings;
+    }
 
     throw e;
   }
@@ -1371,6 +1494,28 @@ Future<List<ProviderSubscriptionModel>> getPricingPlanList() async {
     return list;
   } catch (e) {
     appStore.setLoading(false);
+
+    // Demo mode fallback
+    if (DEMO_MODE_ENABLED) {
+      log('Demo mode: Using demo pricing plan list');
+      List<ProviderSubscriptionModel> list = [];
+      for (var plan in demoSubscriptionPlans) {
+        list.add(ProviderSubscriptionModel(
+          id: plan['id'],
+          title: plan['title'],
+          identifier: plan['identifier'],
+          amount: plan['amount'] is int
+              ? plan['amount']
+              : (plan['amount'] as num).toInt(),
+          status: plan['status'].toString(),
+          type: plan['type'],
+          description: plan['description'],
+          planType: plan['plan_type'],
+        ));
+      }
+      return list;
+    }
+
     throw e;
   }
 }
@@ -1414,6 +1559,30 @@ Future<List<ProviderSubscriptionModel>> getSubscriptionHistory({
     return providerSubscriptionList;
   } catch (e) {
     appStore.setLoading(false);
+
+    // Demo mode fallback
+    if (DEMO_MODE_ENABLED) {
+      log('Demo mode: Using demo subscription history');
+      if (page == 1) providerSubscriptionList.clear();
+      for (var sub in demoSubscriptionHistory) {
+        providerSubscriptionList.add(ProviderSubscriptionModel(
+          id: sub['id'],
+          planId: sub['plan_id'],
+          title: sub['title'],
+          identifier: sub['identifier'],
+          amount: sub['amount'] is int
+              ? sub['amount']
+              : (sub['amount'] as num).toInt(),
+          status: sub['status'].toString(),
+          startAt: sub['start_at'],
+          endAt: sub['end_at'],
+          type: sub['payment_type'],
+        ));
+      }
+      lastPageCallback?.call(true);
+      return providerSubscriptionList;
+    }
+
     throw e;
   }
 }
@@ -1495,6 +1664,33 @@ Future<List<WalletHistory>> getWalletHistory({
     return list;
   } catch (e) {
     appStore.setLoading(false);
+
+    // Demo mode fallback
+    if (DEMO_MODE_ENABLED) {
+      log('Demo mode: Using demo wallet history');
+      if (page == 1) list.clear();
+      // Convert demo wallet history to WalletHistory objects
+      for (var wallet in demoWalletHistory) {
+        list.add(WalletHistory(
+          id: wallet['id'],
+          activityMessage: wallet['activity_message'],
+          activityType: wallet['transaction_type'],
+          datetime: wallet['datetime'],
+          activityData: ActivityData(
+            title: wallet['title'],
+            userId: wallet['user_id'],
+            transactionType: wallet['transaction_type'],
+            amount: (wallet['amount'] as num).toDouble(),
+            creditDebitAmount: (wallet['amount'] as num).toDouble(),
+          ),
+        ));
+      }
+      cachedWalletList = list;
+      availableBalance?.call(15680.50);
+      lastPageCallback?.call(true);
+      return list;
+    }
+
     throw e;
   }
 }
@@ -1506,25 +1702,52 @@ Future<List<BankHistory>> getBankListDetail({
   required List<BankHistory> list,
   Function(bool)? lastPageCallback,
 }) async {
-  BankListResponse res = BankListResponse.fromJson(
-    await handleResponse(
-      await buildHttpResponse(
-        'user-bank-detail?per_page=$perPage&page=$page&user_id=$userId',
-        method: HttpMethodType.GET,
+  try {
+    BankListResponse res = BankListResponse.fromJson(
+      await handleResponse(
+        await buildHttpResponse(
+          'user-bank-detail?per_page=$perPage&page=$page&user_id=$userId',
+          method: HttpMethodType.GET,
+        ),
       ),
-    ),
-  );
+    );
 
-  if (page == 1) list.clear();
-  list.addAll(res.data.validate());
+    if (page == 1) list.clear();
+    list.addAll(res.data.validate());
 
-  cachedBankList = list;
+    cachedBankList = list;
 
-  appStore.setLoading(false);
+    appStore.setLoading(false);
 
-  lastPageCallback?.call(res.data.validate().length != PER_PAGE_ITEM);
+    lastPageCallback?.call(res.data.validate().length != PER_PAGE_ITEM);
 
-  return list;
+    return list;
+  } catch (e) {
+    appStore.setLoading(false);
+
+    // Demo mode fallback
+    if (DEMO_MODE_ENABLED) {
+      log('Demo mode: Using demo bank list');
+      if (page == 1) list.clear();
+      // Convert demo bank details to BankHistory objects
+      for (var bank in demoBankDetails) {
+        list.add(BankHistory(
+          id: bank['id'],
+          bankName: bank['bank_name'],
+          branchName: bank['branch_name'],
+          accountNo: bank['account_no'],
+          ifscNo: bank['ifsc_no'],
+          mobileNo: bank['mobile_no'],
+          isDefault: bank['is_default'],
+        ));
+      }
+      cachedBankList = list;
+      lastPageCallback?.call(true);
+      return list;
+    }
+
+    throw e;
+  }
 }
 
 Future<BaseResponseModel> chooseDefaulBank({required int bankId}) async {
@@ -1658,6 +1881,16 @@ Future<List<PaymentData>> getPaymentAPI(
   } catch (e) {
     appStore.setLoading(false);
 
+    // Demo mode fallback
+    if (DEMO_MODE_ENABLED) {
+      log('Demo mode: Using demo payment list');
+      if (page == 1) list.clear();
+      list.addAll(demoPayments);
+      cachedPaymentList = list;
+      lastPageCallback?.call(true);
+      return list;
+    }
+
     throw e;
   }
 }
@@ -1734,6 +1967,25 @@ Future<List<TaxData>> getTaxList({
     appStore.setLoading(false);
   } catch (e) {
     appStore.setLoading(false);
+
+    // Demo mode fallback
+    if (DEMO_MODE_ENABLED) {
+      log('Demo mode: Using demo tax list');
+      if (page == 1) list.clear();
+      // Convert demo tax maps to TaxData
+      for (var tax in demoTaxes) {
+        list.add(TaxData(
+          id: tax['id'],
+          title: tax['title'],
+          type: tax['type'],
+          value: (tax['value'] as num).toDouble(),
+          providerId: tax['provider_id'],
+        ));
+      }
+      lastPageCallback?.call(true);
+      return list;
+    }
+
     throw e;
   }
   return list;
@@ -1771,6 +2023,17 @@ Future<List<NotificationData>> getNotification(
     appStore.setLoading(false);
   } catch (e) {
     appStore.setLoading(false);
+
+    // Demo mode fallback
+    if (DEMO_MODE_ENABLED) {
+      log('Demo mode: Using demo notifications');
+      if (page == 1) notificationList.clear();
+      notificationList.addAll(demoNotifications);
+      cachedNotifications = notificationList;
+      lastPageCallback?.call(true);
+      return notificationList;
+    }
+
     throw e;
   }
 
@@ -1814,6 +2077,26 @@ Future<List<TotalData>> getTotalEarningList(
     return list;
   } catch (e) {
     appStore.setLoading(false);
+
+    // Demo mode fallback
+    if (DEMO_MODE_ENABLED) {
+      log('Demo mode: Using demo earnings list');
+      if (page == 1) list.clear();
+      var earnings = isUserTypeProvider ? demoEarnings : demoHandymanEarnings;
+      for (var earn in earnings) {
+        list.add(TotalData(
+          id: earn['id'],
+          amount: (earn['commission'] as num).toDouble(),
+          createdAt: earn['created_at'] ?? earn['payment_date'],
+          description:
+              'Booking #${earn['booking_id']} - ${earn['service_name'] ?? "Service"}',
+          paymentMethod: 'wallet',
+        ));
+      }
+      cachedTotalDataList = list;
+      lastPageCallback?.call(true);
+      return list;
+    }
 
     throw e;
   }
@@ -1875,6 +2158,24 @@ Future<List<PostJobData>> getPostJobList(
     appStore.setLoading(false);
   } catch (e) {
     appStore.setLoading(false);
+
+    // Demo mode fallback
+    if (DEMO_MODE_ENABLED) {
+      log('Demo mode: Using demo job request list');
+      if (page == 1) postJobList.clear();
+      for (var job in demoJobRequests) {
+        postJobList.add(PostJobData(
+          id: job['id'],
+          title: job['title'],
+          description: job['description'],
+          price: (job['price'] as num).toDouble(),
+          status: job['status'],
+        ));
+      }
+      lastPageCallback?.call(true);
+      return postJobList;
+    }
+
     throw e;
   }
 
@@ -1956,6 +2257,23 @@ Future<List<BidderData>> getBidList({
     appStore.setLoading(false);
   } catch (e) {
     appStore.setLoading(false);
+
+    // Demo mode fallback
+    if (DEMO_MODE_ENABLED) {
+      log('Demo mode: Using demo bid list');
+      if (page == 1) bidList.clear();
+      for (var bid in demoBids) {
+        bidList.add(BidderData(
+          id: bid['id'],
+          postRequestId: bid['post_request_id'],
+          providerId: bid['provider_id'],
+          price: (bid['price'] as num).toDouble(),
+        ));
+      }
+      lastPageCallback?.call(true);
+      return bidList;
+    }
+
     throw e;
   }
   return bidList;
@@ -1990,6 +2308,24 @@ Future<List<ServiceAddon>> getAddonsServiceList({
     return addonServiceData;
   } catch (e) {
     appStore.setLoading(false);
+
+    // Demo mode fallback
+    if (DEMO_MODE_ENABLED) {
+      log('Demo mode: Using demo addons list');
+      if (page == 1) addonServiceData.clear();
+      for (var addon in demoAddons) {
+        addonServiceData.add(ServiceAddon(
+          id: addon['id'],
+          name: addon['name'],
+          serviceId: addon['service_id'],
+          price: (addon['price'] as num).toDouble(),
+          status: addon['status'],
+          serviceAddonImage: addon['image'],
+        ));
+      }
+      lastPageCallback?.call(true);
+      return addonServiceData;
+    }
 
     throw e;
   }
@@ -2081,6 +2417,27 @@ Future<List<PackageData>> getAllPackageList({
     return packageData;
   } catch (e) {
     appStore.setLoading(false);
+
+    // Demo mode fallback
+    if (DEMO_MODE_ENABLED) {
+      log('Demo mode: Using demo package list');
+      if (page == 1) packageData.clear();
+      for (var pkg in demoPackages) {
+        packageData.add(PackageData(
+          id: pkg['id'],
+          name: pkg['name'],
+          description: pkg['description'],
+          price: (pkg['price'] as num).toDouble(),
+          startDate: pkg['start_at'],
+          endDate: pkg['end_at'],
+          status: pkg['status'],
+          isFeatured: pkg['is_featured'],
+          categoryId: pkg['category_id'],
+        ));
+      }
+      lastPageCallback?.call(true);
+      return packageData;
+    }
 
     throw e;
   }

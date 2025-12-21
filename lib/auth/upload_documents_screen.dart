@@ -18,9 +18,7 @@ import '../components/pdf_viewer_component.dart';
 import '../main.dart';
 import '../models/document_list_response.dart';
 import '../networks/rest_apis.dart';
-import '../utils/colors.dart';
 import '../utils/common.dart';
-import '../utils/configs.dart';
 import '../utils/images.dart';
 import 'sign_in_screen.dart';
 

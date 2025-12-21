@@ -1355,16 +1355,31 @@ class EditProfileScreenState extends State<EditProfileScreen> {
     showCountryPicker(
       context: context,
       countryListTheme: CountryListThemeData(
-        textStyle: context.secondaryTextStyle(color: textSecondaryColorGlobal),
-        searchTextStyle: context.primaryTextStyle(),
+        borderRadius: BorderRadius.circular(0),
+        bottomSheetHeight: 600,
+        textStyle: context.primaryTextStyle(),
+        searchTextStyle: context.primaryTextStyle(
+          color: context.searchTextColor,
+        ),
+        backgroundColor: context.bottomSheetBackgroundColor,
         inputDecoration: InputDecoration(
-          labelText: languages.search,
-          prefixIcon: const Icon(Icons.search),
+          fillColor: context.searchFillColor,
+          filled: true,
           border: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: const Color(0xFF8C98A8).withValues(alpha: 0.2),
-            ),
+            borderSide: BorderSide(color: Colors.transparent),
           ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.transparent),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.transparent),
+          ),
+          hintText: languages.search,
+          hintStyle: context.primaryTextStyle(
+            size: 14,
+            color: context.searchHintColor,
+          ),
+          prefixIcon: Icon(Icons.search, color: context.searchHintColor),
         ),
       ),
       showPhoneCode:

@@ -293,8 +293,11 @@ List<UserData> get demoHandymen => [
       ),
     ];
 
-/// Demo Bookings List
+/// Demo Bookings List - ALL BOOKING STATUSES
+/// Status types: pending, accept, on_going, in_progress, hold, cancelled,
+/// rejected, failed, completed, pending_approval, waiting, paid
 List<BookingData> get demoBookings => [
+      // 1. PENDING - New booking awaiting acceptance
       BookingData(
         id: 1001,
         serviceName: 'Home Cleaning',
@@ -322,6 +325,8 @@ List<BookingData> get demoBookings => [
           'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400',
         ],
       ),
+
+      // 2. ACCEPT - Booking accepted, waiting to start
       BookingData(
         id: 1002,
         serviceName: 'Electrical Repair',
@@ -353,6 +358,8 @@ List<BookingData> get demoBookings => [
           ),
         ],
       ),
+
+      // 3. ON_GOING - Service in progress
       BookingData(
         id: 1003,
         serviceName: 'Plumbing Service',
@@ -385,6 +392,77 @@ List<BookingData> get demoBookings => [
           ),
         ],
       ),
+
+      // 4. IN_PROGRESS - Additional work being done
+      BookingData(
+        id: 1006,
+        serviceName: 'Carpentry Work',
+        serviceId: 7,
+        customerName: 'Frank Wilson',
+        customerId: 106,
+        customerImage: 'https://i.pravatar.cc/300?u=frank',
+        providerId: 1,
+        providerName: 'John Provider',
+        status: BOOKING_STATUS_IN_PROGRESS,
+        statusLabel: 'In Progress',
+        date: '2024-01-22 11:00:00',
+        address: '111 Cedar Lane, Staten Island, NY 10301',
+        visitType: VISIT_OPTION_ON_SITE,
+        amount: 200.00,
+        totalAmount: 200.00,
+        discount: 0,
+        type: SERVICE_TYPE_HOURLY,
+        paymentStatus: PENDING,
+        paymentMethod: PAYMENT_METHOD_COD,
+        quantity: 4,
+        description: 'Building custom shelves in living room',
+        startAt: '2024-01-22 11:30:00',
+        handyman: [
+          Handyman(
+            id: 3,
+            bookingId: 1006,
+            handymanId: 5,
+            handyman: demoHandymen[3],
+          ),
+        ],
+      ),
+
+      // 5. HOLD - Service temporarily paused
+      BookingData(
+        id: 1007,
+        serviceName: 'Painting Service',
+        serviceId: 5,
+        customerName: 'Grace Lee',
+        customerId: 107,
+        customerImage: 'https://i.pravatar.cc/300?u=grace',
+        providerId: 1,
+        providerName: 'John Provider',
+        status: BOOKING_STATUS_HOLD,
+        statusLabel: 'On Hold',
+        date: '2024-01-17 08:00:00',
+        address: '222 Birch Road, Manhattan, NY 10022',
+        visitType: VISIT_OPTION_ON_SITE,
+        amount: 350.00,
+        totalAmount: 350.00,
+        discount: 0,
+        type: SERVICE_TYPE_FIXED,
+        paymentStatus: PENDING,
+        paymentMethod: PAYMENT_METHOD_STRIPE,
+        quantity: 1,
+        description: 'Interior painting - waiting for paint delivery',
+        startAt: '2024-01-17 08:30:00',
+        reason: 'Waiting for special paint color to be delivered',
+        handyman: [
+          Handyman(
+            id: 4,
+            bookingId: 1007,
+            handymanId: 5,
+            handyman: demoHandymen[3],
+          ),
+        ],
+      ),
+
+      // 6. COMPLETED - Service finished successfully
       BookingData(
         id: 1004,
         serviceName: 'AC Repair & Service',
@@ -411,7 +489,17 @@ List<BookingData> get demoBookings => [
         endAt: '2024-01-15 13:30:00',
         totalRating: 5,
         totalReview: 1,
+        handyman: [
+          Handyman(
+            id: 5,
+            bookingId: 1004,
+            handymanId: 2,
+            handyman: demoHandymen[0],
+          ),
+        ],
       ),
+
+      // 7. CANCELLED - Booking cancelled by customer
       BookingData(
         id: 1005,
         serviceName: 'Painting Service',
@@ -436,6 +524,165 @@ List<BookingData> get demoBookings => [
         description: 'Paint living room and bedroom',
         reason: 'Customer requested cancellation due to schedule conflict',
         isCancelled: 1,
+      ),
+
+      // 8. REJECTED - Booking rejected by provider
+      BookingData(
+        id: 1008,
+        serviceName: 'Home Cleaning',
+        serviceId: 1,
+        customerName: 'Henry Brown',
+        customerId: 108,
+        customerImage: 'https://i.pravatar.cc/300?u=henry',
+        providerId: 1,
+        providerName: 'John Provider',
+        status: BOOKING_STATUS_REJECTED,
+        statusLabel: 'Rejected',
+        date: '2024-01-16 09:00:00',
+        address: '333 Walnut Street, Brooklyn, NY 11205',
+        visitType: VISIT_OPTION_ON_SITE,
+        amount: 75.00,
+        totalAmount: 75.00,
+        discount: 0,
+        type: SERVICE_TYPE_FIXED,
+        paymentStatus: PENDING,
+        paymentMethod: PAYMENT_METHOD_COD,
+        quantity: 1,
+        description: 'Weekly cleaning service',
+        reason: 'Service area too far from our coverage zone',
+      ),
+
+      // 9. FAILED - Service could not be completed
+      BookingData(
+        id: 1009,
+        serviceName: 'Electrical Repair',
+        serviceId: 2,
+        customerName: 'Irene Clark',
+        customerId: 109,
+        customerImage: 'https://i.pravatar.cc/300?u=irene',
+        providerId: 1,
+        providerName: 'John Provider',
+        status: BOOKING_STATUS_FAILED,
+        statusLabel: 'Failed',
+        date: '2024-01-14 14:00:00',
+        address: '444 Spruce Avenue, Queens, NY 11355',
+        visitType: VISIT_OPTION_ON_SITE,
+        amount: 150.00,
+        totalAmount: 150.00,
+        discount: 0,
+        type: SERVICE_TYPE_HOURLY,
+        paymentStatus: PENDING,
+        paymentMethod: PAYMENT_METHOD_STRIPE,
+        quantity: 3,
+        description: 'Rewiring old electrical system',
+        startAt: '2024-01-14 14:30:00',
+        reason:
+            'Property requires permit - work cannot proceed without city approval',
+        handyman: [
+          Handyman(
+            id: 6,
+            bookingId: 1009,
+            handymanId: 3,
+            handyman: demoHandymen[1],
+          ),
+        ],
+      ),
+
+      // 10. PENDING_APPROVAL - Waiting for admin/customer approval
+      BookingData(
+        id: 1010,
+        serviceName: 'AC Repair & Service',
+        serviceId: 4,
+        customerName: 'Jack Davis',
+        customerId: 110,
+        customerImage: 'https://i.pravatar.cc/300?u=jack',
+        providerId: 1,
+        providerName: 'John Provider',
+        status: BOOKING_STATUS_PENDING_APPROVAL,
+        statusLabel: 'Pending Approval',
+        date: '2024-01-23 10:00:00',
+        address: '555 Oak Court, Manhattan, NY 10028',
+        visitType: VISIT_OPTION_ON_SITE,
+        amount: 120.00,
+        totalAmount: 120.00,
+        discount: 0,
+        type: SERVICE_TYPE_FIXED,
+        paymentStatus: PENDING,
+        paymentMethod: PAYMENT_METHOD_STRIPE,
+        quantity: 1,
+        description: 'AC installation - awaiting customer confirmation',
+        startAt: '2024-01-23 10:30:00',
+        endAt: '2024-01-23 14:00:00',
+        handyman: [
+          Handyman(
+            id: 7,
+            bookingId: 1010,
+            handymanId: 2,
+            handyman: demoHandymen[0],
+          ),
+        ],
+      ),
+
+      // 11. WAITING (Advance Payment) - Waiting for customer to pay advance
+      BookingData(
+        id: 1011,
+        serviceName: 'Home Renovation',
+        serviceId: 8,
+        customerName: 'Karen Miller',
+        customerId: 111,
+        customerImage: 'https://i.pravatar.cc/300?u=karen',
+        providerId: 1,
+        providerName: 'John Provider',
+        status: BOOKING_STATUS_WAITING_ADVANCED_PAYMENT,
+        statusLabel: 'Waiting for Payment',
+        date: '2024-01-25 09:00:00',
+        address: '666 Pine Court, Brooklyn, NY 11215',
+        visitType: VISIT_OPTION_ON_SITE,
+        amount: 500.00,
+        totalAmount: 500.00,
+        discount: 0,
+        type: SERVICE_TYPE_FIXED,
+        paymentStatus: PENDING,
+        paymentMethod: PAYMENT_METHOD_STRIPE,
+        quantity: 1,
+        description: 'Kitchen renovation - 50% advance payment required',
+      ),
+
+      // 12. PAID - Fully paid booking
+      BookingData(
+        id: 1012,
+        serviceName: 'Plumbing Service',
+        serviceId: 3,
+        customerName: 'Larry Thompson',
+        customerId: 112,
+        customerImage: 'https://i.pravatar.cc/300?u=larry',
+        providerId: 1,
+        providerName: 'John Provider',
+        status: BOOKING_STATUS_PAID,
+        statusLabel: 'Paid',
+        date: '2024-01-12 15:00:00',
+        address: '777 Elm Court, Staten Island, NY 10304',
+        visitType: VISIT_OPTION_ON_SITE,
+        amount: 180.00,
+        totalAmount: 180.00,
+        discount: 0,
+        type: SERVICE_TYPE_FIXED,
+        paymentStatus: PAID,
+        paymentMethod: PAYMENT_METHOD_STRIPE,
+        quantity: 1,
+        description: 'Complete bathroom plumbing upgrade',
+        startAt: '2024-01-12 15:30:00',
+        endAt: '2024-01-12 19:00:00',
+        totalRating: 4,
+        totalReview: 1,
+        handyman: [
+          Handyman(
+            id: 8,
+            bookingId: 1012,
+            handymanId: 4,
+            handyman: demoHandymen[2],
+          ),
+        ],
       ),
     ];
 
@@ -607,4 +854,744 @@ List<UserData> get demoCustomers => [
         address: '654 Maple Drive, Bronx, NY 10451',
         totalBooking: 2,
       ),
+    ];
+
+//=============================================================================
+// ADDITIONAL DEMO DATA FOR ALL SCREENS
+//=============================================================================
+
+/// Demo Taxes List
+List<Map<String, dynamic>> get demoTaxes => [
+      {
+        'id': 1,
+        'title': 'State Tax',
+        'type': 'percent',
+        'value': 8.5,
+        'status': 1,
+        'provider_id': 1,
+        'created_at': '2023-01-15 10:00:00',
+        'updated_at': '2024-01-10 12:00:00',
+      },
+      {
+        'id': 2,
+        'title': 'City Tax',
+        'type': 'percent',
+        'value': 2.5,
+        'status': 1,
+        'provider_id': 1,
+        'created_at': '2023-01-15 10:00:00',
+        'updated_at': '2024-01-10 12:00:00',
+      },
+      {
+        'id': 3,
+        'title': 'Service Fee',
+        'type': 'fixed',
+        'value': 5.00,
+        'status': 1,
+        'provider_id': 1,
+        'created_at': '2023-03-01 09:00:00',
+        'updated_at': '2024-01-10 12:00:00',
+      },
+    ];
+
+/// Demo Bank Details List
+List<Map<String, dynamic>> get demoBankDetails => [
+      {
+        'id': 1,
+        'user_id': 1,
+        'bank_name': 'Chase Bank',
+        'branch_name': 'Downtown LA Branch',
+        'account_no': '****4567',
+        'ifsc_no': 'CHASUS33',
+        'mobile_no': '+1 (555) 123-4567',
+        'aadhar_no': '',
+        'pan_no': '',
+        'is_default': 1,
+        'status': 1,
+        'created_at': '2023-06-15 14:30:00',
+        'updated_at': '2024-01-05 10:00:00',
+      },
+      {
+        'id': 2,
+        'user_id': 1,
+        'bank_name': 'Bank of America',
+        'branch_name': 'West Hollywood',
+        'account_no': '****8901',
+        'ifsc_no': 'BOFAUS3N',
+        'mobile_no': '+1 (555) 123-4567',
+        'aadhar_no': '',
+        'pan_no': '',
+        'is_default': 0,
+        'status': 1,
+        'created_at': '2023-09-20 11:00:00',
+        'updated_at': '2024-01-05 10:00:00',
+      },
+    ];
+
+/// Demo Wallet History
+List<Map<String, dynamic>> get demoWalletHistory => [
+      {
+        'id': 1,
+        'title': 'Withdrawal to Chase Bank',
+        'user_id': 1,
+        'transaction_type': 'debit',
+        'amount': 500.00,
+        'balance': 15180.50,
+        'datetime': '2024-01-18 09:30:00',
+        'status': 1,
+        'activity_message': 'Withdrawal successful',
+      },
+      {
+        'id': 2,
+        'title': 'Payment Received - Booking #1004',
+        'user_id': 1,
+        'transaction_type': 'credit',
+        'amount': 72.25,
+        'balance': 15680.50,
+        'datetime': '2024-01-15 14:00:00',
+        'status': 1,
+        'activity_message': 'Payment from Daniel Green',
+      },
+      {
+        'id': 3,
+        'title': 'Payment Received - Booking #1012',
+        'user_id': 1,
+        'transaction_type': 'credit',
+        'amount': 180.00,
+        'balance': 15608.25,
+        'datetime': '2024-01-12 19:30:00',
+        'status': 1,
+        'activity_message': 'Payment from Larry Thompson',
+      },
+      {
+        'id': 4,
+        'title': 'Commission Deduction',
+        'user_id': 1,
+        'transaction_type': 'debit',
+        'amount': 27.00,
+        'balance': 15428.25,
+        'datetime': '2024-01-12 19:30:00',
+        'status': 1,
+        'activity_message': '15% commission on booking #1012',
+      },
+      {
+        'id': 5,
+        'title': 'Wallet Top-up',
+        'user_id': 1,
+        'transaction_type': 'credit',
+        'amount': 1000.00,
+        'balance': 15455.25,
+        'datetime': '2024-01-10 10:00:00',
+        'status': 1,
+        'activity_message': 'Added via Stripe',
+      },
+    ];
+
+/// Demo Subscription Plans
+List<Map<String, dynamic>> get demoSubscriptionPlans => [
+      {
+        'id': 1,
+        'title': 'Free Plan',
+        'identifier': 'free_plan',
+        'amount': 0.00,
+        'status': 1,
+        'type': 'monthly',
+        'plan_type': 'free',
+        'plan_limitation': {
+          'service': 5,
+          'handyman': 2,
+          'featured_service': 0,
+        },
+        'description': 'Perfect for getting started. Basic features included.',
+      },
+      {
+        'id': 2,
+        'title': 'Starter Plan',
+        'identifier': 'starter_plan',
+        'amount': 29.99,
+        'status': 1,
+        'type': 'monthly',
+        'plan_type': 'limited',
+        'plan_limitation': {
+          'service': 20,
+          'handyman': 5,
+          'featured_service': 3,
+        },
+        'description':
+            'Great for small businesses. More services and handymen.',
+      },
+      {
+        'id': 3,
+        'title': 'Professional Plan',
+        'identifier': 'professional_plan',
+        'amount': 79.99,
+        'status': 1,
+        'type': 'monthly',
+        'plan_type': 'limited',
+        'plan_limitation': {
+          'service': 50,
+          'handyman': 15,
+          'featured_service': 10,
+        },
+        'description': 'For growing businesses. Priority support included.',
+      },
+      {
+        'id': 4,
+        'title': 'Enterprise Plan',
+        'identifier': 'enterprise_plan',
+        'amount': 199.99,
+        'status': 1,
+        'type': 'monthly',
+        'plan_type': 'unlimited',
+        'plan_limitation': {
+          'service': -1,
+          'handyman': -1,
+          'featured_service': -1,
+        },
+        'description': 'Unlimited everything. Dedicated account manager.',
+      },
+    ];
+
+/// Demo Subscription History
+List<Map<String, dynamic>> get demoSubscriptionHistory => [
+      {
+        'id': 1,
+        'plan_id': 1,
+        'user_id': 1,
+        'title': 'Free Plan',
+        'identifier': 'free_plan',
+        'amount': 0.00,
+        'status': 1,
+        'start_at': '2024-01-01',
+        'end_at': '2024-02-01',
+        'payment_type': 'wallet',
+        'payment_status': 'paid',
+        'created_at': '2024-01-01 00:00:00',
+      },
+    ];
+
+/// Demo Packages List
+List<Map<String, dynamic>> get demoPackages => [
+      {
+        'id': 1,
+        'name': 'Home Maintenance Bundle',
+        'category_id': 1,
+        'subcategory_id': null,
+        'description':
+            'Complete home maintenance package including cleaning, plumbing check, and electrical inspection.',
+        'price': 299.99,
+        'start_at': '2024-01-01',
+        'end_at': '2024-12-31',
+        'status': 1,
+        'is_featured': 1,
+        'provider_id': 1,
+        'attchments': [
+          'https://images.unsplash.com/photo-1558036117-15d82a90b9b1?w=600'
+        ],
+        'services': [1, 2, 3],
+        'created_at': '2023-12-15 10:00:00',
+      },
+      {
+        'id': 2,
+        'name': 'AC Care Package',
+        'category_id': 4,
+        'subcategory_id': null,
+        'description':
+            'Annual AC maintenance with 2 service visits, filter replacement, and gas refill.',
+        'price': 149.99,
+        'start_at': '2024-01-01',
+        'end_at': '2024-12-31',
+        'status': 1,
+        'is_featured': 0,
+        'provider_id': 1,
+        'attchments': [
+          'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=600'
+        ],
+        'services': [4],
+        'created_at': '2023-12-20 14:00:00',
+      },
+      {
+        'id': 3,
+        'name': 'Premium Renovation Pack',
+        'category_id': 5,
+        'subcategory_id': null,
+        'description':
+            'Full room renovation including painting, flooring, and lighting upgrade.',
+        'price': 1999.99,
+        'start_at': '2024-01-01',
+        'end_at': '2024-06-30',
+        'status': 1,
+        'is_featured': 1,
+        'provider_id': 1,
+        'attchments': [
+          'https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=600'
+        ],
+        'services': [5],
+        'created_at': '2024-01-05 09:00:00',
+      },
+    ];
+
+/// Demo Time Slots
+List<Map<String, dynamic>> get demoTimeSlots => [
+      {
+        'id': 1,
+        'day': 'monday',
+        'start_at': '09:00',
+        'end_at': '12:00',
+        'status': 1
+      },
+      {
+        'id': 2,
+        'day': 'monday',
+        'start_at': '14:00',
+        'end_at': '18:00',
+        'status': 1
+      },
+      {
+        'id': 3,
+        'day': 'tuesday',
+        'start_at': '09:00',
+        'end_at': '12:00',
+        'status': 1
+      },
+      {
+        'id': 4,
+        'day': 'tuesday',
+        'start_at': '14:00',
+        'end_at': '18:00',
+        'status': 1
+      },
+      {
+        'id': 5,
+        'day': 'wednesday',
+        'start_at': '09:00',
+        'end_at': '12:00',
+        'status': 1
+      },
+      {
+        'id': 6,
+        'day': 'wednesday',
+        'start_at': '14:00',
+        'end_at': '18:00',
+        'status': 1
+      },
+      {
+        'id': 7,
+        'day': 'thursday',
+        'start_at': '09:00',
+        'end_at': '12:00',
+        'status': 1
+      },
+      {
+        'id': 8,
+        'day': 'thursday',
+        'start_at': '14:00',
+        'end_at': '18:00',
+        'status': 1
+      },
+      {
+        'id': 9,
+        'day': 'friday',
+        'start_at': '09:00',
+        'end_at': '12:00',
+        'status': 1
+      },
+      {
+        'id': 10,
+        'day': 'friday',
+        'start_at': '14:00',
+        'end_at': '17:00',
+        'status': 1
+      },
+      {
+        'id': 11,
+        'day': 'saturday',
+        'start_at': '10:00',
+        'end_at': '14:00',
+        'status': 1
+      },
+    ];
+
+/// Demo Job Requests / Post Jobs
+List<Map<String, dynamic>> get demoJobRequests => [
+      {
+        'id': 1,
+        'title': 'Need Kitchen Faucet Replacement',
+        'description':
+            'Looking for a plumber to replace my kitchen faucet. The current one is leaking badly.',
+        'price': 75.00,
+        'status': 'requested',
+        'customer_id': 103,
+        'customer_name': 'Carol White',
+        'customer_profile': 'https://i.pravatar.cc/300?u=carol',
+        'service_id': 3,
+        'address': '789 Pine Street, Queens, NY 11375',
+        'created_at': '2024-01-19 08:30:00',
+      },
+      {
+        'id': 2,
+        'title': 'Emergency AC Repair',
+        'description':
+            'AC not cooling. Need urgent repair as its very hot. Prefer same day service.',
+        'price': 120.00,
+        'status': 'requested',
+        'customer_id': 104,
+        'customer_name': 'Daniel Green',
+        'customer_profile': 'https://i.pravatar.cc/300?u=daniel',
+        'service_id': 4,
+        'address': '321 Elm Road, Manhattan, NY 10016',
+        'created_at': '2024-01-20 11:00:00',
+      },
+      {
+        'id': 3,
+        'title': 'Full House Painting',
+        'description':
+            'Need to repaint entire 3BHK apartment. Walls and ceiling. White color preferred.',
+        'price': 2500.00,
+        'status': 'assigned',
+        'customer_id': 101,
+        'customer_name': 'Alice Smith',
+        'customer_profile': 'https://i.pravatar.cc/300?u=alice',
+        'service_id': 5,
+        'address': '123 Main Street, New York, NY 10001',
+        'created_at': '2024-01-18 15:00:00',
+      },
+    ];
+
+/// Demo Bids
+List<Map<String, dynamic>> get demoBids => [
+      {
+        'id': 1,
+        'post_request_id': 1,
+        'provider_id': 1,
+        'price': 65.00,
+        'proposal':
+            'I can replace the faucet with a premium quality fixture. Available tomorrow.',
+        'status': 'pending',
+        'created_at': '2024-01-19 10:00:00',
+      },
+      {
+        'id': 2,
+        'post_request_id': 2,
+        'provider_id': 1,
+        'price': 100.00,
+        'proposal': 'Experienced AC technician. Can come today within 2 hours.',
+        'status': 'accepted',
+        'created_at': '2024-01-20 11:30:00',
+      },
+    ];
+
+/// Demo Addon Services
+List<Map<String, dynamic>> get demoAddons => [
+      {
+        'id': 1,
+        'name': 'Express Service',
+        'service_id': 1,
+        'price': 25.00,
+        'status': 1,
+        'image':
+            'https://images.unsplash.com/photo-1556911220-bff31c812dba?w=400',
+      },
+      {
+        'id': 2,
+        'name': 'Premium Cleaning Products',
+        'service_id': 1,
+        'price': 15.00,
+        'status': 1,
+        'image':
+            'https://images.unsplash.com/photo-1563453392212-326f5e854473?w=400',
+      },
+      {
+        'id': 3,
+        'name': 'Same Day Service',
+        'service_id': 2,
+        'price': 50.00,
+        'status': 1,
+        'image':
+            'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400',
+      },
+      {
+        'id': 4,
+        'name': 'Extended Warranty',
+        'service_id': 4,
+        'price': 35.00,
+        'status': 1,
+        'image':
+            'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=400',
+      },
+    ];
+
+/// Demo Earnings Data
+List<Map<String, dynamic>> get demoEarnings => [
+      {
+        'id': 1,
+        'provider_id': 1,
+        'booking_id': 1004,
+        'payment_id': 2001,
+        'commission': 10.84,
+        'provider_commission': 61.41,
+        'created_at': '2024-01-15',
+        'service_name': 'AC Repair & Service',
+        'customer_name': 'Daniel Green',
+      },
+      {
+        'id': 2,
+        'provider_id': 1,
+        'booking_id': 1012,
+        'payment_id': null,
+        'commission': 27.00,
+        'provider_commission': 153.00,
+        'created_at': '2024-01-12',
+        'service_name': 'Plumbing Service',
+        'customer_name': 'Larry Thompson',
+      },
+    ];
+
+/// Demo Handyman Earnings
+List<Map<String, dynamic>> get demoHandymanEarnings => [
+      {
+        'id': 1,
+        'handyman_id': 2,
+        'booking_id': 1003,
+        'commission': 8.55,
+        'payment_date': '2024-01-19',
+        'service_name': 'Plumbing Service',
+        'customer_name': 'Carol White',
+      },
+      {
+        'id': 2,
+        'handyman_id': 2,
+        'booking_id': 1002,
+        'commission': 10.00,
+        'payment_date': '2024-01-21',
+        'service_name': 'Electrical Repair',
+        'customer_name': 'Bob Johnson',
+      },
+    ];
+
+/// Demo Documents
+List<Map<String, dynamic>> get demoDocuments => [
+      {
+        'id': 1,
+        'document_name': 'Business License',
+        'is_required': 1,
+        'status': 1,
+      },
+      {
+        'id': 2,
+        'document_name': 'Insurance Certificate',
+        'is_required': 1,
+        'status': 1,
+      },
+      {
+        'id': 3,
+        'document_name': 'Professional Certification',
+        'is_required': 0,
+        'status': 1,
+      },
+    ];
+
+/// Demo Provider Documents (uploaded)
+List<Map<String, dynamic>> get demoProviderDocuments => [
+      {
+        'id': 1,
+        'provider_id': 1,
+        'document_id': 1,
+        'is_verified': 1,
+        'provider_document': 'https://example.com/docs/license.pdf',
+        'document': {
+          'id': 1,
+          'document_name': 'Business License',
+          'is_required': 1,
+          'status': 1,
+        },
+      },
+      {
+        'id': 2,
+        'provider_id': 1,
+        'document_id': 2,
+        'is_verified': 1,
+        'provider_document': 'https://example.com/docs/insurance.pdf',
+        'document': {
+          'id': 2,
+          'document_name': 'Insurance Certificate',
+          'is_required': 1,
+          'status': 1,
+        },
+      },
+    ];
+
+/// Demo Reviews
+List<Map<String, dynamic>> get demoReviews => [
+      {
+        'id': 1,
+        'service_id': 4,
+        'rating': 5.0,
+        'review':
+            'Excellent service! The technician was very professional and fixed my AC quickly.',
+        'customer_id': 104,
+        'customer_name': 'Daniel Green',
+        'customer_profile_image': 'https://i.pravatar.cc/300?u=daniel',
+        'created_at': '2024-01-15 14:00:00',
+      },
+      {
+        'id': 2,
+        'service_id': 3,
+        'rating': 4.5,
+        'review':
+            'Good plumbing work. Arrived on time and completed the job efficiently.',
+        'customer_id': 112,
+        'customer_name': 'Larry Thompson',
+        'customer_profile_image': 'https://i.pravatar.cc/300?u=larry',
+        'created_at': '2024-01-12 19:30:00',
+      },
+      {
+        'id': 3,
+        'service_id': 1,
+        'rating': 5.0,
+        'review':
+            'My house has never been this clean! Will definitely book again.',
+        'customer_id': 101,
+        'customer_name': 'Alice Smith',
+        'customer_profile_image': 'https://i.pravatar.cc/300?u=alice',
+        'created_at': '2024-01-10 12:00:00',
+      },
+    ];
+
+/// Demo Categories
+List<Map<String, dynamic>> get demoCategories => [
+      {
+        'id': 1,
+        'name': 'Cleaning',
+        'color': '#4CAF50',
+        'status': 1,
+        'category_image':
+            'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400',
+        'services_count': 3,
+      },
+      {
+        'id': 2,
+        'name': 'Electrical',
+        'color': '#2196F3',
+        'status': 1,
+        'category_image':
+            'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400',
+        'services_count': 4,
+      },
+      {
+        'id': 3,
+        'name': 'Plumbing',
+        'color': '#03A9F4',
+        'status': 1,
+        'category_image':
+            'https://images.unsplash.com/photo-1585704032915-c3400ca199e7?w=400',
+        'services_count': 3,
+      },
+      {
+        'id': 4,
+        'name': 'HVAC',
+        'color': '#FF9800',
+        'status': 1,
+        'category_image':
+            'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=400',
+        'services_count': 2,
+      },
+      {
+        'id': 5,
+        'name': 'Painting',
+        'color': '#9C27B0',
+        'status': 1,
+        'category_image':
+            'https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=400',
+        'services_count': 2,
+      },
+      {
+        'id': 6,
+        'name': 'Consulting',
+        'color': '#607D8B',
+        'status': 1,
+        'category_image':
+            'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=400',
+        'services_count': 1,
+      },
+    ];
+
+/// Demo Zones / Service Areas
+List<Map<String, dynamic>> get demoZones => [
+      {
+        'id': 1,
+        'name': 'Downtown Los Angeles',
+        'status': 1,
+        'address': 'Downtown, Los Angeles, CA',
+      },
+      {
+        'id': 2,
+        'name': 'West Hollywood',
+        'status': 1,
+        'address': 'West Hollywood, Los Angeles, CA',
+      },
+      {
+        'id': 3,
+        'name': 'Santa Monica',
+        'status': 1,
+        'address': 'Santa Monica, Los Angeles, CA',
+      },
+      {
+        'id': 4,
+        'name': 'Beverly Hills',
+        'status': 1,
+        'address': 'Beverly Hills, Los Angeles, CA',
+      },
+    ];
+
+/// Demo Blogs
+List<Map<String, dynamic>> get demoBlogs => [
+      {
+        'id': 1,
+        'title': '10 Tips for Maintaining Your AC System',
+        'description':
+            'Learn how to keep your air conditioning system running efficiently year-round with these expert tips...',
+        'author_id': 1,
+        'is_featured': 1,
+        'status': 1,
+        'created_at': '2024-01-10 09:00:00',
+        'attchments': [
+          'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=600'
+        ],
+      },
+      {
+        'id': 2,
+        'title': 'DIY vs Professional: When to Call an Expert',
+        'description':
+            'Some home repairs you can handle yourself, but others require professional expertise. Here is how to decide...',
+        'author_id': 1,
+        'is_featured': 0,
+        'status': 1,
+        'created_at': '2024-01-15 14:00:00',
+        'attchments': [
+          'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600'
+        ],
+      },
+    ];
+
+/// Demo Help Desk Tickets
+List<Map<String, dynamic>> get demoHelpDeskTickets => [
+      {
+        'id': 1,
+        'subject': 'Payment not received',
+        'description':
+            'I completed booking #1003 but haven\'t received payment yet.',
+        'mode': 'open',
+        'user_id': 1,
+        'created_at': '2024-01-19 10:00:00',
+      },
+      {
+        'id': 2,
+        'subject': 'How to add new service',
+        'description':
+            'I want to add a new electrical service category. How do I do that?',
+        'mode': 'closed',
+        'user_id': 1,
+        'created_at': '2024-01-15 08:00:00',
+      },
     ];

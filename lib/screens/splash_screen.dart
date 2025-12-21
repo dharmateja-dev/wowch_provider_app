@@ -235,6 +235,13 @@ class SplashScreenState extends State<SplashScreen> {
     // Small delay for splash visual effect
     await Future.delayed(const Duration(milliseconds: 800));
 
+    // Auto-login support for demo mode
+    // When DEMO_AUTO_LOGIN is true, automatically log in the user
+    if (DEMO_AUTO_LOGIN && !appStore.isLoggedIn) {
+      await _performDemoAutoLogin();
+      return;
+    }
+
     // Navigate based on login status
     if (!appStore.isLoggedIn) {
       SignInScreen().launch(context,
@@ -251,6 +258,58 @@ class SplashScreenState extends State<SplashScreen> {
       } else {
         SignInScreen().launch(context, isNewTask: true);
       }
+    }
+  }
+
+  /// Auto-login for demo mode
+  /// This bypasses the sign-in screen completely
+  Future<void> _performDemoAutoLogin() async {
+    // Get the auto-login user based on configured type
+    final demoUser = DemoData.autoLoginUser;
+
+    // Save demo user data to app store
+    await appStore.setUserId(demoUser.id ?? 1);
+    await appStore.setFirstName(demoUser.firstName ?? 'Demo');
+    await appStore.setLastName(demoUser.lastName ?? 'User');
+    await appStore.setUserEmail(demoUser.email ?? 'demo@provider.com');
+    await appStore.setUserName(demoUser.username ?? 'demo_user');
+    await appStore.setContactNumber(demoUser.contactNumber ?? '+1234567890');
+    await appStore.setUserProfile(demoUser.profileImage ?? '');
+    await appStore.setUserType(demoUser.userType ?? USER_TYPE_PROVIDER);
+    await appStore.setDesignation(demoUser.designation ?? '');
+    await appStore.setAddress(demoUser.address ?? '');
+    await appStore.setCountryId(demoUser.countryId ?? 1);
+    await appStore.setStateId(demoUser.stateId ?? 1);
+    await appStore.setCityId(demoUser.cityId ?? 1);
+    await appStore.setUId(demoUser.uid ?? 'demo_uid');
+    await appStore.setToken(demoUser.apiToken ?? 'demo_token');
+    await appStore.setProviderId(demoUser.providerId ?? 1);
+    await appStore.setLoggedIn(true);
+    await appStore.setTester(true);
+    await appStore
+        .setCreatedAt(demoUser.createdAt ?? DateTime.now().toString());
+
+    // Set additional demo data based on user type
+    if (demoUser.userType == USER_TYPE_PROVIDER) {
+      // Provider-specific demo data is already set above
+    } else if (demoUser.userType == USER_TYPE_HANDYMAN) {
+      // Handyman-specific demo data
+      await appStore.setHandymanAvailability(1);
+      await appStore.setCompletedBooking(42);
+      // Set handyman commission
+      await setValue(DASHBOARD_COMMISSION,
+          '{"name":"handyman","commission":15,"type":"percent"}');
+    }
+
+    // Navigate to appropriate dashboard
+    if (demoUser.userType == USER_TYPE_PROVIDER) {
+      setStatusBarColor(primary);
+      ProviderDashboardScreen(index: 0).launch(context,
+          isNewTask: true, pageRouteAnimation: PageRouteAnimation.Fade);
+    } else {
+      setStatusBarColor(primary);
+      HandymanDashboardScreen(index: 0).launch(context,
+          isNewTask: true, pageRouteAnimation: PageRouteAnimation.Fade);
     }
   }
 
