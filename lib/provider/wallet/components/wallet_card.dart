@@ -3,8 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/provider/withdraw/withdraw_request/withdraw_request.dart';
-import 'package:handyman_provider_flutter/utils/configs.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../../components/cached_image_widget.dart';
@@ -27,7 +28,7 @@ class _WalletCardState extends State<WalletCard> {
       height: 130,
       width: context.width(),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10), color: primary),
+          borderRadius: BorderRadius.circular(10), color: context.primary),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -36,17 +37,17 @@ class _WalletCardState extends State<WalletCard> {
             height: 100,
             width: context.width(),
             child: Card(
-              color: context.scaffoldBackgroundColor,
+              color: context.walletContainerBackground,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(languages.availableBalance,
-                      style: secondaryTextStyle(size: 12)),
+                      style: context.boldTextStyle()),
                   FittedBox(
                     child: PriceWidget(
                         price: widget.availableBalance.validate(),
                         size: 26,
-                        color: context.primaryColor,
+                        color: context.primary,
                         isBoldText: true),
                   )
                 ],
@@ -63,9 +64,9 @@ class _WalletCardState extends State<WalletCard> {
               url: ic_plus,
               height: 16,
               width: 16,
-              color: white,
+              color: context.onPrimary,
             ),
-            textStyle: secondaryTextStyle(color: white),
+            textStyle: context.primaryTextStyle(color: context.onPrimary),
             text: languages.withdraw,
           ),
         ],

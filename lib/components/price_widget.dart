@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/main.dart';
+import 'package:handyman_provider_flutter/utils/app_configuration.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
-import 'package:handyman_provider_flutter/utils/extensions/num_extenstions.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class PriceWidget extends StatelessWidget {
@@ -9,6 +11,7 @@ class PriceWidget extends StatelessWidget {
   final double? size;
   final Color? color;
   final Color? hourlyTextColor;
+  final String? currency;
   final bool isBoldText;
   final bool isLineThroughEnabled;
   final bool isDiscountedPrice;
@@ -16,11 +19,15 @@ class PriceWidget extends StatelessWidget {
   final bool isFreeService;
   final int? decimalPoint;
 
+  /// Indian Rupee symbol
+  static const String indianRupee = '₹';
+
   PriceWidget({
     required this.price,
     this.size = 16.0,
     this.color,
     this.hourlyTextColor,
+    this.currency,
     this.isLineThroughEnabled = false,
     this.isBoldText = true,
     this.isDiscountedPrice = false,
@@ -29,6 +36,42 @@ class PriceWidget extends StatelessWidget {
     this.decimalPoint,
   });
 
+  /// Get currency symbol based on language
+  /// Returns Indian Rupee (₹) for English and Hindi languages
+  String _getCurrencySymbol() {
+    // If custom currency is provided, use it
+    if (currency != null && currency!.isNotEmpty) {
+      return currency!;
+    }
+
+    // Get current language code
+    final String languageCode = appStore.selectedLanguageCode;
+
+    // Return Indian Rupee for English and Hindi
+    if (languageCode == 'en' || languageCode == 'hi') {
+      return indianRupee;
+    }
+
+    // Fallback to app configuration currency for other languages
+    return appConfigurationStore.currencySymbol;
+  }
+
+  /// Format price with currency symbol
+  String _formatPrice() {
+    final String currencySymbol = _getCurrencySymbol();
+    final int decimals =
+        decimalPoint ?? appConfigurationStore.priceDecimalPoint;
+    final String formattedPrice =
+        price.validate().toStringAsFixed(decimals).formatNumberWithComma();
+
+    // Currency position based on app config
+    if (isCurrencyPositionLeft) {
+      return '$currencySymbol$formattedPrice';
+    } else {
+      return '$formattedPrice$currencySymbol';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     TextDecoration? textDecoration() =>
@@ -36,14 +79,14 @@ class PriceWidget extends StatelessWidget {
 
     TextStyle _textStyle({int? aSize}) {
       return isBoldText
-          ? boldTextStyle(
+          ? context.boldTextStyle(
               size: aSize ?? size!.toInt(),
-              color: color ?? primary,
+              color: color ?? context.primary,
               decoration: textDecoration(),
             )
-          : secondaryTextStyle(
+          : context.secondaryTextStyle(
               size: aSize ?? size!.toInt(),
-              color: color ?? primary,
+              color: color ?? context.primary,
               decoration: textDecoration(),
             );
     }
@@ -61,12 +104,12 @@ class PriceWidget extends StatelessWidget {
               Text(languages.lblFree, style: _textStyle())
             else
               Text(
-                price.validate().toPriceFormat(),
+                _formatPrice(),
                 style: _textStyle(),
               ),
             if (isHourlyService)
               Text('/${languages.lblHr}',
-                  style: secondaryTextStyle(color: hourlyTextColor, size: 14)),
+                  style: context.secondaryTextStyle(color: hourlyTextColor, size: 14)),
           ],
         ),
       ],

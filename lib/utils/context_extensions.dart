@@ -297,6 +297,10 @@ extension ColorSchemeExtension on BuildContext {
   Color get uploadCardBackground =>
       isDarkMode ? const Color(0xFF1E1E1E) : const Color(0xFFD9D9D9);
 
+  /// Wallet container background - Light: #D9D9D9, Dark: #121212
+  Color get walletContainerBackground =>
+      isDarkMode ? const Color(0xFF121212) : const Color(0xFFD9D9D9);
+
   // ══════════════════════════════════════════════════════════════════════════
   // CONVENIENCE HELPERS
   // ══════════════════════════════════════════════════════════════════════════
