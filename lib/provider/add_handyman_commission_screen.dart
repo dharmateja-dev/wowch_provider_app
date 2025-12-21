@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 import '../components/base_scaffold_widget.dart';
 import '../main.dart';
@@ -209,6 +211,7 @@ class AddHandymanCommissionTypeListScreenState
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
+      scaffoldBackgroundColor: context.scaffoldSecondary,
       appBarTitle: title(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -234,8 +237,9 @@ class AddHandymanCommissionTypeListScreenState
                     nextFocus: commissionFocus,
                     errorThisFieldRequired: languages.hintRequired,
                     isValidationRequired: checkValidationLanguage(),
-                    decoration:
-                        inputDecoration(context, hintText: languages.typeName),
+                    decoration: inputDecoration(context,
+                        hintText: languages.typeName,
+                        fillColor: context.profileInputFillColor),
                   ),
                   16.height,
                   AppTextField(
@@ -244,7 +248,8 @@ class AddHandymanCommissionTypeListScreenState
                     focus: commissionFocus,
                     nextFocus: typeFocus,
                     decoration: inputDecoration(context,
-                        hintText: languages.commission),
+                        hintText: languages.commission,
+                        fillColor: context.profileInputFillColor),
                     keyboardType: TextInputType.number,
                     validator: (s) {
                       if (s!.isEmptyOrNull) {
@@ -264,20 +269,21 @@ class AddHandymanCommissionTypeListScreenState
                   DropdownButtonFormField<String>(
                     items: [
                       DropdownMenuItem(
-                        child:
-                            Text(languages.lblFixed, style: primaryTextStyle()),
+                        child: Text(languages.lblFixed,
+                            style: context.primaryTextStyle()),
                         value: SERVICE_TYPE_FIXED,
                       ),
                       DropdownMenuItem(
                         child: Text(languages.percentage,
-                            style: primaryTextStyle()),
+                            style: context.primaryTextStyle()),
                         value: COMMISSION_TYPE_PERCENTAGE,
                       ),
                     ],
                     focusNode: typeFocus,
                     dropdownColor: context.cardColor,
-                    decoration:
-                        inputDecoration(context, hintText: languages.lblType),
+                    decoration: inputDecoration(context,
+                        hintText: languages.lblType,
+                        fillColor: context.profileInputFillColor),
                     initialValue: selectedType,
                     validator: (value) {
                       if (value == null) return errorThisFieldRequired;
@@ -292,20 +298,21 @@ class AddHandymanCommissionTypeListScreenState
                   DropdownButtonFormField<String>(
                     items: [
                       DropdownMenuItem(
-                        child:
-                            Text(languages.active, style: primaryTextStyle()),
+                        child: Text(languages.active,
+                            style: context.primaryTextStyle()),
                         value: ACTIVE,
                       ),
                       DropdownMenuItem(
-                        child:
-                            Text(languages.inactive, style: primaryTextStyle()),
+                        child: Text(languages.inactive,
+                            style: context.primaryTextStyle()),
                         value: INACTIVE,
                       ),
                     ],
                     focusNode: statusFocus,
                     dropdownColor: context.cardColor,
                     decoration: inputDecoration(context,
-                        hintText: languages.selectStatus),
+                        hintText: languages.selectStatus,
+                        fillColor: context.profileInputFillColor),
                     initialValue: selectedStatusType,
                     validator: (value) {
                       if (value == null) return errorThisFieldRequired;
