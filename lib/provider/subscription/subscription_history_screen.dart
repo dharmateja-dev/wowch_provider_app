@@ -8,9 +8,54 @@ import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/provider/subscription/components/subscription_widget.dart';
 import 'package:handyman_provider_flutter/provider/subscription/shimmer/subscription_shimmer.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
+import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/demo_mode.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../components/empty_error_state_widget.dart';
+
+/// Demo subscription data for UI testing
+List<ProviderSubscriptionModel> get demoSubscriptions => [
+      ProviderSubscriptionModel(
+        id: 1,
+        title: 'Premium Plan',
+        identifier: 'premium',
+        amount: 99,
+        type: 'monthly',
+        startAt:
+            DateTime.now().subtract(const Duration(days: 15)).toIso8601String(),
+        endAt: DateTime.now().add(const Duration(days: 15)).toIso8601String(),
+        status: SUBSCRIPTION_STATUS_ACTIVE,
+        description: 'Full access to all features',
+      ),
+      ProviderSubscriptionModel(
+        id: 2,
+        title: 'Basic Plan',
+        identifier: 'basic',
+        amount: 49,
+        type: 'monthly',
+        startAt:
+            DateTime.now().subtract(const Duration(days: 60)).toIso8601String(),
+        endAt:
+            DateTime.now().subtract(const Duration(days: 30)).toIso8601String(),
+        status: SUBSCRIPTION_STATUS_INACTIVE,
+        description: 'Basic features access',
+      ),
+      ProviderSubscriptionModel(
+        id: 3,
+        title: 'Free Trial',
+        identifier: FREE,
+        amount: 0,
+        type: 'trial',
+        startAt:
+            DateTime.now().subtract(const Duration(days: 90)).toIso8601String(),
+        endAt:
+            DateTime.now().subtract(const Duration(days: 83)).toIso8601String(),
+        status: SUBSCRIPTION_STATUS_INACTIVE,
+        description: '7-day free trial',
+      ),
+    ];
 
 class SubscriptionHistoryScreen extends StatefulWidget {
   @override
@@ -32,13 +77,18 @@ class _SubscriptionHistoryScreenState extends State<SubscriptionHistoryScreen> {
   }
 
   void init() async {
-    future = getSubscriptionHistory(
-      page: page,
-      providerSubscriptionList: subscriptionsList,
-      lastPageCallback: (b) {
-        isLastPage = b;
-      },
-    );
+    if (DEMO_MODE_ENABLED) {
+      // Use demo data in demo mode
+      future = Future.value(demoSubscriptions);
+    } else {
+      future = getSubscriptionHistory(
+        page: page,
+        providerSubscriptionList: subscriptionsList,
+        lastPageCallback: (b) {
+          isLastPage = b;
+        },
+      );
+    }
   }
 
   @override
@@ -54,11 +104,13 @@ class _SubscriptionHistoryScreenState extends State<SubscriptionHistoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: context.scaffoldSecondary,
       appBar: appBarWidget(languages.lblSubscriptionHistory,
           backWidget: BackWidget(),
           elevation: 0,
-          color: primary,
-          textColor: Colors.white),
+          color: context.primary,
+          center: true,
+          textColor: context.onPrimary),
       body: Stack(
         children: [
           SnapHelperWidget<List<ProviderSubscriptionModel>>(

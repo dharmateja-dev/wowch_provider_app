@@ -7,6 +7,8 @@ import 'package:handyman_provider_flutter/provider/provider_dashboard_screen.dar
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/images.dart';
 import 'package:handyman_provider_flutter/utils/model_keys.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -34,10 +36,25 @@ class SubscriptionWidgetState extends State<SubscriptionWidget> {
   Future<void> cancelPlan() async {
     showConfirmDialogCustom(
       context,
+      height: 80,
+      width: 290,
+      shape: appDialogShape(8),
       title: languages.lblSubscriptionTitle,
-      primaryColor: context.primaryColor,
+      titleColor: context.dialogTitleColor,
+      backgroundColor: context.dialogBackgroundColor,
+      primaryColor: context.primary,
+      customCenterWidget: Image.asset(
+        ic_warning,
+        color: context.dialogIconColor,
+        height: 70,
+        width: 70,
+        fit: BoxFit.cover,
+      ),
       positiveText: languages.lblYes,
-      negativeText: languages.lblCancel,
+      positiveTextColor: context.onPrimary,
+      negativeText: languages.lblNo,
+      negativeTextColor: context.dialogCancelColor,
+      dialogType: DialogType.CONFIRMATION,
       onAccept: (_) {
         if (appConfigurationStore.isInAppPurchaseEnable) {
           cancelRevenueCatSubscription();
@@ -114,27 +131,29 @@ class SubscriptionWidgetState extends State<SubscriptionWidget> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       margin: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: context.cardColor,
+        color: context.cardSecondary,
         borderRadius: radius(),
         border: Border.all(
           width: 1,
           color: widget.data.status.validate() == SUBSCRIPTION_STATUS_ACTIVE
-              ? Colors.green
-              : Colors.red,
+              ? context.primary
+              : context.error,
         ),
       ),
       width: context.width(),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            '${formatDate(widget.data.startAt.validate().toString(), format: DATE_FORMAT_2)} - ${formatDate(widget.data.endAt.validate().toString(), format: DATE_FORMAT_2)}',
+            '${formatBookingDate(widget.data.startAt.validate().toString(), format: 'MMMM d, yyyy')} - ${formatBookingDate(widget.data.endAt.validate().toString(), format: 'MMMM d, yyyy')}',
             style: boldTextStyle(letterSpacing: 1.3),
           ),
           16.height,
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(languages.lblPlan, style: secondaryTextStyle()),
+              Text(languages.lblPlan,
+                  style: primaryTextStyle(color: context.textGrey)),
               Text(widget.data.title.validate().capitalizeFirstLetter(),
                   style: boldTextStyle()),
             ],
@@ -143,7 +162,8 @@ class SubscriptionWidgetState extends State<SubscriptionWidget> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(languages.lblType, style: secondaryTextStyle()),
+              Text(languages.lblType,
+                  style: primaryTextStyle(color: context.textGrey)),
               Text(widget.data.type.validate().capitalizeFirstLetter(),
                   style: boldTextStyle()),
             ],
@@ -156,11 +176,12 @@ class SubscriptionWidgetState extends State<SubscriptionWidget> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(languages.lblAmount, style: secondaryTextStyle()),
+                    Text(languages.lblAmount,
+                        style: primaryTextStyle(color: context.textGrey)),
                     16.width,
                     PriceWidget(
                       price: widget.data.amount.validate(),
-                      color: primary,
+                      color: context.primary,
                       isBoldText: true,
                     ).flexible(),
                   ],
@@ -174,7 +195,7 @@ class SubscriptionWidgetState extends State<SubscriptionWidget> {
               margin: const EdgeInsets.only(top: 16),
               width: context.width(),
               elevation: 0,
-              color: primary,
+              color: context.primary,
               onTap: () {
                 ifNotTester(context, () {
                   cancelPlan();
