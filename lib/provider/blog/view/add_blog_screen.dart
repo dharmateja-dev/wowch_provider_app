@@ -12,6 +12,7 @@ import 'package:handyman_provider_flutter/provider/blog/blog_repository.dart';
 import 'package:handyman_provider_flutter/provider/blog/model/blog_response_model.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/images.dart';
 import 'package:handyman_provider_flutter/utils/model_keys.dart';
 import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -175,14 +176,25 @@ class _AddBlogScreenState extends State<AddBlogScreen> {
                           imageFiles.isNotEmpty) {
                         showConfirmDialogCustom(
                           context,
-                          dialogType: DialogType.DELETE,
+                          height: 80,
+                          width: 290,
+                          shape: appDialogShape(8),
                           title: languages.confirmationRequestTxt,
                           titleColor: context.dialogTitleColor,
                           backgroundColor: context.dialogBackgroundColor,
                           primaryColor: context.error,
-                          shape: appDialogShape(8),
+                          customCenterWidget: Image.asset(
+                            ic_warning,
+                            color: context.dialogIconColor,
+                            height: 70,
+                            width: 70,
+                            fit: BoxFit.cover,
+                          ),
                           positiveText: languages.lblDelete,
+                          positiveTextColor: context.onPrimary,
                           negativeText: languages.lblCancel,
+                          negativeTextColor: context.dialogCancelColor,
+                          dialogType: DialogType.DELETE,
                           onAccept: (p0) {
                             imageFiles.removeWhere(
                                 (element) => element.path == value);
@@ -198,14 +210,25 @@ class _AddBlogScreenState extends State<AddBlogScreen> {
                       } else {
                         showConfirmDialogCustom(
                           context,
-                          dialogType: DialogType.DELETE,
+                          height: 80,
+                          width: 290,
+                          shape: appDialogShape(8),
                           title: languages.confirmationRequestTxt,
                           titleColor: context.dialogTitleColor,
                           backgroundColor: context.dialogBackgroundColor,
                           primaryColor: context.error,
-                          shape: appDialogShape(8),
+                          customCenterWidget: Image.asset(
+                            ic_warning,
+                            color: context.dialogIconColor,
+                            height: 70,
+                            width: 70,
+                            fit: BoxFit.cover,
+                          ),
                           positiveText: languages.lblDelete,
+                          positiveTextColor: context.onPrimary,
                           negativeText: languages.lblCancel,
+                          negativeTextColor: context.dialogCancelColor,
+                          dialogType: DialogType.DELETE,
                           onAccept: (p0) {
                             imageFiles.removeWhere(
                                 (element) => element.path == value);
