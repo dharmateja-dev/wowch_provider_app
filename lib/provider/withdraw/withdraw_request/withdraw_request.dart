@@ -9,9 +9,11 @@ import 'package:handyman_provider_flutter/provider/bank_details/add_bank_screen.
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/num_extenstions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 import '../../../components/app_widgets.dart';
 import '../../../components/price_widget.dart';
@@ -123,6 +125,7 @@ class _WithdrawRequestState extends State<WithdrawRequest> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
+      scaffoldBackgroundColor: context.scaffoldSecondary,
       appBarTitle: languages.withdrawRequest,
       body: Stack(
         children: [
@@ -130,19 +133,25 @@ class _WithdrawRequestState extends State<WithdrawRequest> {
             key: formKey,
             child: AnimatedScrollView(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(languages.availableBalance,
-                        style: secondaryTextStyle(size: 12)),
-                    PriceWidget(
-                        price: widget.availableBalance.validate(),
-                        color: context.primaryColor),
-                  ],
+                Container(
+                  decoration: boxDecorationWithRoundedCorners(
+                      borderRadius: radius(8),
+                      backgroundColor: context.cardSecondary,
+                      border: Border.all(color: context.cardSecondaryBorder)),
+                  padding: const EdgeInsets.all(12),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(languages.availableBalance,
+                          style: context.boldTextStyle()),
+                      PriceWidget(
+                          price: widget.availableBalance.validate(),
+                          color: context.primary),
+                    ],
+                  ),
                 ),
                 24.height,
-                Text(languages.lblEnterAmount,
-                    style: primaryTextStyle(size: 12, weight: FontWeight.w600)),
+                Text(languages.lblEnterAmount, style: boldTextStyle()),
                 8.height,
                 AppTextField(
                   textFieldType: TextFieldType.NUMBER,
@@ -150,7 +159,13 @@ class _WithdrawRequestState extends State<WithdrawRequest> {
                   focus: amountFocus,
                   nextFocus: chooseBankFocus,
                   decoration: inputDecoration(context,
-                      hintText: languages.eg3000, prefix: Text("\$ ")),
+                      fillColor: context.profileInputFillColor,
+                      hintText: languages.eg3000,
+                      showBorder: true,
+                      borderRadius: 8,
+                      prefix: Text(
+                        "\$ ",
+                      )),
                   validator: (value) {
                     if (value?.isEmpty ?? false) {
                       return errorThisFieldRequired;
@@ -170,21 +185,25 @@ class _WithdrawRequestState extends State<WithdrawRequest> {
                 ),
                 16.height,
                 DropdownButtonFormField<String>(
-                  decoration: inputDecoration(context),
+                  decoration: inputDecoration(context,
+                      fillColor: context.profileInputFillColor,
+                      borderRadius: 8,
+                      showBorder: true),
                   isExpanded: true,
                   menuMaxHeight: 300,
                   initialValue: selectedWithdrawalMethod,
                   hint: Text(
                     languages.chooseWithdrawalMethod,
-                    style: secondaryTextStyle(size: 12),
+                    style: context.primaryTextStyle(),
                   ),
-                  icon: ic_down_arrow.iconImage(context: context, size: 16),
+                  icon: ic_down_arrow.iconImage(
+                      context: context, size: 14, color: context.icon),
                   dropdownColor: context.cardColor,
                   items: withdrawalMethodList.map((String e) {
                     return DropdownMenuItem<String>(
                       value: e,
                       child: Text(e.toPaymentMethodText,
-                          style: primaryTextStyle(),
+                          style: context.primaryTextStyle(),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis),
                     );
@@ -198,16 +217,15 @@ class _WithdrawRequestState extends State<WithdrawRequest> {
                     return null;
                   },
                 ),
+                16.height,
                 if (isWithdrawMethodIsBank) ...[
-                  8.height,
                   Row(
                     children: [
                       Text(languages.chooseBank,
-                          style: primaryTextStyle(
-                              size: 12, weight: FontWeight.w600)),
+                          style: context.boldTextStyle()),
                       Spacer(),
-                      TextButton(
-                        onPressed: () {
+                      GestureDetector(
+                        onTap: () {
                           AddBankScreen().launch(context).then((value) {
                             if (value.isNotEmpty) {
                               if (value[0]) {
@@ -218,27 +236,31 @@ class _WithdrawRequestState extends State<WithdrawRequest> {
                           });
                         },
                         child: Text(languages.addBank,
-                            style: boldTextStyle(size: 12, color: primary)),
+                            style:
+                                context.boldTextStyle(color: context.primary)),
                       ),
                     ],
                   ),
                   8.height,
                   DropdownButtonFormField<BankHistory>(
-                    decoration: inputDecoration(context),
+                    decoration: inputDecoration(context,
+                        borderRadius: 8,
+                        fillColor: context.profileInputFillColor),
                     isExpanded: true,
                     menuMaxHeight: 300,
                     initialValue: selectedBank,
                     hint: Text(
                       languages.egCentralNationalBank,
-                      style: secondaryTextStyle(size: 12),
+                      style: context.primaryTextStyle(),
                     ),
-                    icon: ic_down_arrow.iconImage(context: context, size: 16),
-                    dropdownColor: context.cardColor,
+                    icon: ic_down_arrow.iconImage(
+                        context: context, size: 14, color: context.icon),
+                    dropdownColor: context.cardSecondary,
                     items: bankHistoryList.map((BankHistory e) {
                       return DropdownMenuItem<BankHistory>(
                         value: e,
                         child: Text(e.bankName.validate(),
-                            style: primaryTextStyle(),
+                            style: context.primaryTextStyle(),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis),
                       );
@@ -256,9 +278,8 @@ class _WithdrawRequestState extends State<WithdrawRequest> {
                 40.height,
                 AppButton(
                   text: languages.withdraw,
-                  height: 40,
-                  color: primary,
-                  textStyle: boldTextStyle(color: white),
+                  color: context.primary,
+                  textStyle: boldTextStyle(color: context.onPrimary),
                   width: context.width() - context.navigationBarHeight,
                   onTap: () {
                     if (formKey.currentState!.validate()) {

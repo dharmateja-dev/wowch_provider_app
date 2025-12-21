@@ -7,8 +7,10 @@ import 'package:handyman_provider_flutter/networks/network_utils.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:http/http.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -134,6 +136,7 @@ class _AddBankScreenState extends State<AddBankScreen> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
+      scaffoldBackgroundColor: context.scaffoldSecondary,
       appBarTitle: languages.addBank,
       body: Stack(
         children: [
@@ -147,59 +150,70 @@ class _AddBankScreenState extends State<AddBankScreen> {
                 padding: const EdgeInsets.all(16),
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  16.height,
+                  Text(languages.bankName, style: context.boldTextStyle()),
+                  8.height,
                   AppTextField(
                     textFieldType: TextFieldType.NAME,
                     controller: bankNameCont,
                     focus: bankNameFocus,
                     nextFocus: branchNameFocus,
-                    decoration:
-                        inputDecoration(context, hintText: languages.bankName),
-                    suffix: ic_piggy_bank
-                        .iconImage(context: context, size: 10)
-                        .paddingAll(14),
+                    decoration: inputDecoration(context,
+                        hintText: languages.bankName,
+                        borderRadius: 8,
+                        fillColor: context.profileInputFillColor),
                   ),
                   16.height,
+                  Text(languages.branchName, style: context.boldTextStyle()),
+                  8.height,
                   AppTextField(
                     textFieldType: TextFieldType.NAME,
                     controller: branchNameCont,
                     focus: branchNameFocus,
                     nextFocus: accNumberFocus,
                     decoration: inputDecoration(context,
+                        borderRadius: 8,
+                        fillColor: context.profileInputFillColor,
                         hintText: languages.fullNameOnBankAccount),
-                    suffix: ic_piggy_bank
-                        .iconImage(context: context, size: 10)
-                        .paddingAll(14),
                   ),
                   16.height,
+                  Text(languages.accountNumber, style: context.boldTextStyle()),
+                  8.height,
                   AppTextField(
                     textFieldType: TextFieldType.NAME,
                     controller: accNumberCont,
                     focus: accNumberFocus,
                     nextFocus: ifscCodeFocus,
                     decoration: inputDecoration(context,
-                        hintText: languages.accountNumber, counter: false),
-                    suffix: ic_password
-                        .iconImage(
-                            context: context, size: 10, fit: BoxFit.contain)
-                        .paddingAll(14),
+                        hintText: languages.accountNumber,
+                        counter: false,
+                        borderRadius: 8,
+                        fillColor: context.profileInputFillColor),
                   ),
                   16.height,
+                  Text(languages.iFSCCode, style: context.boldTextStyle()),
+                  8.height,
                   AppTextField(
                     textFieldType: TextFieldType.NAME,
                     controller: ifscCodeCont,
                     focus: ifscCodeFocus,
                     nextFocus: contactNumberFocus,
                     decoration: inputDecoration(context,
-                        hintText: languages.iFSCCode, counter: false),
-                    suffix: profile
-                        .iconImage(context: context, size: 10)
-                        .paddingAll(14),
+                        hintText: languages.iFSCCode,
+                        counter: false,
+                        borderRadius: 8,
+                        fillColor: context.profileInputFillColor),
                     isValidationRequired: false,
                   ),
                   16.height,
+                  Text(languages.lblStatus, style: context.boldTextStyle()),
+                  8.height,
                   DropdownButtonFormField<StaticDataModel>(
+                    decoration: inputDecoration(context,
+                        borderRadius: 8,
+                        fillColor: context.profileInputFillColor),
                     isExpanded: true,
-                    dropdownColor: context.cardColor,
+                    dropdownColor: context.cardSecondary,
                     initialValue: blogStatusModel != null
                         ? blogStatusModel
                         : statusListStaticData.first,
@@ -207,11 +221,9 @@ class _AddBankScreenState extends State<AddBankScreen> {
                       return DropdownMenuItem<StaticDataModel>(
                         value: data,
                         child: Text(data.value.validate(),
-                            style: primaryTextStyle()),
+                            style: context.primaryTextStyle()),
                       );
                     }).toList(),
-                    decoration:
-                        inputDecoration(context, hintText: languages.lblStatus),
                     onChanged: (StaticDataModel? value) async {
                       bankStatus = value!.key.validate();
                       setState(() {});
@@ -232,8 +244,8 @@ class _AddBankScreenState extends State<AddBankScreen> {
             right: 16,
             child: AppButton(
               text: languages.btnSave,
-              color: primary,
-              textStyle: boldTextStyle(color: white),
+              color: context.primary,
+              textStyle: boldTextStyle(color: context.onPrimary),
               width: context.width(),
               onTap: () {
                 if (formKey.currentState!.validate()) {
