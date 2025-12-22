@@ -252,6 +252,9 @@ class LanguageHi extends Languages {
   String get hintSelectCategory => 'श्रेणी का चयन करें';
 
   @override
+  String get lblCategory => 'श्रेणी';
+
+  @override
   String get hintSelectType => 'प्रकार चुनें';
 
   @override
