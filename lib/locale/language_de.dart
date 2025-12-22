@@ -251,6 +251,9 @@ class LanguageDe extends Languages {
   String get hintSelectCategory => 'Kategorie wählen';
 
   @override
+  String get lblCategory => 'Kategorie';
+
+  @override
   String get hintSelectType => 'Art auswählen';
 
   @override

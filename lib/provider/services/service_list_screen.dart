@@ -10,10 +10,12 @@ import 'package:handyman_provider_flutter/provider/services/add_services.dart';
 import 'package:handyman_provider_flutter/provider/services/service_detail_screen.dart';
 import 'package:handyman_provider_flutter/provider/services/shimmer/service_list_shimmer.dart';
 import 'package:handyman_provider_flutter/utils/colors.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/demo_mode.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
 import 'package:handyman_provider_flutter/utils/model_keys.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../components/empty_error_state_widget.dart';
@@ -212,8 +214,8 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
     return Scaffold(
       appBar: appBarWidget(
         languages.lblAllService,
-        textColor: white,
-        color: context.primaryColor,
+        textColor: context.onPrimary,
+        color: context.primary,
         backWidget: BackWidget(),
         textSize: APP_BAR_TEXT_SIZE,
         actions: [
@@ -237,7 +239,7 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
                 setPageToOne(status: selectedTab.name);
               }
             },
-            icon: const Icon(Icons.add, size: 28, color: white),
+            icon: Icon(Icons.add, size: 28, color: context.onPrimary),
             tooltip: languages.hintAddService,
           ).visible(rolesAndPermissionStore.serviceAdd),
         ],
@@ -255,9 +257,8 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
                 },
                 decoration: InputDecoration(
                   hintText: languages.lblSearchHere,
-                  prefixIcon:
-                      Icon(Icons.search, color: context.iconColor, size: 20),
-                  hintStyle: secondaryTextStyle(),
+                  prefixIcon: Icon(Icons.search, color: context.icon, size: 20),
+                  hintStyle: context.primaryTextStyle(),
                   border: OutlineInputBorder(
                     borderRadius: radius(8),
                     borderSide:
@@ -265,7 +266,7 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
                   ),
                   filled: true,
                   contentPadding: const EdgeInsets.all(16),
-                  fillColor: appStore.isDarkMode ? cardDarkColor : cardColor,
+                  fillColor: context.profileInputFillColor,
                 ),
               ).paddingOnly(left: 16, right: 16, top: 16, bottom: 8),
               Align(
@@ -283,30 +284,30 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
                       children: [
                         FilterChip(
                           shape: RoundedRectangleBorder(
-                            borderRadius: radius(8),
+                            borderRadius: radius(50),
                             side: BorderSide(
                                 color:
                                     selectedTab.status == serviceStatus.status
-                                        ? primary
-                                        : Colors.transparent),
+                                        ? context.primary
+                                        : context.mainBorderColor),
                           ),
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                          ),
                           label: Text(
                             serviceStatus.name.toServiceApprovalStatusText(),
                             style: boldTextStyle(
                               size: 12,
                               color: selectedTab.status == serviceStatus.status
-                                  ? primary
-                                  : appStore.isDarkMode
-                                      ? Colors.white
-                                      : appTextPrimaryColor,
+                                  ? context.primary
+                                  : context.onSurface,
                             ),
                           ),
                           selected: false,
                           backgroundColor:
                               selectedTab.status == serviceStatus.status
-                                  ? lightPrimaryColor
-                                  : context.cardColor,
+                                  ? context.primary.withValues(alpha: 0.1)
+                                  : context.cardSecondary,
                           onSelected: (bool selected) {
                             selectedTab = serviceApprovalStatus[index];
                             setPageToOne(status: selectedTab.name);

@@ -342,6 +342,7 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                     trailing: Icon(Icons.chevron_right,
                         color: context.icon, size: 20),
                   ),
+                  //Subscription History
                   if (appStore.earningTypeSubscription)
                     SettingItemWidget(
                       decoration:

@@ -251,6 +251,9 @@ class LanguageEn extends Languages {
   String get hintSelectCategory => 'Select Category';
 
   @override
+  String get lblCategory => 'Category';
+
+  @override
   String get hintSelectType => 'Select Type';
 
   @override

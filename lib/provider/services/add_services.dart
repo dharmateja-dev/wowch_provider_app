@@ -21,7 +21,9 @@ import 'package:handyman_provider_flutter/provider/timeSlots/my_time_slots_scree
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/model_keys.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../components/chat_gpt_loder.dart';
@@ -478,16 +480,15 @@ class _AddServicesState extends State<AddServices> {
   Widget buildFormWidget() {
     return Container(
       key: formWidgetKey,
-      padding: const EdgeInsets.all(16),
-      decoration: boxDecorationWithRoundedCorners(
-        borderRadius: radius(),
-        backgroundColor: context.cardColor,
-      ),
       child: Form(
         key: formKey,
         child: Wrap(
-          runSpacing: 16,
+          runSpacing: 14,
           children: [
+            Text(
+              languages.hintServiceName,
+              style: context.primaryTextStyle(),
+            ),
             AppTextField(
               textFieldType: TextFieldType.NAME,
               controller: serviceNameCont,
@@ -497,9 +498,13 @@ class _AddServicesState extends State<AddServices> {
               errorThisFieldRequired: languages.hintRequired,
               decoration: inputDecoration(context,
                   hintText: languages.hintServiceName,
-                  fillColor: context.scaffoldBackgroundColor),
+                  fillColor: context.profileInputFillColor,
+                  hintTextColor: context.hintColor),
             ),
-            16.height,
+            Text(
+              languages.lblCategory,
+              style: context.primaryTextStyle(),
+            ),
             CategorySubCatDropDown(
               categoryId: categoryId == -1 ? null : categoryId,
               subCategoryId: subCategoryId == -1 ? null : subCategoryId,
@@ -528,7 +533,7 @@ class _AddServicesState extends State<AddServices> {
               children: [
                 DropdownButtonFormField<StaticDataModel>(
                   decoration: inputDecoration(context,
-                      fillColor: context.scaffoldBackgroundColor,
+                      fillColor: context.profileInputFillColor,
                       hintText: languages.lblType),
                   isExpanded: true,
                   initialValue: serviceType.isNotEmpty ? getServiceType : null,
@@ -579,7 +584,7 @@ class _AddServicesState extends State<AddServices> {
                     );
                   }).toList(),
                   decoration: inputDecoration(context,
-                      fillColor: context.scaffoldBackgroundColor,
+                      fillColor: context.profileInputFillColor,
                       hintText: languages.lblStatus),
                   onChanged: (StaticDataModel? value) async {
                     serviceStatus = value!.key.validate();
@@ -732,24 +737,21 @@ class _AddServicesState extends State<AddServices> {
               padding: const EdgeInsets.only(left: 16, right: 4),
               child: Theme(
                 data: ThemeData(
-                  unselectedWidgetColor: appStore.isDarkMode
-                      ? context.dividerColor
-                      : context.iconColor,
+                  unselectedWidgetColor:
+                      appStore.isDarkMode ? context.dividerColor : context.icon,
                 ),
                 child: CheckboxListTile(
                   checkboxShape:
                       RoundedRectangleBorder(borderRadius: radius(4)),
-                  activeColor: context.primaryColor,
-                  checkColor: appStore.isDarkMode
-                      ? context.iconColor
-                      : context.cardColor,
+                  activeColor: context.primary,
+                  checkColor: context.onPrimary,
                   value: isFeature,
                   contentPadding: EdgeInsets.zero,
                   shape: RoundedRectangleBorder(
                       borderRadius: radius(),
-                      side: const BorderSide(color: primary)),
+                      side: BorderSide(color: context.primary)),
                   title: Text(languages.hintSetAsFeature,
-                      style: secondaryTextStyle()),
+                      style: context.primaryTextStyle()),
                   onChanged: (bool? v) {
                     isFeature = v.validate();
                     setState(() {});
@@ -765,9 +767,8 @@ class _AddServicesState extends State<AddServices> {
               padding: const EdgeInsets.only(left: 16, right: 4, top: 8),
               child: Theme(
                 data: ThemeData(
-                  unselectedWidgetColor: appStore.isDarkMode
-                      ? context.dividerColor
-                      : context.iconColor,
+                  unselectedWidgetColor:
+                      appStore.isDarkMode ? context.dividerColor : context.icon,
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -795,10 +796,8 @@ class _AddServicesState extends State<AddServices> {
                                 padding: const EdgeInsets.all(8),
                                 decoration: boxDecorationDefault(
                                   borderRadius: radius(8),
-                                  color: appStore.isDarkMode
-                                      ? cardDarkColor
-                                      : cardLightColor,
-                                  border: Border.all(color: primary),
+                                  color: context.cardSecondary,
+                                  border: Border.all(color: context.primary),
                                 ),
                                 alignment: Alignment.center,
                                 child: Text(value.title.validate(),
@@ -818,10 +817,10 @@ class _AddServicesState extends State<AddServices> {
                                     ? const EdgeInsets.all(2)
                                     : EdgeInsets.zero,
                                 decoration: boxDecorationDefault(
-                                    color: context.primaryColor),
+                                    color: context.primary),
                                 child: selectedVisitType == value
-                                    ? const Icon(Icons.done,
-                                        size: 16, color: Colors.white)
+                                    ? Icon(Icons.done,
+                                        size: 16, color: context.onPrimary)
                                     : const Offstage(),
                               ),
                             ),
@@ -856,7 +855,7 @@ class _AddServicesState extends State<AddServices> {
                     return Transform.scale(
                       scale: 0.8,
                       child: CupertinoSwitch(
-                        activeTrackColor: primary,
+                        activeTrackColor: context.primary,
                         value: isTimeSlotAvailable,
                         onChanged: (v) async {
                           if (!v) {
@@ -900,7 +899,7 @@ class _AddServicesState extends State<AddServices> {
                   trailing: Transform.scale(
                     scale: 0.8,
                     child: CupertinoSwitch(
-                      activeTrackColor: primary,
+                      activeTrackColor: context.primary,
                       value: isAdvancePayment,
                       onChanged: (v) async {
                         isAdvancePayment = !isAdvancePayment;
@@ -955,11 +954,12 @@ class _AddServicesState extends State<AddServices> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: context.scaffoldSecondary,
       resizeToAvoidBottomInset: true,
       appBar: appBarWidget(
         isUpdate ? languages.lblEditService : languages.hintAddService,
-        textColor: white,
-        color: context.primaryColor,
+        textColor: context.onPrimary,
+        color: context.primary,
         backWidget: BackWidget(),
       ),
       body: Stack(
@@ -1046,9 +1046,9 @@ class _AddServicesState extends State<AddServices> {
                   text: languages.btnSave,
                   height: 40,
                   color: appStore.isLoading
-                      ? primary.withValues(alpha: 0.5)
-                      : primary,
-                  textStyle: boldTextStyle(color: white),
+                      ? context.primary.withValues(alpha: 0.5)
+                      : context.primary,
+                  textStyle: context.boldTextStyle(color: context.onPrimary),
                   width: context.width() - context.navigationBarHeight,
                   onTap: appStore.isLoading
                       ? () {}

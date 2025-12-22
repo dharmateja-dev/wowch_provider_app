@@ -168,6 +168,8 @@ abstract class Languages {
 
   String get hintSelectCategory;
 
+  String get lblCategory;
+
   String get hintSelectType;
 
   String get hintSelectStatus;

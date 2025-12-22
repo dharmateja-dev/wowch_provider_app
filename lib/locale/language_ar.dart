@@ -249,6 +249,9 @@ class LanguageAr extends Languages {
   String get hintSelectCategory => 'اختر الفئة';
 
   @override
+  String get lblCategory => 'الفئة';
+
+  @override
   String get hintSelectType => 'اختر نوع الخدمة';
 
   @override

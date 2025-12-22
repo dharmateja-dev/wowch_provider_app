@@ -335,8 +335,9 @@ extension ColorSchemeExtension on BuildContext {
   // CHAT COLORS
   // ══════════════════════════════════════════════════════════════════════════
 
-  /// Sent message bubble background - Uses secondaryContainer
-  Color get chatSentBubble => secondaryContainer;
+  /// Sent message bubble background - Light: #DEECE6, Dark: #394740
+  Color get chatSentBubble =>
+      isDarkMode ? const Color(0xFF394740) : const Color(0xFFDEECE6);
 
   /// Sent message text color - Uses onSecondaryContainer
   Color get chatSentTextColor => onSecondaryContainer;

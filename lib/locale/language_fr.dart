@@ -252,6 +252,9 @@ class LanguageFr extends Languages {
   String get hintSelectCategory => 'Choisir une catégorie';
 
   @override
+  String get lblCategory => 'Catégorie';
+
+  @override
   String get hintSelectType => 'Sélectionner le genre';
 
   @override
