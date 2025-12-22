@@ -8,8 +8,10 @@ import 'package:handyman_provider_flutter/provider/wallet/wallet_history_screen.
 import 'package:handyman_provider_flutter/screens/booking_detail_screen.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/demo_data.dart';
 import 'package:handyman_provider_flutter/utils/demo_mode.dart';
+import 'package:handyman_provider_flutter/utils/images.dart';
 import 'package:handyman_provider_flutter/utils/model_keys.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -91,10 +93,11 @@ class NotificationScreenState extends State<NotificationFragment> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
+      scaffoldBackgroundColor: context.scaffoldSecondary,
       appBarTitle: Navigator.canPop(context) ? languages.notification : null,
       actions: [
         IconButton(
-          icon: const Icon(Icons.clear_all_rounded, color: Colors.white),
+          icon: Icon(Icons.clear_all_rounded, color: context.onPrimary),
           onPressed: () async {
             showConfirmDialogCustom(
               context,
@@ -104,9 +107,24 @@ class NotificationScreenState extends State<NotificationFragment> {
                 init(type: MARK_AS_READ);
                 setState(() {});
               },
-              primaryColor: context.primaryColor,
+              dialogType: DialogType.CONFIRMATION,
+              height: 80,
+              width: 290,
+              shape: appDialogShape(8),
+              backgroundColor: context.dialogBackgroundColor,
+              titleColor: context.dialogTitleColor,
+              primaryColor: context.primary,
+              customCenterWidget: Image.asset(
+                ic_warning,
+                color: context.dialogIconColor,
+                height: 70,
+                width: 70,
+                fit: BoxFit.cover,
+              ),
               negativeText: languages.lblNo,
+              negativeTextColor: context.dialogCancelColor,
               positiveText: languages.lblYes,
+              positiveTextColor: context.onPrimary,
               title: languages.confirmationRequestTxt,
             );
           },

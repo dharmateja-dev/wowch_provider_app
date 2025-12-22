@@ -9,11 +9,13 @@ import 'package:handyman_provider_flutter/screens/booking_detail_screen.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/color_extension.dart';
 import 'package:handyman_provider_flutter/utils/extensions/num_extenstions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
 import 'package:handyman_provider_flutter/utils/model_keys.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../models/user_data.dart';
@@ -81,11 +83,27 @@ class BookingItemComponentState extends State<BookingItemComponent> {
       BuildContext context, int index, String status) async {
     showConfirmDialogCustom(
       context,
+      height: 80,
+      width: 290,
+      shape: appDialogShape(8),
       title: languages.confirmationRequestTxt,
+      titleColor: context.dialogTitleColor,
+      backgroundColor: context.dialogBackgroundColor,
+      primaryColor: status == BookingStatusKeys.rejected
+          ? context.error
+          : context.primary,
+      customCenterWidget: Image.asset(
+        ic_warning,
+        color: context.dialogIconColor,
+        height: 70,
+        width: 70,
+        fit: BoxFit.cover,
+      ),
       positiveText: languages.lblYes,
+      positiveTextColor: context.onPrimary,
       negativeText: languages.lblNo,
-      primaryColor:
-          status == BookingStatusKeys.rejected ? Colors.redAccent : primary,
+      negativeTextColor: context.dialogCancelColor,
+      dialogType: DialogType.CONFIRMATION,
       onAccept: (context) async {
         updateBooking(widget.bookingData, status, index);
       },
@@ -104,9 +122,9 @@ class BookingItemComponentState extends State<BookingItemComponent> {
       margin: const EdgeInsets.only(bottom: 16),
       width: context.width(),
       decoration: boxDecorationWithRoundedCorners(
-        borderRadius: radius(),
-        backgroundColor:
-            appStore.isDarkMode ? context.cardColor : cardLightColor,
+        borderRadius: radius(8),
+        border: Border.all(color: context.cardSecondaryBorder),
+        backgroundColor: context.cardSecondary,
       ),
       child: Column(
         children: [
@@ -126,7 +144,7 @@ class BookingItemComponentState extends State<BookingItemComponent> {
                   height: 80,
                   width: 80,
                   fit: BoxFit.cover,
-                  radius: defaultRadius,
+                  radius: 8,
                 )
               else
                 CachedImageWidget(
@@ -136,7 +154,7 @@ class BookingItemComponentState extends State<BookingItemComponent> {
                   fit: BoxFit.cover,
                   width: 80,
                   height: 80,
-                  radius: defaultRadius,
+                  radius: 8,
                 ),
               16.width,
               Column(
@@ -153,14 +171,14 @@ class BookingItemComponentState extends State<BookingItemComponent> {
                               vertical: 2,
                             ),
                             decoration: BoxDecoration(
-                              color: context.primaryColor.withValues(alpha: 0.1),
+                              color: context.primary.withValues(alpha: 0.1),
                               borderRadius: radius(16),
-                              border: Border.all(color: context.primaryColor),
+                              border: Border.all(color: context.primary),
                             ),
                             child: Text(
                               '#${widget.bookingData.id.validate()}',
-                              style: boldTextStyle(
-                                  color: context.primaryColor, size: 12),
+                              style: context.boldTextStyle(
+                                  color: context.primary, size: 12),
                             ),
                           ).flexible(),
                           5.width,
@@ -173,14 +191,14 @@ class BookingItemComponentState extends State<BookingItemComponent> {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 12, vertical: 2),
                               decoration: BoxDecoration(
-                                color: context.primaryColor.withValues(alpha: 0.1),
+                                color: context.primary.withValues(alpha: 0.1),
                                 borderRadius: radius(16),
-                                border: Border.all(color: context.primaryColor),
+                                border: Border.all(color: context.primary),
                               ),
                               child: Text(
                                 languages.lblAtShop,
-                                style: boldTextStyle(
-                                    color: context.primaryColor, size: 12),
+                                style: context.boldTextStyle(
+                                    color: context.primary, size: 12),
                               ),
                             ),
                           5.width,
@@ -219,14 +237,14 @@ class BookingItemComponentState extends State<BookingItemComponent> {
                                   horizontal: 12, vertical: 2),
                               margin: const EdgeInsets.only(left: 4),
                               decoration: BoxDecoration(
-                                color: context.primaryColor.withValues(alpha: 0.1),
-                                border: Border.all(color: context.primaryColor),
+                                color: context.primary.withValues(alpha: 0.1),
+                                border: Border.all(color: context.primary),
                                 borderRadius: radius(16),
                               ),
                               child: Text(
                                 languages.postJob,
-                                style: boldTextStyle(
-                                    color: context.primaryColor, size: 12),
+                                style: context.boldTextStyle(
+                                    color: context.primary, size: 12),
                               ),
                             ),
                           if (widget.bookingData.isPackageBooking)
@@ -235,14 +253,14 @@ class BookingItemComponentState extends State<BookingItemComponent> {
                                   horizontal: 12, vertical: 2),
                               margin: const EdgeInsets.only(left: 4),
                               decoration: BoxDecoration(
-                                color: context.primaryColor.withValues(alpha: 0.1),
-                                border: Border.all(color: context.primaryColor),
+                                color: context.primary.withValues(alpha: 0.1),
+                                border: Border.all(color: context.primary),
                                 borderRadius: radius(16),
                               ),
                               child: Text(
                                 languages.package,
-                                style: boldTextStyle(
-                                    color: context.primaryColor, size: 12),
+                                style: context.boldTextStyle(
+                                    color: context.primary, size: 12),
                               ),
                             ),
                         ],
@@ -255,16 +273,16 @@ class BookingItemComponentState extends State<BookingItemComponent> {
                       widget.bookingData.isPackageBooking
                           ? widget.bookingData.bookingPackage!.name.validate()
                           : widget.bookingData.serviceName.validate(),
-                      style: boldTextStyle(),
+                      style: context.boldTextStyle(),
                       overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
+                      maxLines: 2,
                     ),
                   ),
                   8.height,
                   if (widget.bookingData.bookingPackage != null)
                     PriceWidget(
                       price: widget.bookingData.totalAmount.validate(),
-                      color: primary,
+                      color: context.primary,
                     )
                   else
                     Row(
@@ -275,24 +293,27 @@ class BookingItemComponentState extends State<BookingItemComponent> {
                           isFreeService:
                               widget.bookingData.type == SERVICE_TYPE_FREE,
                           price: widget.bookingData.totalAmount.validate(),
-                          color: primary,
+                          color: context.primary,
                         ),
                         if (widget.bookingData.isHourlyService)
                           Row(
                             children: [
-                              4.width,
-                              Text(
-                                '${widget.bookingData.amount.validate().toPriceFormat()}/${languages.lblHr}',
-                                style: secondaryTextStyle(),
+                              6.width,
+                              PriceWidget(
+                                price: widget.bookingData.amount.validate(),
+                                color: context.textGrey,
+                                isHourlyService: true,
+                                size: 14,
                               ),
                             ],
                           ),
                         if (widget.bookingData.discount.validate() != 0)
                           Text(
                             '(${widget.bookingData.discount.validate()}% ${languages.lblOff})',
-                            style: boldTextStyle(size: 12, color: Colors.green),
+                            style: context.primaryTextStyle(
+                                size: 12, color: context.primary),
                             overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
+                            maxLines: 2,
                           ).paddingLeft(4).expand(),
                       ],
                     ),
@@ -303,9 +324,8 @@ class BookingItemComponentState extends State<BookingItemComponent> {
           if (widget.showDescription)
             Container(
               decoration: boxDecorationWithRoundedCorners(
-                backgroundColor:
-                    appStore.isDarkMode ? context.cardColor : whiteColor,
-                border: Border.all(color: context.dividerColor),
+                backgroundColor: context.cardSecondary,
+                border: Border.all(color: context.cardSecondaryBorder),
                 borderRadius: const BorderRadius.all(Radius.circular(8)),
               ),
               margin: const EdgeInsets.all(8),
@@ -318,13 +338,13 @@ class BookingItemComponentState extends State<BookingItemComponent> {
                       children: [
                         Text(
                           '${languages.lblAddress}:',
-                          style: secondaryTextStyle(),
+                          style: context.primaryTextStyle(),
                         ).expand(flex: 2),
                         8.width,
                         Marquee(
                           child: Text(
                             widget.bookingData.address.validate(),
-                            style: boldTextStyle(size: 12),
+                            style: context.boldTextStyle(size: 12),
                             textAlign: TextAlign.left,
                           ),
                         ).expand(flex: 5),
@@ -335,13 +355,13 @@ class BookingItemComponentState extends State<BookingItemComponent> {
                     children: [
                       Text(
                         '${languages.lblDate} & ${languages.lblTime}:',
-                        style: secondaryTextStyle(),
+                        style: context.primaryTextStyle(),
                       ).expand(flex: 2),
                       8.width,
                       Marquee(
                         child: Text(
                           "${formatDate(widget.bookingData.date.validate(), format: DATE_FORMAT_2)} ${languages.at} ${buildTimeWidget(bookingDetail: widget.bookingData)}",
-                          style: boldTextStyle(size: 12),
+                          style: context.boldTextStyle(size: 12),
                           textAlign: TextAlign.left,
                         ),
                       ).expand(flex: 5),
@@ -352,7 +372,7 @@ class BookingItemComponentState extends State<BookingItemComponent> {
                       children: [
                         Text(
                           '${languages.customer}:',
-                          style: secondaryTextStyle(),
+                          style: context.primaryTextStyle(),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ).expand(flex: 2),
@@ -360,7 +380,7 @@ class BookingItemComponentState extends State<BookingItemComponent> {
                         Marquee(
                           child: Text(
                             widget.bookingData.customerName.validate(),
-                            style: boldTextStyle(size: 12),
+                            style: context.boldTextStyle(size: 12),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.left,
@@ -375,7 +395,7 @@ class BookingItemComponentState extends State<BookingItemComponent> {
                       children: [
                         Text(
                           '${languages.paymentStatus}:',
-                          style: secondaryTextStyle(),
+                          style: context.primaryTextStyle(),
                         ).expand(flex: 2),
                         8.width,
                         Marquee(
@@ -386,7 +406,7 @@ class BookingItemComponentState extends State<BookingItemComponent> {
                                   .validate()
                                   .capitalizeFirstLetter(),
                             ),
-                            style: boldTextStyle(
+                            style: context.boldTextStyle(
                               size: 12,
                               color: (widget.bookingData.paymentStatus
                                               .validate() ==
@@ -394,8 +414,8 @@ class BookingItemComponentState extends State<BookingItemComponent> {
                                       widget.bookingData.paymentStatus
                                               .validate() ==
                                           PENDING_BY_ADMINS)
-                                  ? Colors.green
-                                  : Colors.red,
+                                  ? context.primaryLiteColor
+                                  : context.error,
                             ),
                             textAlign: TextAlign.left,
                           ),
@@ -407,9 +427,7 @@ class BookingItemComponentState extends State<BookingItemComponent> {
                     Column(
                       children: [
                         DottedLine(
-                          dashColor: appStore.isDarkMode
-                              ? lightGray.withValues(alpha: 0.4)
-                              : lightGray,
+                          dashColor: context.cardSecondaryBorder,
                           dashGapLength: 5,
                           dashLength: 8,
                         ).paddingAll(8),
@@ -442,14 +460,14 @@ class BookingItemComponentState extends State<BookingItemComponent> {
                                             .handyman!
                                             .displayName
                                             .validate(),
-                                        style: boldTextStyle(size: 12),
+                                        style: context.boldTextStyle(size: 12),
                                       ),
                                     ).flexible(),
                                     4.width,
-                                    const ImageIcon(
+                                    ImageIcon(
                                       AssetImage(ic_verified),
                                       size: 14,
-                                      color: Colors.green,
+                                      color: context.primaryLiteColor,
                                     ).visible(
                                       widget.bookingData.handyman!.isEmpty
                                           ? widget.bookingData
@@ -476,8 +494,8 @@ class BookingItemComponentState extends State<BookingItemComponent> {
                                 4.height,
                                 Text(
                                   languages.handyman,
-                                  style: secondaryTextStyle(),
-                                  maxLines: 1,
+                                  style: context.primaryTextStyle(),
+                                  maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ],
@@ -498,18 +516,33 @@ class BookingItemComponentState extends State<BookingItemComponent> {
                 if (isUserTypeProvider)
                   AppButton(
                     width: context.width(),
-                    color: primary,
+                    color: context.primary,
                     elevation: 0,
                     onTap: () async {
                       /// If Auto Assign is enabled, Assign to current Provider it self
                       if (appConfigurationStore.autoAssignStatus) {
                         showConfirmDialogCustom(
                           context,
+                          height: 80,
+                          width: 290,
+                          shape: appDialogShape(8),
                           title:
                               languages.lblAreYouSureYouWantToAssignToYourself,
-                          primaryColor: context.primaryColor,
+                          titleColor: context.dialogTitleColor,
+                          backgroundColor: context.dialogBackgroundColor,
+                          primaryColor: context.primary,
+                          customCenterWidget: Image.asset(
+                            ic_warning,
+                            color: context.dialogIconColor,
+                            height: 70,
+                            width: 70,
+                            fit: BoxFit.cover,
+                          ),
                           positiveText: languages.lblYes,
+                          positiveTextColor: context.onPrimary,
                           negativeText: languages.lblCancel,
+                          negativeTextColor: context.dialogCancelColor,
+                          dialogType: DialogType.CONFIRMATION,
                           onAccept: (c) async {
                             var request = {
                               CommonKeys.id: widget.bookingData.id.validate(),
@@ -539,12 +572,27 @@ class BookingItemComponentState extends State<BookingItemComponent> {
                       } else {
                         await showConfirmDialogCustom(
                           context,
+                          height: 80,
+                          width: 290,
+                          shape: appDialogShape(8),
                           dialogType: DialogType.ACCEPT,
                           title: languages.accept,
                           subTitle: languages.wouldYouLikeToAcceptThisBooking,
-                          primaryColor: context.primaryColor,
+                          titleColor: context.dialogTitleColor,
+                          subTitleColor: context.dialogSubTitleColor,
+                          backgroundColor: context.dialogBackgroundColor,
+                          primaryColor: context.primary,
+                          customCenterWidget: Image.asset(
+                            ic_warning,
+                            color: context.dialogIconColor,
+                            height: 70,
+                            width: 70,
+                            fit: BoxFit.cover,
+                          ),
                           positiveText: languages.lblYes,
+                          positiveTextColor: context.onPrimary,
                           negativeText: languages.lblNo,
+                          negativeTextColor: context.dialogCancelColor,
                           onAccept: (_) async {
                             final request = {
                               CommonKeys.id: widget.bookingData.id.validate(),
@@ -629,16 +677,19 @@ class BookingItemComponentState extends State<BookingItemComponent> {
                     },
                     child: Text(
                       languages.accept,
-                      style: boldTextStyle(color: white),
+                      style: context.boldTextStyle(color: context.onPrimary),
                     ),
                   ).expand(),
                 12.width,
                 AppButton(
                   width: context.width(),
                   elevation: 0,
-                  color: appStore.isDarkMode
-                      ? context.scaffoldBackgroundColor
-                      : white,
+                  textColor: context.primary,
+                  color: context.secondaryContainer,
+                  shapeBorder: RoundedRectangleBorder(
+                    borderRadius: radius(defaultAppButtonRadius),
+                    side: BorderSide(color: context.primary, width: 1),
+                  ),
                   onTap: () {
                     if (isUserTypeProvider) {
                       confirmationRequestDialog(
@@ -648,7 +699,8 @@ class BookingItemComponentState extends State<BookingItemComponent> {
                           context, widget.index!, BookingStatusKeys.pending);
                     }
                   },
-                  child: Text(languages.decline, style: boldTextStyle()),
+                  child: Text(languages.decline,
+                      style: context.boldTextStyle(color: context.primary)),
                 ).expand(),
               ],
             ).paddingOnly(bottom: 8, left: 8, right: 8, top: 16),
@@ -659,7 +711,7 @@ class BookingItemComponentState extends State<BookingItemComponent> {
                 8.height,
                 AppButton(
                   width: context.width(),
-                  color: primary,
+                  color: context.primary,
                   elevation: 0,
                   onTap: () {
                     AssignHandymanScreen(
@@ -675,7 +727,7 @@ class BookingItemComponentState extends State<BookingItemComponent> {
                     widget.bookingData.handyman!.isEmpty
                         ? languages.lblAssign
                         : languages.lblReassign,
-                    style: boldTextStyle(color: white),
+                    style: context.boldTextStyle(color: context.onPrimary),
                   ),
                 ),
               ],

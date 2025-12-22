@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class HandymanTotalWidget extends StatelessWidget {
@@ -19,7 +21,7 @@ class HandymanTotalWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-      decoration: boxDecorationDefault(color: context.primaryColor),
+      decoration: boxDecorationDefault(color: context.primary),
       //decoration: cardDecoration(context, showBorder: true,color: context.primaryColor),
       width: context.width() / 2 - 24,
       child: Row(
@@ -31,22 +33,22 @@ class HandymanTotalWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(total.validate(),
-                      style: boldTextStyle(color: Colors.white, size: 16)),
+                      style: context.boldTextStyle(
+                          color: context.onPrimary, size: 16)),
                   Container(
                     padding: const EdgeInsets.all(10),
-                    decoration: const BoxDecoration(
-                        shape: BoxShape.circle, color: Colors.white),
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle, color: context.onPrimary),
                     child: Image.asset(icon,
-                        width: 20, height: 20, color: primary),
+                        width: 20, height: 20, color: context.primary),
                   ),
                 ],
               ),
               8.height,
-              Text(title.validate(),
-                  style: secondaryTextStyle(
-                      color: appStore.isDarkMode
-                          ? Colors.white
-                          : context.cardColor)),
+              Marquee(
+                child: Text(title.validate(),
+                    style: context.primaryTextStyle(color: context.onPrimary)),
+              ),
             ],
           ).expand(),
         ],

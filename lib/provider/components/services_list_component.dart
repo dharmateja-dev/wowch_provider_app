@@ -5,6 +5,7 @@ import 'package:handyman_provider_flutter/models/service_model.dart';
 import 'package:handyman_provider_flutter/provider/components/service_widget.dart';
 import 'package:handyman_provider_flutter/provider/services/service_detail_screen.dart';
 import 'package:handyman_provider_flutter/provider/services/service_list_screen.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class ServiceListComponent extends StatelessWidget {
@@ -17,30 +18,39 @@ class ServiceListComponent extends StatelessWidget {
   Widget build(BuildContext context) {
     if (list.isEmpty) return Offstage();
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ViewAllLabel(
-          label: languages.lblMyService,
-          list: list,
-          onTap: () {
-            ServiceListScreen().launch(context);
-          },
-        ),
-        16.height,
-        Wrap(
-          spacing: 16.0,
-          runSpacing: 16.0,
-          children: List.generate(
-            list.take(4).length,
-            (index) {
-              return ServiceComponent(data: list[index], width: context.width() * 0.5 - 24, changeList: changeList).onTap(() async {
-                await ServiceDetailScreen(serviceId: list[index].id.validate()).launch(context);
-              }, borderRadius: radius());
+    return Container(
+      color: context.cardSecondary,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ViewAllLabel(
+            label: languages.lblMyService,
+            list: list,
+            onTap: () {
+              ServiceListScreen().launch(context);
             },
           ),
-        )
-      ],
-    ).paddingSymmetric(horizontal: 16, vertical: 16);
+          16.height,
+          Wrap(
+            spacing: 16.0,
+            runSpacing: 16.0,
+            children: List.generate(
+              list.take(4).length,
+              (index) {
+                return ServiceComponent(
+                        data: list[index],
+                        width: context.width() * 0.5 - 24,
+                        changeList: changeList)
+                    .onTap(() async {
+                  await ServiceDetailScreen(
+                          serviceId: list[index].id.validate())
+                      .launch(context);
+                }, borderRadius: radius());
+              },
+            ),
+          )
+        ],
+      ).paddingSymmetric(horizontal: 16, vertical: 16),
+    );
   }
 }

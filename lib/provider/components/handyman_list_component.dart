@@ -5,6 +5,7 @@ import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/models/user_data.dart';
 import 'package:handyman_provider_flutter/provider/components/handyman_widget.dart';
 import 'package:handyman_provider_flutter/provider/handyman_list_screen.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../components/empty_error_state_widget.dart';
@@ -15,22 +16,25 @@ class HandymanListComponent extends StatelessWidget {
   final int totalActiveHandyman;
   final VoidCallback onRefresh;
 
-  HandymanListComponent({required this.list, required this.onRefresh, required this.totalActiveHandyman});
+  HandymanListComponent(
+      {required this.list,
+      required this.onRefresh,
+      required this.totalActiveHandyman});
 
   @override
   Widget build(BuildContext context) {
     if (list.isEmpty) return Offstage();
 
     return Container(
-      color: context.cardColor,
-      margin: EdgeInsets.only(top: 6),
+      color: context.scaffoldSecondary,
       padding: EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ViewAllLabel(
             label: languages.handyman,
-            subLabel: '${languages.totalActiveCount} ${totalActiveHandyman.toString()}',
+            subLabel:
+                '${languages.totalActiveCount} ${totalActiveHandyman.toString()}',
             list: list,
             onTap: () {
               HandymanListScreen().launch(context).then((_) => onRefresh());
@@ -47,7 +51,7 @@ class HandymanListComponent extends StatelessWidget {
                   (index) {
                     return HandymanWidget(
                       data: list[index],
-                      width: context.width() * 0.48 - 20,
+                      width: context.width() * 0.48 - 19,
                       onUpdate: () {},
                     );
                   },

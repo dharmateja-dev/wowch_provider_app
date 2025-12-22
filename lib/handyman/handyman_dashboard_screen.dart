@@ -9,12 +9,12 @@ import 'package:handyman_provider_flutter/handyman/screen/fragments/handyman_fra
 import 'package:handyman_provider_flutter/handyman/screen/fragments/handyman_profile_fragment.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/screens/chat/user_chat_list_screen.dart';
-import 'package:handyman_provider_flutter/utils/colors.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
-import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:playx_version_update/playx_version_update.dart';
 
@@ -70,9 +70,8 @@ class _HandymanDashboardScreenState extends State<HandymanDashboardScreen> {
   }
 
   void init() async {
-    setStatusBarColor(primary);
-
     afterBuildCreated(() async {
+      setStatusBarColor(context.primary);
       if (getIntAsync(THEME_MODE_INDEX) == THEME_MODE_SYSTEM) {
         appStore.setDarkMode(context.platformBrightness() == Brightness.dark);
       }
@@ -138,6 +137,7 @@ class _HandymanDashboardScreenState extends State<HandymanDashboardScreen> {
     return DoublePressBackWidget(
       message: languages.lblCloseAppMsg,
       child: Scaffold(
+        backgroundColor: context.scaffoldSecondary,
         body: fragmentList[currentIndex],
         appBar: appBarWidget(
           [
@@ -146,15 +146,17 @@ class _HandymanDashboardScreenState extends State<HandymanDashboardScreen> {
             if (appConfigurationStore.isEnableChat) languages.lblChat,
             languages.lblProfile,
           ][currentIndex],
-          color: primary,
+          color: context.primary,
           elevation: 0.0,
-          textColor: Colors.white,
+          textColor: context.onPrimary,
           showBack: false,
           actions: [
             IconButton(
-              icon: ic_info.iconImage(context: context, color: Colors.white),
+              icon:
+                  ic_info.iconImage(context: context, color: context.onPrimary),
               onPressed: () async {
                 showModalBottomSheet(
+                  backgroundColor: context.bottomSheetBackgroundColor,
                   context: context,
                   shape: RoundedRectangleBorder(borderRadius: radius()),
                   clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -169,7 +171,7 @@ class _HandymanDashboardScreenState extends State<HandymanDashboardScreen> {
                 clipBehavior: Clip.none,
                 children: [
                   ic_notification.iconImage(
-                      context: context, size: 20, color: white),
+                      context: context, size: 20, color: context.onPrimary),
                   Positioned(
                     top: -10,
                     right: -4,
@@ -179,11 +181,11 @@ class _HandymanDashboardScreenState extends State<HandymanDashboardScreen> {
                           return Container(
                             padding: const EdgeInsets.all(4),
                             decoration: boxDecorationDefault(
-                                color: Colors.red, shape: BoxShape.circle),
+                                color: context.error, shape: BoxShape.circle),
                             child: FittedBox(
                               child: Text(appStore.notificationCount.toString(),
-                                  style: primaryTextStyle(
-                                      size: 12, color: Colors.white)),
+                                  style: context.primaryTextStyle(
+                                      size: 12, color: context.onPrimary)),
                             ),
                           );
                         }
@@ -201,52 +203,70 @@ class _HandymanDashboardScreenState extends State<HandymanDashboardScreen> {
             if (isCurrentFragmentIsBooking)
               IconButton(
                 icon: ic_filter.iconImage(
-                    context: context, color: white, size: 22),
+                    context: context, color: context.onPrimary, size: 22),
                 onPressed: () async {
                   BookingFilterScreen().launch(context).then((value) {
                     if (value != null) {
                       LiveStream().emit(LIVESTREAM_UPDATE_BOOKINGS);
+                      setState(() {});
                     }
                   });
                 },
               ),
           ],
         ),
-        bottomNavigationBar: Blur(
-          blur: 30,
-          borderRadius: radius(0),
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            border: Border(
+              top: BorderSide(
+                color: context.cardSecondaryBorder,
+                width: 1,
+              ),
+            ),
+          ),
           child: NavigationBarTheme(
             data: NavigationBarThemeData(
-              backgroundColor: context.primaryColor.withValues(alpha: 0.02),
-              indicatorColor: context.primaryColor.withValues(alpha: 0.1),
-              labelTextStyle:
-                  WidgetStateProperty.all(primaryTextStyle(size: 12)),
+              backgroundColor: context.scaffold,
+              indicatorColor: Colors.transparent,
+              labelTextStyle: WidgetStateProperty.resolveWith((states) {
+                if (states.contains(WidgetState.selected)) {
+                  return context.boldTextStyle(
+                      size: 12, color: context.bottomNavIconActive);
+                }
+                return context.primaryTextStyle(
+                    size: 12, color: context.bottomNavIconInactive);
+              }),
               surfaceTintColor: Colors.transparent,
               shadowColor: Colors.transparent,
             ),
             child: NavigationBar(
+              height: 60,
               selectedIndex: currentIndex,
               destinations: [
                 NavigationDestination(
                   icon: ic_home.iconImage(
-                      context: context, color: appTextSecondaryColor),
-                  selectedIcon: ic_fill_home.iconImage(
-                      context: context, color: context.primaryColor),
+                      context: context, color: context.bottomNavIconInactive),
+                  selectedIcon: ic_home.iconImage(
+                      context: context, color: context.bottomNavIconActive),
                   label: languages.home,
                 ),
                 NavigationDestination(
                   icon: total_booking.iconImage(
-                      context: context, color: appTextSecondaryColor),
-                  selectedIcon: fill_ticket.iconImage(
-                      context: context, color: context.primaryColor),
+                      context: context, color: context.bottomNavIconInactive),
+                  selectedIcon: total_booking.iconImage(
+                      context: context, color: context.bottomNavIconActive),
                   label: languages.lblBooking,
                 ),
                 if (appConfigurationStore.isEnableChat)
                   NavigationDestination(
-                    icon: Image.asset(chat,
-                        height: 20, width: 20, color: appTextSecondaryColor),
-                    selectedIcon:
-                        Image.asset(ic_fill_textMsg, height: 26, width: 26),
+                    icon: Image.asset(
+                      chat,
+                      height: 20,
+                      width: 20,
+                      color: context.bottomNavIconInactive,
+                    ),
+                    selectedIcon: chat.iconImage(
+                        context: context, color: context.bottomNavIconActive),
                     label: languages.lblChat,
                   ),
                 Observer(
@@ -255,25 +275,37 @@ class _HandymanDashboardScreenState extends State<HandymanDashboardScreen> {
                       icon: (appStore.isLoggedIn &&
                               appStore.userProfileImage.isNotEmpty)
                           ? IgnorePointer(
+                              ignoring: true,
                               child: ImageBorder(
-                                  src: appStore.userProfileImage, height: 26))
+                                src: appStore.userProfileImage,
+                                height: 24,
+                              ),
+                            )
                           : profile.iconImage(
-                              context: context, color: appTextSecondaryColor),
+                              context: context,
+                              color: context.bottomNavIconInactive),
                       selectedIcon: (appStore.isLoggedIn &&
                               appStore.userProfileImage.isNotEmpty)
                           ? IgnorePointer(
+                              ignoring: true,
                               child: ImageBorder(
-                                  src: appStore.userProfileImage, height: 26))
+                                src: appStore.userProfileImage,
+                                height: 24,
+                              ),
+                            )
                           : ic_fill_profile.iconImage(
-                              context: context, color: context.primaryColor),
+                              context: context,
+                              color: context.bottomNavIconActive,
+                            ),
                       label: languages.lblProfile,
                     );
                   },
                 ),
               ],
               onDestinationSelected: (index) {
-                currentIndex = index;
-                setState(() {});
+                setState(() {
+                  currentIndex = index;
+                });
               },
             ),
           ),

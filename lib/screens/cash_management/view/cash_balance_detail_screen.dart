@@ -5,7 +5,6 @@ import 'package:handyman_provider_flutter/components/empty_error_state_widget.da
 import 'package:handyman_provider_flutter/components/price_widget.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/screens/cash_management/cash_constant.dart';
-import 'package:handyman_provider_flutter/screens/cash_management/cash_repository.dart';
 import 'package:handyman_provider_flutter/screens/cash_management/component/cash_info_widget.dart';
 import 'package:handyman_provider_flutter/screens/cash_management/component/cash_list_widget.dart';
 import 'package:handyman_provider_flutter/screens/cash_management/component/status_widget.dart';
@@ -14,6 +13,7 @@ import 'package:handyman_provider_flutter/screens/cash_management/model/payment_
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/demo_data.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class CashBalanceDetailScreen extends StatefulWidget {
@@ -50,6 +50,30 @@ class _CashBalanceDetailScreenState extends State<CashBalanceDetailScreen> {
   }
 
   void init({bool disableLoader = false}) async {
+    // Always use dummy data for UI testing
+    final demoPaymentHistory = DemoCashData.paymentHistoryJson
+        .map((json) => PaymentHistoryData.fromJson(json))
+        .toList();
+
+    // Filter by status if not "all"
+    final statusType = cashStatusFilterList[currentFilterStatusIndex].type;
+    List<PaymentHistoryData> filteredList = demoPaymentHistory;
+    if (statusType != null && statusType.isNotEmpty) {
+      filteredList = demoPaymentHistory
+          .where((item) => item.status == statusType)
+          .toList();
+    }
+
+    future = Future.value((
+      DemoCashData.totalCashInHand,
+      DemoCashData.todayCash,
+      filteredList,
+    ));
+    setState(() {});
+    return;
+
+    // Original API call (commented out for UI testing)
+    /*
     future = getCashDetails(
       list: paymentHistoryList,
       page: page,
@@ -61,6 +85,7 @@ class _CashBalanceDetailScreenState extends State<CashBalanceDetailScreen> {
           format: DATE_FORMAT_7),
       lastPageCallback: (p0) => isLastPage = p0,
     );
+    */
   }
 
   @override

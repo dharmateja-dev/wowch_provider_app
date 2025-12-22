@@ -6,6 +6,7 @@ import 'package:handyman_provider_flutter/components/view_all_label_component.da
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/models/booking_detail_response.dart';
 import 'package:handyman_provider_flutter/screens/rating_view_all_screen.dart';
+import 'package:handyman_provider_flutter/utils/demo_data.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class HandymanReviewComponent extends StatefulWidget {
@@ -14,10 +15,22 @@ class HandymanReviewComponent extends StatefulWidget {
   HandymanReviewComponent({this.reviews});
 
   @override
-  _HandymanReviewComponentState createState() => _HandymanReviewComponentState();
+  _HandymanReviewComponentState createState() =>
+      _HandymanReviewComponentState();
 }
 
 class _HandymanReviewComponentState extends State<HandymanReviewComponent> {
+  /// Get reviews - use demo data if empty for UI testing
+  List<RatingData> get _reviews {
+    if (widget.reviews != null && widget.reviews!.isNotEmpty) {
+      return widget.reviews!;
+    }
+    // Use demo data for UI testing
+    return DemoReviewData.reviewsJson
+        .map((json) => RatingData.fromJson(json))
+        .toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -27,23 +40,28 @@ class _HandymanReviewComponentState extends State<HandymanReviewComponent> {
           children: [
             ViewAllLabel(
               label: languages.review,
-              list: widget.reviews!,
+              list: _reviews,
               onTap: () {
-                RatingViewAllScreen(handymanId: appStore.userId, title: languages.review, showServiceName: true).launch(context);
+                RatingViewAllScreen(
+                        handymanId: appStore.userId,
+                        title: languages.review,
+                        showServiceName: true)
+                    .launch(context);
               },
             ).paddingSymmetric(horizontal: 16),
             ReviewListViewComponent(
-              ratings: widget.reviews!,
+              ratings: _reviews,
               physics: const NeverScrollableScrollPhysics(),
               showServiceName: true,
               isCustomer: true,
-              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 8, top: 16),
+              padding: const EdgeInsets.only(
+                  left: 16, right: 16, bottom: 8, top: 16),
             ),
             Observer(
               builder: (_) => Text(
                 languages.lblNoReviewYet,
                 style: secondaryTextStyle(),
-              ).center().visible(!appStore.isLoading && widget.reviews!.isEmpty),
+              ).center().visible(!appStore.isLoading && _reviews.isEmpty),
             ),
           ],
         ),

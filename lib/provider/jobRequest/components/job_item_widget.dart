@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/color_extension.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../../components/cached_image_widget.dart';
@@ -22,12 +24,26 @@ class JobItemWidget extends StatelessWidget {
       width: context.width(),
       padding: const EdgeInsets.all(8),
       margin: const EdgeInsets.symmetric(vertical: 8),
-      decoration: boxDecorationDefault(color: context.cardColor, borderRadius: radius()),
+      decoration: boxDecorationDefault(
+          color: context.cardSecondary, borderRadius: radius()),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CachedImageWidget(
-            url: data!.service.validate().isNotEmpty && data!.service.validate().first.imageAttachments.validate().isNotEmpty ? data!.service.validate().first.imageAttachments!.first.validate() : "",
+            url: data!.service.validate().isNotEmpty &&
+                    data!.service
+                        .validate()
+                        .first
+                        .imageAttachments
+                        .validate()
+                        .isNotEmpty
+                ? data!.service
+                    .validate()
+                    .first
+                    .imageAttachments!
+                    .first
+                    .validate()
+                : "",
             fit: BoxFit.cover,
             height: 60,
             width: 60,
@@ -37,26 +53,36 @@ class JobItemWidget extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(data!.title.validate(), style: primaryTextStyle(), maxLines: 1, overflow: TextOverflow.ellipsis),
+              Text(data!.title.validate(),
+                  style: context.primaryTextStyle(),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis),
               2.height,
               PriceWidget(
                 price: data!.price.validate(),
-                color: textPrimaryColorGlobal,
+                color: context.textGrey,
                 size: 14,
               ),
               2.height,
-              Text(formatDate(data!.createdAt.validate()), style: secondaryTextStyle(), maxLines: 2, overflow: TextOverflow.ellipsis),
+              Text(formatDate(data!.createdAt.validate()),
+                  style: context.primaryTextStyle(),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis),
             ],
           ).expand(),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: data!.status.validate().getJobStatusColor.withValues(alpha: 0.1),
+              color: data!.status
+                  .validate()
+                  .getJobStatusColor
+                  .withValues(alpha: 0.1),
               borderRadius: radius(8),
             ),
             child: Text(
               data!.status.validate().toPostJobStatus(),
-              style: boldTextStyle(color: data!.status.validate().getJobStatusColor, size: 12),
+              style: boldTextStyle(
+                  color: data!.status.validate().getJobStatusColor, size: 12),
             ),
           ),
         ],

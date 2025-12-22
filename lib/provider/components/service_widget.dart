@@ -162,14 +162,14 @@ class ServiceComponent extends StatelessWidget {
                 //     child: Icon(Icons.circle, color: Colors.green, size: 12),
                 //   ),
                 Positioned(
-                  bottom: -10,
-                  right: 6,
+                  bottom: -14,
+                  right: 8,
                   child: Container(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: boxDecorationWithShadow(
                       backgroundColor: context.primary,
-                      borderRadius: radius(24),
+                      borderRadius: radius(50),
                       border:
                           Border.all(color: context.cardSecondary, width: 2),
                     ),
@@ -179,7 +179,7 @@ class ServiceComponent extends StatelessWidget {
                           data.type.validate() == SERVICE_TYPE_HOURLY,
                       color: context.onPrimary,
                       hourlyTextColor: context.onPrimary,
-                      size: 14,
+                      size: 12,
                       isFreeService: data.isFreeService,
                     ),
                   ),

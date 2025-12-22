@@ -265,6 +265,20 @@ class HandymanAddUpdateScreenState extends State<HandymanAddUpdateScreen> {
     });
   }
 
+  /// Parse date string - handles both ISO 8601 and yyyy-MM-dd HH:mm:ss formats
+  DateTime _parseDate(String dateString) {
+    try {
+      return DateTime.parse(dateString);
+    } catch (e) {
+      try {
+        // Try parsing with space separator instead of T
+        return DateTime.parse(dateString.replaceFirst(' ', 'T'));
+      } catch (e) {
+        return DateTime.now();
+      }
+    }
+  }
+
   @override
   void setState(fn) {
     if (mounted) super.setState(fn);
@@ -800,7 +814,7 @@ class HandymanAddUpdateScreenState extends State<HandymanAddUpdateScreen> {
                   ],
 
                   // Registration Info (for update mode)
-                  if (isUpdate) ...[
+                  if (isUpdate && widget.data!.createdAt != null) ...[
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
@@ -812,7 +826,7 @@ class HandymanAddUpdateScreenState extends State<HandymanAddUpdateScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '${widget.data!.displayName} ${languages.lblRegistered} ${DateTime.parse(widget.data!.createdAt!).timeAgo}',
+                            '${widget.data!.displayName.validate(value: "${widget.data!.firstName} ${widget.data!.lastName}")} ${languages.lblRegistered} ${_parseDate(widget.data!.createdAt!).timeAgo}',
                             style: context.secondaryTextStyle(),
                           ),
                           4.height,

@@ -8,6 +8,10 @@ import 'package:handyman_provider_flutter/models/handyman_dashboard_response.dar
 import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/provider/components/chart_component.dart';
 import 'package:handyman_provider_flutter/screens/cash_management/component/today_cash_component.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/demo_data.dart';
+import 'package:handyman_provider_flutter/utils/demo_mode.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../../components/app_widgets.dart';
@@ -33,7 +37,14 @@ class _HandymanHomeFragmentState extends State<HandymanHomeFragment> {
   }
 
   void init({bool forceSyncAppConfigurations = false}) async {
-    future = handymanDashboard(forceSyncAppConfigurations: forceSyncAppConfigurations).whenComplete(() {
+    // Demo Mode: Set chart data for revenue charts
+    if (DEMO_MODE_ENABLED) {
+      chartData = DemoDashboardData.revenueChartData;
+    }
+
+    future = handymanDashboard(
+            forceSyncAppConfigurations: forceSyncAppConfigurations)
+        .whenComplete(() {
       setState(() {});
     });
   }
@@ -46,6 +57,7 @@ class _HandymanHomeFragmentState extends State<HandymanHomeFragment> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: context.scaffoldSecondary,
       body: Stack(
         children: [
           FutureBuilder<HandymanDashBoardResponse>(
@@ -57,20 +69,28 @@ class _HandymanHomeFragmentState extends State<HandymanHomeFragment> {
                   physics: const AlwaysScrollableScrollPhysics(),
                   padding: const EdgeInsets.only(bottom: 16, top: 16),
                   listAnimationType: ListAnimationType.FadeIn,
-                  fadeInConfiguration: FadeInConfiguration(duration: 500.milliseconds),
+                  fadeInConfiguration:
+                      FadeInConfiguration(duration: 500.milliseconds),
                   children: [
-                    Text("${languages.lblHello}, ${appStore.userFullName}", style: boldTextStyle(size: 16)).paddingLeft(16),
+                    Text("${languages.lblHello}, ${appStore.userFullName}",
+                            style: context.boldTextStyle(size: 16))
+                        .paddingLeft(16),
                     8.height,
-                    Text(languages.lblWelcomeBack, style: secondaryTextStyle(size: 14)).paddingLeft(16),
+                    Text(languages.lblWelcomeBack,
+                            style: context.primaryTextStyle(size: 14))
+                        .paddingLeft(16),
                     16.height,
-                    TodayCashComponent(totalCashInHand: snap.data!.totalCashInHand.validate()),
+                    TodayCashComponent(
+                        totalCashInHand: snap.data!.totalCashInHand.validate()),
                     8.height,
                     HandymanTotalComponent(snap: snap.data!),
                     8.height,
                     ChartComponent(),
-                    UpcomingBookingComponent(bookingData: snap.data!.upcomingBookings.validate()),
+                    UpcomingBookingComponent(
+                        bookingData: snap.data!.upcomingBookings.validate()),
                     16.height,
-                    HandymanReviewComponent(reviews: snap.data!.handymanReviews.validate()),
+                    HandymanReviewComponent(
+                        reviews: snap.data!.handymanReviews.validate()),
                   ],
                   onSwipeRefresh: () async {
                     page = 1;
@@ -103,7 +123,8 @@ class _HandymanHomeFragmentState extends State<HandymanHomeFragment> {
               );
             },
           ),
-          Observer(builder: (context) => LoaderWidget().visible(appStore.isLoading)),
+          Observer(
+              builder: (context) => LoaderWidget().visible(appStore.isLoading)),
         ],
       ),
     );

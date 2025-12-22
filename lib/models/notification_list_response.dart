@@ -17,7 +17,8 @@ class NotificationListResponse {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = Map<String, dynamic>();
     if (notificationData != null) {
-      data['notification_data'] = notificationData!.map((v) => v.toJson()).toList();
+      data['notification_data'] =
+          notificationData!.map((v) => v.toJson()).toList();
     }
     data['all_unread_count'] = allUnreadCount;
     return data;
@@ -31,7 +32,8 @@ class NotificationData {
   String? profileImage;
   Data? data;
 
-  NotificationData({this.id, this.readAt, this.createdAt, this.data});
+  NotificationData(
+      {this.id, this.readAt, this.createdAt, this.profileImage, this.data});
 
   NotificationData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -62,7 +64,13 @@ class Data {
   String? notificationType;
   String? checkBookingType;
 
-  Data({this.id, this.type, this.checkBookingType, this.subject, this.message, this.notificationType});
+  Data(
+      {this.id,
+      this.type,
+      this.checkBookingType,
+      this.subject,
+      this.message,
+      this.notificationType});
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];

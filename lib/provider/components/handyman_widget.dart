@@ -63,7 +63,7 @@ class _HandymanWidgetState extends State<HandymanWidget> {
                   backgroundColor: context.primary.withValues(alpha: 0.2),
                 ),
                 child: CachedImageWidget(
-                  url: widget.data!.profileImage!.isNotEmpty
+                  url: widget.data?.profileImage?.isNotEmpty == true
                       ? widget.data!.profileImage.validate()
                       : '',
                   width: context.width(),

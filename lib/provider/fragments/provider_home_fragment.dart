@@ -16,6 +16,8 @@ import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
 import 'package:handyman_provider_flutter/utils/demo_data.dart';
 import 'package:handyman_provider_flutter/utils/demo_mode.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../components/app_widgets.dart';
@@ -63,10 +65,11 @@ class _ProviderHomeFragmentState extends State<ProviderHomeFragment> {
       children: [
         16.height,
         Text("${languages.lblHello}, ${appStore.userFullName}",
-                style: boldTextStyle(size: 16))
+                style: context.boldTextStyle(size: 16))
             .paddingLeft(16),
         8.height,
-        Text(languages.lblWelcomeBack, style: secondaryTextStyle(size: 14))
+        Text(languages.lblWelcomeBack,
+                style: context.primaryTextStyle(size: 14))
             .paddingLeft(16),
         16.height,
       ],
@@ -129,6 +132,7 @@ class _ProviderHomeFragmentState extends State<ProviderHomeFragment> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: context.scaffoldSecondary,
       body: Stack(
         children: [
           FutureBuilder<DashboardResponse>(
@@ -165,6 +169,7 @@ class _ProviderHomeFragmentState extends State<ProviderHomeFragment> {
                         .visible(rolesAndPermissionStore.postJobList),
                     ServiceListComponent(list: snap.data!.service.validate())
                         .visible(rolesAndPermissionStore.serviceList),
+                    64.height,
                   ],
                   onSwipeRefresh: () async {
                     page = 1;

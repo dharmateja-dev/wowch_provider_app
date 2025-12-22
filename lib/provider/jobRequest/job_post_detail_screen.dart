@@ -10,7 +10,9 @@ import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/provider/jobRequest/components/bid_price_dialog.dart';
 import 'package:handyman_provider_flutter/provider/jobRequest/models/post_job_detail_response.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/model_keys.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../components/base_scaffold_widget.dart';
@@ -51,16 +53,16 @@ class _JobPostDetailScreenState extends State<JobPostDetailScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title.validate(), style: secondaryTextStyle()),
+        Text(title.validate(), style: context.primaryTextStyle()),
         8.height,
         if (isReadMore)
           ReadMoreText(
             detail,
-            style: detailTextStyle,
-            colorClickableText: context.primaryColor,
+            style: context.primaryTextStyle(),
+            colorClickableText: context.primary,
           )
         else
-          Text(detail.validate(), style: detailTextStyle),
+          Text(detail.validate(), style: context.primaryTextStyle()),
         16.height,
       ],
     );
@@ -71,8 +73,8 @@ class _JobPostDetailScreenState extends State<JobPostDetailScreen> {
       padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
       width: context.width(),
       decoration: boxDecorationWithRoundedCorners(
-          backgroundColor: context.cardColor,
-          borderRadius: const BorderRadius.all(Radius.circular(16))),
+          backgroundColor: context.cardSecondary,
+          borderRadius: const BorderRadius.all(Radius.circular(8))),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -80,13 +82,13 @@ class _JobPostDetailScreenState extends State<JobPostDetailScreen> {
             titleWidget(
               title: languages.postJobTitle,
               detail: data.title.validate(),
-              detailTextStyle: boldTextStyle(),
+              detailTextStyle: context.boldTextStyle(),
             ),
           if (data.description.validate().isNotEmpty)
             titleWidget(
               title: languages.postJobDescription,
               detail: data.description.validate(),
-              detailTextStyle: primaryTextStyle(),
+              detailTextStyle: context.primaryTextStyle(),
               isReadMore: true,
             ),
         ],
@@ -101,7 +103,8 @@ class _JobPostDetailScreenState extends State<JobPostDetailScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         8.height,
-        Text(languages.lblServices, style: boldTextStyle(size: LABEL_TEXT_SIZE))
+        Text(languages.lblServices,
+                style: context.boldTextStyle(size: LABEL_TEXT_SIZE))
             .paddingOnly(left: 16, right: 16),
         AnimatedListView(
           itemCount: serviceList.length,
@@ -115,8 +118,8 @@ class _JobPostDetailScreenState extends State<JobPostDetailScreen> {
               margin: const EdgeInsets.all(8),
               padding: const EdgeInsets.all(8),
               decoration: boxDecorationWithRoundedCorners(
-                  backgroundColor: context.cardColor,
-                  borderRadius: const BorderRadius.all(Radius.circular(16))),
+                  backgroundColor: context.cardSecondary,
+                  borderRadius: const BorderRadius.all(Radius.circular(8))),
               child: Row(
                 children: [
                   CachedImageWidget(
@@ -130,7 +133,7 @@ class _JobPostDetailScreenState extends State<JobPostDetailScreen> {
                   ),
                   16.width,
                   Text(data.name.validate(),
-                          style: primaryTextStyle(),
+                          style: context.primaryTextStyle(),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis)
                       .expand(),
@@ -154,13 +157,14 @@ class _JobPostDetailScreenState extends State<JobPostDetailScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             16.height,
-            Text(languages.myBid, style: boldTextStyle(size: LABEL_TEXT_SIZE)),
+            Text(languages.myBid,
+                style: context.boldTextStyle(size: LABEL_TEXT_SIZE)),
             16.height,
             Container(
               padding: const EdgeInsets.all(16),
               decoration: boxDecorationWithRoundedCorners(
-                  backgroundColor: context.cardColor,
-                  borderRadius: const BorderRadius.all(Radius.circular(16))),
+                  backgroundColor: context.cardSecondary,
+                  borderRadius: const BorderRadius.all(Radius.circular(8))),
               child: Row(
                 children: [
                   CachedImageWidget(
@@ -178,7 +182,7 @@ class _JobPostDetailScreenState extends State<JobPostDetailScreen> {
                         directionMarguee: DirectionMarguee.oneDirection,
                         child: Text(
                           user.displayName.validate(),
-                          style: boldTextStyle(),
+                          style: context.boldTextStyle(),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -207,13 +211,13 @@ class _JobPostDetailScreenState extends State<JobPostDetailScreen> {
       children: [
         16.height,
         Text(languages.lblAboutCustomer,
-            style: boldTextStyle(size: LABEL_TEXT_SIZE)),
+            style: context.boldTextStyle(size: LABEL_TEXT_SIZE)),
         16.height,
         Container(
           padding: const EdgeInsets.all(16),
           decoration: boxDecorationWithRoundedCorners(
-              backgroundColor: context.cardColor,
-              borderRadius: const BorderRadius.all(Radius.circular(16))),
+              backgroundColor: context.cardSecondary,
+              borderRadius: const BorderRadius.all(Radius.circular(8))),
           child: Row(
             children: [
               CachedImageWidget(
@@ -231,7 +235,7 @@ class _JobPostDetailScreenState extends State<JobPostDetailScreen> {
                     directionMarguee: DirectionMarguee.oneDirection,
                     child: Text(
                       postJobData.customerName.validate(),
-                      style: boldTextStyle(),
+                      style: context.boldTextStyle(),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -242,7 +246,7 @@ class _JobPostDetailScreenState extends State<JobPostDetailScreen> {
                               JOB_REQUEST_STATUS_ACCEPTED
                           ? languages.jobPrice
                           : languages.estimatedPrice,
-                      style: secondaryTextStyle()),
+                      style: context.primaryTextStyle()),
                   4.height,
                   PriceWidget(price: postJobData.price.validate()),
                 ],
@@ -263,6 +267,7 @@ class _JobPostDetailScreenState extends State<JobPostDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
+      scaffoldBackgroundColor: context.scaffoldSecondary,
       appBarTitle: '${widget.postJobData.title}',
       body: Stack(
         children: [
@@ -314,15 +319,16 @@ class _JobPostDetailScreenState extends State<JobPostDetailScreen> {
                       right: 16,
                       child: AppButton(
                         child: Text(languages.bid,
-                            style: boldTextStyle(color: white)),
-                        color: context.primaryColor,
+                            style: context.boldTextStyle(
+                                color: context.onPrimary)),
+                        color: context.primary,
                         width: context.width(),
                         onTap: () async {
                           bool? res = await showInDialog(
                             context,
                             contentPadding: EdgeInsets.zero,
                             hideSoftKeyboard: true,
-                            backgroundColor: context.cardColor,
+                            backgroundColor: context.dialogBackgroundColor,
                             builder: (_) =>
                                 BidPriceDialog(data: widget.postJobData),
                           );

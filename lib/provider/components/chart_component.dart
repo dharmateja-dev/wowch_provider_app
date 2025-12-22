@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/models/revenue_chart_data.dart';
-import 'package:handyman_provider_flutter/utils/configs.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -26,24 +27,28 @@ class ChartComponent extends StatelessWidget {
           legendItemBuilder: (legendText, series, point, seriesIndex) {
             return Text(
                     '${languages.monthly} $legendText in ${appConfigurationStore.currencySymbol}',
-                    style: boldTextStyle())
+                    style: context.boldTextStyle())
                 .paddingBottom(8);
           },
         ),
         margin: const EdgeInsets.fromLTRB(16, 4, 16, 16),
         title: ChartTitle(
-          textStyle: secondaryTextStyle(),
+          textStyle: context.primaryTextStyle(),
         ),
-        backgroundColor: context.cardColor,
+        backgroundColor: context.cardSecondary,
         primaryYAxis: NumericAxis(
             numberFormat: NumberFormat.compactCurrency(
                 symbol: appConfigurationStore.currencySymbol, decimalDigits: 2),
-            labelStyle: primaryTextStyle(size: 12)),
+            majorGridLines: MajorGridLines(
+              width: 1,
+              color: context.mainBorderColor,
+            ),
+            labelStyle: context.primaryTextStyle(size: 12)),
         primaryXAxis: CategoryAxis(
           labelPlacement: LabelPlacement.onTicks,
           majorGridLines: const MajorGridLines(width: 0),
           axisLine: const AxisLine(width: 0),
-          labelStyle: primaryTextStyle(size: 12),
+          labelStyle: context.primaryTextStyle(size: 12),
         ),
         crosshairBehavior: CrosshairBehavior(
           activationMode: ActivationMode.singleTap,
@@ -60,14 +65,14 @@ class ChartComponent extends StatelessWidget {
         tooltipBehavior: TooltipBehavior(
           enable: true,
           borderWidth: 1.5,
-          color: context.cardColor,
-          textStyle: secondaryTextStyle(color: context.iconColor),
+          color: context.cardSecondary,
+          textStyle: context.primaryTextStyle(color: context.icon),
         ),
         series: <CartesianSeries>[
           SplineSeries<RevenueChartData, String>(
             name: languages.lblRevenue,
             dataSource: chartData,
-            color: primary,
+            color: context.primary,
             legendIconType: LegendIconType.diamond,
             splineType: SplineType.monotonic,
             yValueMapper: (RevenueChartData sales, _) => sales.revenue,

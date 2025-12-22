@@ -58,6 +58,7 @@ import '../models/update_location_response.dart';
 import '../provider/services/addons/component/service_addons_component.dart';
 import '../utils/images.dart';
 import '../utils/permissions.dart';
+import '../utils/demo_data.dart';
 import 'shimmer/booking_detail_shimmer.dart';
 
 class BookingDetailScreen extends StatefulWidget {
@@ -108,7 +109,30 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
     super.initState();
   }
 
-  void init({bool flag = false, bool isStartDrive = false}) async {
+  void init({bool flag = false, bool isStartDrive = false}) {
+    // Always use demo data for UI testing
+    try {
+      final demoJson =
+          DemoBookingDetailData.getBookingDetailJson(widget.bookingId);
+      final demoResponse = BookingDetailResponse.fromJson(demoJson);
+      future = Future.value(demoResponse);
+    } catch (e) {
+      // If demo data fails, create a minimal response
+      print('Demo data error: $e');
+      future = Future.error(e);
+    }
+
+    // Set default values for demo
+    bookingStatus = 'accept';
+    handymanId = 2;
+
+    if (flag) {
+      _paymentUniqueKey = UniqueKey();
+      setState(() {});
+    }
+
+    // Original API call (commented out for UI testing)
+    /*
     future = bookingDetail(
       {CommonKeys.bookingId: widget.bookingId.toString()},
       callbackForStatus: (status, id) async {
@@ -127,6 +151,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
       _paymentUniqueKey = UniqueKey();
       setState(() {});
     }
+    */
   }
 
   //region Methods

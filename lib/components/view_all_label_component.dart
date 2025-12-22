@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class ViewAllLabel extends StatelessWidget {
@@ -31,17 +32,23 @@ class ViewAllLabel extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(label, style: boldTextStyle(size: labelSize ?? LABEL_TEXT_SIZE)),
-            if (subLabel.validate().isNotEmpty) Text(subLabel!, style: secondaryTextStyle(size: 12)).paddingTop(4),
+            Text(label,
+                style:
+                    context.boldTextStyle(size: labelSize ?? LABEL_TEXT_SIZE)),
+            if (subLabel.validate().isNotEmpty)
+              Text(subLabel!, style: context.primaryTextStyle(size: 12))
+                  .paddingTop(4),
           ],
         ),
-        TextButton(
-          onPressed: isViewAllVisible(list)
+        GestureDetector(
+          onTap: isViewAllVisible(list)
               ? () {
                   onTap?.call();
                 }
               : null,
-          child: isViewAllVisible(list) ? Text(languages.viewAll, style: secondaryTextStyle()) : const SizedBox(),
+          child: isViewAllVisible(list)
+              ? Text(languages.viewAll, style: context.primaryTextStyle())
+              : const SizedBox(),
         )
       ],
     );
