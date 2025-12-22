@@ -12,7 +12,9 @@ import 'package:handyman_provider_flutter/networks/network_utils.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/model_keys.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -117,7 +119,7 @@ class ServiceProofScreenState extends State<ServiceProofScreen> {
     showInDialog(
       context,
       contentPadding: const EdgeInsets.symmetric(vertical: 16),
-      title: Text(languages.chooseAction, style: boldTextStyle()),
+      title: Text(languages.chooseAction, style: context.boldTextStyle()),
       builder: (p0) {
         return FilePickerDialog(isSelected: false);
       },
@@ -176,9 +178,10 @@ class ServiceProofScreenState extends State<ServiceProofScreen> {
                 children: [
                   Row(
                     children: [
-                      Text(languages.hintServiceName, style: boldTextStyle()),
+                      Text(languages.hintServiceName,
+                          style: context.boldTextStyle()),
                       2.width,
-                      Text('*', style: boldTextStyle(color: pending)),
+                      Text('*', style: context.boldTextStyle(color: pending)),
                     ],
                   ),
                   12.height,
@@ -186,15 +189,16 @@ class ServiceProofScreenState extends State<ServiceProofScreen> {
                     textFieldType: TextFieldType.NAME,
                     controller: serviceNameCont,
                     decoration: inputDecoration(context,
+                        
                         hintText: languages.hintServiceName),
                     enabled: false,
                   ),
                   16.height,
                   Row(
                     children: [
-                      Text(languages.lblTitle, style: boldTextStyle()),
+                      Text(languages.lblTitle, style: context.boldTextStyle()),
                       2.width,
-                      Text('*', style: boldTextStyle(color: pending)),
+                      Text('*', style: context.boldTextStyle(color: pending)),
                     ],
                   ),
                   12.height,
@@ -209,9 +213,10 @@ class ServiceProofScreenState extends State<ServiceProofScreen> {
                   16.height,
                   Row(
                     children: [
-                      Text(languages.hintDescription, style: boldTextStyle()),
+                      Text(languages.hintDescription,
+                          style: context.boldTextStyle()),
                       2.width,
-                      Text('*', style: boldTextStyle(color: pending)),
+                      Text('*', style: context.boldTextStyle(color: pending)),
                     ],
                   ),
                   12.height,
@@ -246,10 +251,10 @@ class ServiceProofScreenState extends State<ServiceProofScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(Icons.file_upload_outlined,
-                                  size: 30, color: context.iconColor),
+                                  size: 30, color: context.icon),
                               8.height,
                               Text(languages.uploadMedia,
-                                  style: boldTextStyle()),
+                                  style: context.boldTextStyle()),
                             ],
                           ).center().onTap(() async {
                             _showImgPickDialog(context);
@@ -300,8 +305,8 @@ class ServiceProofScreenState extends State<ServiceProofScreen> {
       ),
       bottomNavigationBar: AppButton(
         text: languages.lblSubmit,
-        textColor: Colors.white,
-        color: primary,
+        textColor: context.onPrimary,
+        color: context.primary,
         onTap: () {
           if (formKey.currentState!.validate()) {
             formKey.currentState!.save();

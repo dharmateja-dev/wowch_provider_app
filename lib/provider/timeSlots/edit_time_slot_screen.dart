@@ -8,6 +8,7 @@ import 'package:handyman_provider_flutter/provider/timeSlots/models/slot_data.da
 import 'package:handyman_provider_flutter/utils/colors.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class EditTimeSlotScreen extends StatefulWidget {
@@ -95,8 +96,9 @@ class EditTimeSlotScreenState extends State<EditTimeSlotScreen> {
                         width: 50,
                         alignment: Alignment.center,
                         decoration: boxDecorationWithRoundedCorners(
-                          backgroundColor:
-                              isSelected ? context.primaryColor : context.cardColor,
+                          backgroundColor: isSelected
+                              ? context.primaryColor
+                              : context.cardColor,
                           borderRadius: BorderRadius.circular(defaultRadius),
                         ),
                         child: Text(
@@ -175,7 +177,7 @@ class EditTimeSlotScreenState extends State<EditTimeSlotScreen> {
       ),
       bottomNavigationBar: AppButton(
         width: context.width(),
-        color: primary,
+        color: context.primary,
         text: languages.lblUpdate,
         onTap: () {
           widget.slotData.removeWhere(

@@ -4,14 +4,15 @@ import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/models/chat_message_model.dart';
 import 'package:handyman_provider_flutter/screens/zoom_image_screen.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
-import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
+import 'package:handyman_provider_flutter/utils/images.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../../components/cached_image_widget.dart';
 import '../../../components/common_file_placeholders.dart';
-import '../../../utils/colors.dart';
 
 class ChatItemWidget extends StatefulWidget {
   final ChatMessageModel chatItemData;
@@ -31,28 +32,39 @@ class _ChatItemWidgetState extends State<ChatItemWidget> {
   init() async {}
 
   void deleteMessage() async {
-    bool? res = await showConfirmDialog(
+    showConfirmDialogCustom(
       context,
-      languages.lblConfirmationForDeleteMsg,
+      dialogType: DialogType.CONFIRMATION,
+      primaryColor: context.primary,
+      title: languages.lblConfirmationForDeleteMsg,
       positiveText: languages.lblYes,
       negativeText: languages.lblNo,
-      buttonColor: primary,
-    );
-
-    if (res ?? false) {
-      hideKeyboard(context);
-      chatServices
-          .deleteSingleMessage(
-              senderId: appStore.uid,
-              receiverId: widget.chatItemData.receiverId!,
-              documentId: widget.chatItemData.uid.validate())
-          .then((value) {
+      titleColor: context.dialogTitleColor,
+      backgroundColor: context.dialogBackgroundColor,
+      negativeTextColor: context.dialogCancelColor,
+      positiveTextColor: context.onPrimary,
+      shape: appDialogShape(8),
+      customCenterWidget: Image.asset(
+        ic_warning,
+        color: context.dialogIconColor,
+        height: 80,
+        width: 80,
+      ),
+      onAccept: (c) {
+        hideKeyboard(context);
         chatServices
-            .deleteFiles(widget.chatItemData.attachmentfiles.validate());
-      }).catchError((e) {
-        log(e.toString());
-      });
-    }
+            .deleteSingleMessage(
+                senderId: appStore.uid,
+                receiverId: widget.chatItemData.receiverId!,
+                documentId: widget.chatItemData.uid.validate())
+            .then((value) {
+          chatServices
+              .deleteFiles(widget.chatItemData.attachmentfiles.validate());
+        }).catchError((e) {
+          log(e.toString());
+        });
+      },
+    );
   }
 
   void copyMessage() {
@@ -62,36 +74,67 @@ class _ChatItemWidgetState extends State<ChatItemWidget> {
 
   @override
   Widget build(BuildContext context) {
-    String time;
-    String currentDateTime = widget.chatItemData.createdAtTime != null
-        ? widget.chatItemData.createdAtTime!.toDate().toString()
-        : widget.chatItemData.createdAt.validate().toString();
+    String time = '';
 
-    DateTime messageDate = widget.chatItemData.createdAtTime != null
-        ? widget.chatItemData.createdAtTime!.toDate()
-        : DateTime.fromMicrosecondsSinceEpoch(
+    try {
+      DateTime messageDate;
+
+      if (widget.chatItemData.createdAtTime != null) {
+        messageDate = widget.chatItemData.createdAtTime!.toDate();
+      } else if (widget.chatItemData.createdAt != null) {
+        messageDate = DateTime.fromMicrosecondsSinceEpoch(
             widget.chatItemData.createdAt! * 1000);
+      } else {
+        messageDate = DateTime.now();
+      }
 
-    DateTime now = DateTime.now();
-    DateTime yesterday = now.subtract(Duration(days: 1));
+      DateTime now = DateTime.now();
+      bool isToday = messageDate.day == now.day &&
+          messageDate.month == now.month &&
+          messageDate.year == now.year;
 
-    if (messageDate.day == now.day &&
-        messageDate.month == now.month &&
-        messageDate.year == now.year) {
-      time = formatDate(currentDateTime,
-          format: DATE_FORMAT_3,
-          isFromMicrosecondsSinceEpoch:
-              widget.chatItemData.createdAtTime == null,
-          isTime: true);
-    } else if (messageDate.day == yesterday.day &&
-        messageDate.month == yesterday.month &&
-        messageDate.year == yesterday.year) {
-      time = languages.yesterday;
-    } else {
-      time = formatDate(currentDateTime,
-          format: DATE_FORMAT_1,
-          isFromMicrosecondsSinceEpoch:
-              widget.chatItemData.createdAtTime == null);
+      if (isToday) {
+        // Today: Show time only (e.g., "5:30 PM")
+        int hour = messageDate.hour;
+        String period = hour >= 12 ? 'PM' : 'AM';
+        hour = hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour);
+        String minute = messageDate.minute.toString().padLeft(2, '0');
+        time = '$hour:$minute $period';
+      } else {
+        // Previous days: Show full date (e.g., "November 24, 2025")
+        List<String> months = [
+          'January',
+          'February',
+          'March',
+          'April',
+          'May',
+          'June',
+          'July',
+          'August',
+          'September',
+          'October',
+          'November',
+          'December'
+        ];
+        time =
+            '${months[messageDate.month - 1]} ${messageDate.day}, ${messageDate.year}';
+      }
+    } catch (e) {
+      time = '';
+    }
+
+    // Helper to get text color based on sender
+    Color getMessageTextColor() {
+      return widget.chatItemData.isMe.validate()
+          ? context.chatSentTextColor
+          : context.chatReceivedTextColor;
+    }
+
+    // Helper to get secondary text color based on sender
+    Color getSecondaryTextColor() {
+      return widget.chatItemData.isMe.validate()
+          ? context.chatSentSecondaryText
+          : context.chatReceivedSecondaryText;
     }
 
     Widget chatItem(String messageTypes) {
@@ -104,10 +147,7 @@ class _ChatItemWidgetState extends State<ChatItemWidget> {
               children: [
                 Text(
                   widget.chatItemData.message!,
-                  style: primaryTextStyle(
-                      color: widget.chatItemData.isMe!
-                          ? Colors.white
-                          : textPrimaryColorGlobal),
+                  style: context.primaryTextStyle(),
                   maxLines: null,
                 ),
                 1.height,
@@ -116,19 +156,18 @@ class _ChatItemWidgetState extends State<ChatItemWidget> {
                   children: [
                     Text(
                       time,
-                      style: primaryTextStyle(
-                        color: !widget.chatItemData.isMe.validate()
-                            ? Colors.blueGrey.withValues(alpha: 0.6)
-                            : whiteColor.withValues(alpha: 0.6),
-                        size: 10,
+                      style: context.primaryTextStyle(
+                        color: getSecondaryTextColor(),
+                        size: 11,
                       ),
                     ),
-                    2.width,
+                    4.width,
                     widget.chatItemData.isMe.validate()
                         ? !widget.chatItemData.isMessageRead.validate()
-                            ? Icon(Icons.done, size: 12, color: Colors.white60)
+                            ? Icon(Icons.done,
+                                size: 14, color: context.chatTickColor)
                             : Icon(Icons.done_all,
-                                size: 12, color: Colors.white60)
+                                size: 14, color: context.chatTickColor)
                         : const Offstage(),
                   ],
                 ),
@@ -144,10 +183,8 @@ class _ChatItemWidgetState extends State<ChatItemWidget> {
                     ...filesComponent(),
                     Text(
                       widget.chatItemData.message!,
-                      style: primaryTextStyle(
-                          color: widget.chatItemData.isMe!
-                              ? Colors.white
-                              : textPrimaryColorGlobal),
+                      style: context.primaryTextStyle(
+                          color: getMessageTextColor()),
                       maxLines: null,
                     ).paddingTop(2).visible(
                         widget.chatItemData.message!.trim().isNotEmpty),
@@ -157,20 +194,16 @@ class _ChatItemWidgetState extends State<ChatItemWidget> {
                       children: [
                         Text(
                           time,
-                          style: primaryTextStyle(
-                            color: !widget.chatItemData.isMe.validate()
-                                ? Colors.blueGrey.withValues(alpha: 0.6)
-                                : whiteColor.withValues(alpha: 0.6),
-                            size: 10,
-                          ),
+                          style: context.primaryTextStyle(
+                              color: getSecondaryTextColor(), size: 11),
                         ),
-                        2.width,
+                        4.width,
                         widget.chatItemData.isMe.validate()
                             ? !widget.chatItemData.isMessageRead.validate()
                                 ? Icon(Icons.done,
-                                    size: 12, color: Colors.white60)
+                                    size: 14, color: context.chatTickColor)
                                 : Icon(Icons.done_all,
-                                    size: 12, color: Colors.white60)
+                                    size: 14, color: context.chatTickColor)
                             : Offstage(),
                       ],
                     ),
@@ -253,15 +286,15 @@ class _ChatItemWidgetState extends State<ChatItemWidget> {
                       right: isRTL ? 0 : context.width() * 0.25),
               padding: customPadding(widget.chatItemData.messageType),
               decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                      color: gray,
-                      blurRadius: 0.1,
-                      spreadRadius: 0.2), //BoxShadow
-                ],
+                // Sent message: no border, use chatSentBubble
+                // Received message: has border, use chatReceivedBubble
                 color: widget.chatItemData.isMe.validate()
-                    ? primary
-                    : context.cardColor,
+                    ? context.chatSentBubble
+                    : context.chatReceivedBubble,
+                border: widget.chatItemData.isMe.validate()
+                    ? null
+                    : Border.all(
+                        color: context.chatReceivedBubbleBorder, width: 1),
                 borderRadius: widget.chatItemData.isMe.validate()
                     ? radiusOnly(
                         bottomLeft: 12,
@@ -291,7 +324,6 @@ class _ChatItemWidgetState extends State<ChatItemWidget> {
               child: Row(
                 children:
                     widget.chatItemData.attachmentfiles.validate().map((file) {
-                  // int index = _eventFiles.indexOf(eventFile);
                   return GestureDetector(
                     onTap: () {
                       if (file.contains(
@@ -325,8 +357,8 @@ class _ChatItemWidgetState extends State<ChatItemWidget> {
                                     defaultRadius.toInt(),
                                     backgroundColor:
                                         widget.chatItemData.isMe.validate()
-                                            ? context.cardColor
-                                            : lightPrimaryColor),
+                                            ? context.chatReceivedBubble
+                                            : context.primaryContainer),
                                 child: CommonPdfPlaceHolder(
                                   text: "${file.getChatFileName}",
                                   fileExt: file.getFileExtension,

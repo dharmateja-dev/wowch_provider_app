@@ -7,7 +7,12 @@ import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/models/user_data.dart';
 import 'package:handyman_provider_flutter/screens/chat/components/user_item_widget.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:nb_utils/nb_utils.dart';
+
+import 'package:handyman_provider_flutter/screens/chat/components/demo_chat_item_widget.dart';
+import 'package:handyman_provider_flutter/utils/demo_data.dart';
+import 'package:handyman_provider_flutter/utils/demo_mode.dart';
 
 import '../../auth/sign_in_screen.dart';
 import '../../components/base_scaffold_widget.dart';
@@ -40,12 +45,26 @@ class _ChatListScreenState extends State<ChatListScreen> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
+      scaffoldBackgroundColor: context.scaffoldSecondary,
       body: Observer(builder: (context) {
+        if (DEMO_MODE_ENABLED) {
+          return ListView.separated(
+            separatorBuilder: (context, index) => 12.height,
+            itemCount: DemoChatData.chatContacts.length,
+            padding: EdgeInsets.only(left: 0, top: 8, right: 0, bottom: 0),
+            itemBuilder: (context, index) {
+              return DemoChatItemWidget(
+                  contact: DemoChatData.chatContacts[index]);
+            },
+          );
+        }
+
         if (appStore.isLoading) {
           return LoaderWidget(); // <-- Show loader when connecting
         }
         return SnapHelperWidget(
-          future: Future.value(FirebaseAuth.instance.currentUser != null && appStore.uid.isNotEmpty),
+          future: Future.value(FirebaseAuth.instance.currentUser != null &&
+              appStore.uid.isNotEmpty),
           onSuccess: (isLoggedIn) {
             if (!isLoggedIn) {
               return NoDataWidget(
@@ -74,14 +93,17 @@ class _ChatListScreenState extends State<ChatListScreen> {
                 isLive: true,
                 shrinkWrap: true,
                 itemBuilder: (context, snap, index) {
-                  UserData contact = UserData.fromJson(snap[index].data() as Map<String, dynamic>);
+                  UserData contact = UserData.fromJson(
+                      snap[index].data() as Map<String, dynamic>);
                   return UserItemWidget(userUid: contact.uid.validate());
                 },
                 initialLoader: LoaderWidget(),
-                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 10),
+                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 10),
                 padding: EdgeInsets.only(left: 0, top: 8, right: 0, bottom: 0),
                 limit: PER_PAGE_CHAT_LIST_COUNT,
-                separatorBuilder: (_, i) => Divider(height: 0, indent: 82, color: context.dividerColor),
+                separatorBuilder: (_, i) =>
+                    Divider(height: 0, indent: 82, color: context.dividerColor),
                 viewType: ViewType.list,
                 onEmpty: NoDataWidget(
                   title: languages.noConversation,

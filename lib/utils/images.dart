@@ -104,3 +104,6 @@ const ic_clean = 'assets/icons/ic_clean.png';
 const ic_shop = 'assets/icons/ic_shop.png';
 const ic_warning = 'assets/icons/ic_warning.png';
 const ic_gallery_add = 'assets/icons/Ic_gallery_add.png';
+const ic_attachments = 'assets/icons/ic_attachments.png';
+const ic_cam_attachments = 'assets/icons/ic_cam_attachments.png';
+const ic_plain = 'assets/icons/ic_plain.png';

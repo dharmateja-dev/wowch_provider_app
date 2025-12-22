@@ -220,7 +220,7 @@ class _HandymanDashboardScreenState extends State<HandymanDashboardScreen> {
             border: Border(
               top: BorderSide(
                 color: context.cardSecondaryBorder,
-                width: 1,
+                width: 0.5,
               ),
             ),
           ),

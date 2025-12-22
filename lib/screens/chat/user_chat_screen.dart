@@ -17,6 +17,10 @@ import 'package:handyman_provider_flutter/screens/chat/components/chat_item_widg
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
+import 'package:handyman_provider_flutter/utils/images.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -116,15 +120,14 @@ class _UserChatScreenState extends State<UserChatScreen>
           focus: messageFocus,
           cursorHeight: 20,
           maxLines: 5,
-          cursorColor: appStore.isDarkMode ? Colors.white : Colors.black,
           textCapitalization: TextCapitalization.sentences,
           keyboardType: TextInputType.multiline,
           suffix: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
-                icon: Transform.rotate(
-                    angle: -0.75, child: Icon(Icons.attach_file_outlined)),
+                icon: ic_attachments.iconImage(
+                    size: 22, color: context.onSurface, context: context),
                 onPressed: () {
                   if (!appStore.isLoading) {
                     _handleDocumentClick();
@@ -132,7 +135,8 @@ class _UserChatScreenState extends State<UserChatScreen>
                 },
               ),
               IconButton(
-                icon: Icon(Icons.camera_alt_outlined),
+                icon: ic_cam_attachments.iconImage(
+                    size: 24, color: context.onSurface, context: context),
                 onPressed: () {
                   if (!appStore.isLoading) {
                     _handleCameraClick();
@@ -141,15 +145,21 @@ class _UserChatScreenState extends State<UserChatScreen>
               ),
             ],
           ),
-          decoration: inputDecoration(context).copyWith(
-              hintText: languages.lblMessage, hintStyle: secondaryTextStyle()),
+          decoration: inputDecoration(context,
+              hintText: languages.lblMessage,
+              showBorder: false,
+              fillColor: context.cardSecondary,
+              hintTextColor: context.textGrey),
         ).expand(),
         8.width,
         Container(
-          decoration:
-              boxDecorationDefault(borderRadius: radius(80), color: primary),
+          height: 45,
+          width: 45,
+          decoration: boxDecorationDefault(
+              borderRadius: radius(80), color: context.primary),
           child: IconButton(
-            icon: Icon(Icons.send, color: Colors.white),
+            icon: ic_plain.iconImage(
+                context: context, size: 24, color: context.onPrimary),
             onPressed: () {
               sendMessages();
             },
@@ -313,13 +323,22 @@ class _UserChatScreenState extends State<UserChatScreen>
     return SafeArea(
       top: false,
       child: Scaffold(
+        backgroundColor: context.scaffold,
         appBar: AppBar(
-          backgroundColor: context.primaryColor,
+          backgroundColor: context.primary,
+          centerTitle: true,
+          title: Text(
+            widget.receiverUser.firstName.validate() +
+                " " +
+                widget.receiverUser.lastName.validate(),
+            style: context.boldTextStyle(
+                color: context.onPrimary, size: APP_BAR_TEXT_SIZE),
+          ),
           leadingWidth: context.width(),
           systemOverlayStyle: SystemUiOverlayStyle(
-              statusBarColor: context.primaryColor,
-              statusBarBrightness: Brightness.dark,
-              statusBarIconBrightness: Brightness.light),
+              statusBarColor: context.primary,
+              statusBarBrightness: context.statusBarBrightness,
+              statusBarIconBrightness: context.statusBarBrightness),
           leading: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -328,7 +347,7 @@ class _UserChatScreenState extends State<UserChatScreen>
                 onPressed: () {
                   finish(context);
                 },
-                icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+                icon: Icon(Icons.arrow_back_ios, color: context.onPrimary),
               ),
               CachedImageWidget(
                   url: widget.receiverUser.profileImage.validate(),
@@ -342,7 +361,8 @@ class _UserChatScreenState extends State<UserChatScreen>
                 children: [
                   Text(
                     "${widget.receiverUser.firstName.validate() + " " + widget.receiverUser.lastName.validate()}",
-                    style: boldTextStyle(color: white, size: APP_BAR_TEXT_SIZE),
+                    style: context.boldTextStyle(
+                        color: context.onPrimary, size: APP_BAR_TEXT_SIZE),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -356,11 +376,25 @@ class _UserChatScreenState extends State<UserChatScreen>
               onSelected: (index) {
                 if (index == 0) {
                   showConfirmDialogCustom(
+                    height: 80,
+                    width: 290,
                     context,
+                    dialogType: DialogType.CONFIRMATION,
+                    primaryColor: context.primary,
+                    title: languages.clearChatMessage,
                     positiveText: languages.lblYes,
                     negativeText: languages.lblNo,
-                    primaryColor: context.primaryColor,
-                    title: languages.clearChatMessage,
+                    titleColor: context.dialogTitleColor,
+                    backgroundColor: context.dialogBackgroundColor,
+                    negativeTextColor: context.dialogCancelColor,
+                    positiveTextColor: context.onPrimary,
+                    shape: appDialogShape(8),
+                    customCenterWidget: Image.asset(
+                      ic_warning,
+                      color: context.dialogIconColor,
+                      height: 80,
+                      width: 80,
+                    ),
                     onAccept: (c) async {
                       appStore.setLoading(true);
                       await chatServices
@@ -378,8 +412,8 @@ class _UserChatScreenState extends State<UserChatScreen>
                   );
                 }
               },
-              icon: Icon(Icons.more_vert_sharp, color: Colors.white),
-              color: context.cardColor,
+              icon: Icon(Icons.more_vert_sharp, color: context.onPrimary),
+              color: context.cardSecondary,
               itemBuilder: (context) {
                 List<PopupMenuItem> list = [];
                 list.add(
@@ -413,9 +447,11 @@ class _UserChatScreenState extends State<UserChatScreen>
                       receiverUserId: widget.receiverUser.uid.validate()),
                   initialLoader: LoaderWidget(),
                   limit: PER_PAGE_CHAT_LIST_COUNT,
-                  onEmpty: NoDataWidget(
-                    title: languages.noConversation,
-                    imageWidget: EmptyStateWidget(),
+                  onEmpty: Center(
+                    child: Text(
+                      languages.noConversation,
+                      style: context.primaryTextStyle(),
+                    ),
                   ),
                   shrinkWrap: true,
                   viewType: ViewType.list,

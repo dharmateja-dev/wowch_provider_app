@@ -332,12 +332,43 @@ extension ColorSchemeExtension on BuildContext {
       isDarkMode ? Brightness.light : Brightness.dark;
 
   // ══════════════════════════════════════════════════════════════════════════
+  // CHAT COLORS
+  // ══════════════════════════════════════════════════════════════════════════
+
+  /// Sent message bubble background - Uses secondaryContainer
+  Color get chatSentBubble => secondaryContainer;
+
+  /// Sent message text color - Uses onSecondaryContainer
+  Color get chatSentTextColor => onSecondaryContainer;
+
+  /// Sent message tick color - Light: #1C274C, Dark: #E8F5F0
+  Color get chatTickColor =>
+      isDarkMode ? const Color(0xFFE8F5F0) : const Color(0xFF1C274C);
+
+  /// Sent message secondary text (date/time) - Light: #4F4F4F, Dark: #B2C7BF
+  Color get chatSentSecondaryText =>
+      isDarkMode ? const Color(0xFFB2C7BF) : const Color(0xFF4F4F4F);
+
+  /// Received message bubble background - Light: #FFFFFF, Dark: #1E1E1E
+  Color get chatReceivedBubble => cardSecondary;
+
+  /// Received message text color - Uses onSurface
+  Color get chatReceivedTextColor => onSurface;
+
+  /// Received message bubble border - Both: #D6D6D6
+  Color get chatReceivedBubbleBorder => const Color(0xFFD6D6D6);
+
+  /// Received message secondary text (date/time) - Light: #4F4F4F, Dark: #B2C7BF
+  Color get chatReceivedSecondaryText =>
+      isDarkMode ? const Color(0xFFB2C7BF) : const Color(0xFF4F4F4F);
+
+  // ══════════════════════════════════════════════════════════════════════════
   // LEGACY ALIASES (For backward compatibility)
   // ══════════════════════════════════════════════════════════════════════════
 
   Color get fillColor => inputFillColor;
   Color get hintColor => hintTextColor;
-  Color get icon => iconColor;
+  Color get icon => onSurface;
   Color get divider => themeDividerColor;
 }
 
