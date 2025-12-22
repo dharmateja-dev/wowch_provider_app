@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:handyman_provider_flutter/components/review_list_view_component.dart';
 import 'package:handyman_provider_flutter/components/view_all_label_component.dart';
 import 'package:handyman_provider_flutter/main.dart';
+import 'package:handyman_provider_flutter/models/attachment_model.dart';
 import 'package:handyman_provider_flutter/models/booking_detail_response.dart';
 import 'package:handyman_provider_flutter/models/service_detail_response.dart';
 import 'package:handyman_provider_flutter/models/service_model.dart';
@@ -31,7 +32,7 @@ ServiceDetailResponse getDemoServiceDetail(int serviceId) {
       categoryName: 'Food & Bakery',
       price: 1500,
       discount: 10,
-      duration: '2',
+      duration: '02:00',
       type: SERVICE_TYPE_FIXED,
       totalRating: 4.5,
       totalReview: 25,
@@ -39,6 +40,23 @@ ServiceDetailResponse getDemoServiceDetail(int serviceId) {
           'Delicious custom cakes for all occasions - birthdays, weddings, anniversaries, and more. We use premium ingredients and offer various flavors, designs, and sizes to match your event perfectly.',
       status: 1,
       providerName: 'Demo Provider',
+      attchments: [
+        Attachments(
+            id: 1,
+            url:
+                'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800',
+            name: 'cake1.jpg'),
+        Attachments(
+            id: 2,
+            url:
+                'https://images.unsplash.com/photo-1562440499-64c9a111f713?w=800',
+            name: 'cake2.jpg'),
+        Attachments(
+            id: 3,
+            url:
+                'https://images.unsplash.com/photo-1535254973040-607b474cb50d?w=800',
+            name: 'cake3.jpg'),
+      ],
     ),
     ratingData: [
       RatingData(
