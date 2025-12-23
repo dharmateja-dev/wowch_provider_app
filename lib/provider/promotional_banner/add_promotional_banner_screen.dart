@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:handyman_provider_flutter/components/base_scaffold_widget.dart';
 import 'package:handyman_provider_flutter/provider/promotional_banner/promotional_banner_repository.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/num_extenstions.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../components/app_common_dialog.dart';
@@ -20,7 +22,6 @@ import '../../models/service_model.dart';
 import '../../models/static_data_model.dart';
 import '../../networks/rest_apis.dart';
 import '../../utils/app_configuration.dart';
-import '../../utils/colors.dart';
 import '../../utils/common.dart';
 import '../../utils/configs.dart';
 import '../../utils/constant.dart';
@@ -341,7 +342,6 @@ class _AddPromotionalBannerScreenState
               reference: APP_NAME,
               paymentSetting: selectedPaymentSetting!,
               bookingId: appStore.userId.validate().toInt(),
-              //TODO: set banner id if possible
               onComplete: (res) {
                 log('RES: $res');
                 savePay(
@@ -365,7 +365,6 @@ class _AddPromotionalBannerScreenState
         },
         totalAmount: totalAmount.toDouble(),
         bookingId: appStore.userId.validate().toInt(),
-        //TODO: set banner id if possible
         onComplete: (res) {
           savePay(
             paymentMethod: PAYMENT_METHOD_PAYSTACK,
@@ -407,9 +406,7 @@ class _AddPromotionalBannerScreenState
       PhonePeServices peServices = PhonePeServices(
         paymentSetting: selectedPaymentSetting!,
         totalAmount: totalAmount.toDouble(),
-        bookingId: appStore.userId
-            .validate()
-            .toInt(), //TODO: set banner id if possible
+        bookingId: appStore.userId.validate().toInt(),
         onComplete: (res) {
           log('RES: $res');
           savePay(
@@ -472,6 +469,7 @@ class _AddPromotionalBannerScreenState
     return SafeArea(
       top: false,
       child: AppScaffold(
+        scaffoldBackgroundColor: context.scaffoldSecondary,
         appBarTitle: languages.addPromotionalBanner,
         body: Stack(
           children: [
@@ -483,12 +481,17 @@ class _AddPromotionalBannerScreenState
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Promotional Banner Info Card
                       Container(
                         padding: const EdgeInsets.all(16),
                         width: context.width(),
                         decoration: BoxDecoration(
-                          color: completed.withValues(alpha: 0.1),
-                          border: Border.all(color: completed, width: 0.5),
+                          color:
+                              context.primaryLiteColor.withValues(alpha: 0.15),
+                          border: Border.all(
+                            color: context.primaryLiteColor,
+                            width: 0.5,
+                          ),
                         ),
                         child: Row(
                           children: [
@@ -497,11 +500,15 @@ class _AddPromotionalBannerScreenState
                               width: 50,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(40),
-                                color: completed,
+                                color: context.primaryLiteColor,
                               ),
                               child: Center(
-                                child: Image.asset(ic_outline_banner,
-                                    height: 26, width: 26, color: Colors.white),
+                                child: Image.asset(
+                                  ic_outline_banner,
+                                  height: 26,
+                                  width: 26,
+                                  color: context.onPrimary,
+                                ),
                               ),
                             ),
                             16.width,
@@ -513,13 +520,12 @@ class _AddPromotionalBannerScreenState
                                     languages.promoteYourBusinessBanners(
                                         appConfigurationStore.bannerPerDayAmount
                                             .toPriceFormat()),
-                                    style: boldTextStyle(size: 14),
+                                    style: context.boldTextStyle(size: 14),
                                   ),
                                   8.height,
                                   Text(
                                     languages.advertiseYourServicesEffectively,
-                                    style: boldTextStyle(
-                                        color: textSecondaryColor, size: 12),
+                                    style: context.secondaryTextStyle(size: 12),
                                   ),
                                 ],
                               ).expand();
@@ -527,22 +533,38 @@ class _AddPromotionalBannerScreenState
                           ],
                         ),
                       ),
+
                       20.height,
+
+                      // Form
                       Form(
                         key: formKey,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            // Image Picker
+                            Text(
+                              languages.lblImage,
+                              style: context.boldTextStyle(),
+                            ),
+                            8.height,
                             CustomImagePicker(
                               key: uniqueKey,
+                              height: 170,
                               isMultipleImages: false,
                               isCrop: true,
                               onRemoveClick: (value) {
                                 showConfirmDialogCustom(
                                   context,
                                   dialogType: DialogType.DELETE,
+                                  backgroundColor:
+                                      context.dialogBackgroundColor,
+                                  titleColor: context.dialogTitleColor,
+                                  primaryColor: context.error,
                                   positiveText: languages.lblDelete,
+                                  positiveTextColor: context.onPrimary,
                                   negativeText: languages.lblCancel,
+                                  negativeTextColor: context.primary,
                                   onAccept: (p0) {
                                     imageFiles.removeWhere(
                                         (element) => element.path == value);
@@ -555,9 +577,14 @@ class _AddPromotionalBannerScreenState
                                 setState(() {});
                               },
                             ),
-                            if (imageFiles.isNotEmpty) 16.height,
-                            Text(languages.shortDescription,
-                                style: boldTextStyle(size: LABEL_TEXT_SIZE)),
+
+                            16.height,
+
+                            // Description
+                            Text(
+                              languages.shortDescription,
+                              style: context.boldTextStyle(),
+                            ),
                             8.height,
                             AppTextField(
                               textFieldType: TextFieldType.MULTILINE,
@@ -565,15 +592,14 @@ class _AddPromotionalBannerScreenState
                               focus: descriptionFocus,
                               minLines: 3,
                               maxLines: 10,
-                              maxLength: 120,
                               enableChatGPT:
                                   appConfigurationStore.chatGPTStatus,
                               promptFieldInputDecorationChatGPT:
                                   inputDecoration(context).copyWith(
                                 hintText: languages.writeHere,
-                                fillColor: context.scaffoldBackgroundColor,
+                                fillColor: context.profileInputFillColor,
                                 filled: true,
-                                hintStyle: primaryTextStyle(),
+                                hintStyle: context.primaryTextStyle(),
                               ),
                               isValidationRequired: false,
                               testWithoutKeyChatGPT:
@@ -583,24 +609,33 @@ class _AddPromotionalBannerScreenState
                               decoration: inputDecoration(
                                 context,
                                 hintText: languages.eGHandymanTrustedService,
+                                fillColor: context.profileInputFillColor,
                               ),
                             ),
+
                             16.height,
-                            Text(languages.hintSelectType,
-                                style: boldTextStyle(size: LABEL_TEXT_SIZE)),
+
+                            // Type Selection
+                            Text(
+                              languages.hintSelectType,
+                              style: context.boldTextStyle(),
+                            ),
                             8.height,
                             DropdownButtonFormField<StaticDataModel>(
                               decoration: inputDecoration(
                                 context,
+                                fillColor: context.profileInputFillColor,
                               ),
                               isExpanded: true,
                               initialValue: typeStaticData.first,
-                              dropdownColor: context.cardColor,
+                              dropdownColor: context.cardSecondary,
                               items: typeStaticData.map((StaticDataModel data) {
                                 return DropdownMenuItem<StaticDataModel>(
                                   value: data,
-                                  child: Text(data.value.validate(),
-                                      style: primaryTextStyle()),
+                                  child: Text(
+                                    data.value.validate(),
+                                    style: context.primaryTextStyle(),
+                                  ),
                                 );
                               }).toList(),
                               validator: (value) {
@@ -619,22 +654,34 @@ class _AddPromotionalBannerScreenState
                                 setState(() {});
                               },
                             ),
+
                             16.height,
+
+                            // Service Selection (if type is service)
                             if (selectedType == PROMOTIONAL_TYPE_SERVICE) ...[
-                              Text(languages.selectService,
-                                  style: boldTextStyle(size: LABEL_TEXT_SIZE)),
+                              Text(
+                                languages.selectService,
+                                style: context.boldTextStyle(),
+                              ),
                               8.height,
                               DropdownButtonFormField<ServiceData>(
-                                decoration: inputDecoration(context),
-                                hint: Text(languages.chooseService,
-                                    style: secondaryTextStyle()),
+                                decoration: inputDecoration(
+                                  context,
+                                  fillColor: context.profileInputFillColor,
+                                ),
+                                hint: Text(
+                                  languages.chooseService,
+                                  style: context.secondaryTextStyle(),
+                                ),
                                 initialValue: selectedService,
-                                dropdownColor: context.scaffoldBackgroundColor,
+                                dropdownColor: context.cardSecondary,
                                 items: serviceList.map((data) {
                                   return DropdownMenuItem<ServiceData>(
                                     value: data,
-                                    child: Text(data.name.validate(),
-                                        style: primaryTextStyle()),
+                                    child: Text(
+                                      data.name.validate(),
+                                      style: context.primaryTextStyle(),
+                                    ),
                                   );
                                 }).toList(),
                                 validator: (value) {
@@ -650,9 +697,13 @@ class _AddPromotionalBannerScreenState
                                 },
                               ),
                             ],
+
+                            // Link Input (if type is link)
                             if (selectedType == PROMOTIONAL_TYPE_LINK) ...[
-                              Text(languages.enterLink,
-                                  style: boldTextStyle(size: LABEL_TEXT_SIZE)),
+                              Text(
+                                languages.enterLink,
+                                style: context.boldTextStyle(),
+                              ),
                               8.height,
                               AppTextField(
                                 controller: linkCont,
@@ -661,9 +712,12 @@ class _AddPromotionalBannerScreenState
                                 decoration: inputDecoration(
                                   context,
                                   hintText: languages.eGHttpsWwwYourlinkCom,
+                                  fillColor: context.profileInputFillColor,
                                 ),
                               ),
                             ],
+
+                            // Date Range
                             DateRangeComponent(
                               padding: const EdgeInsets.only(top: 16),
                               onApplyCallback: (startDate, endDate, totalDays) {
@@ -679,11 +733,16 @@ class _AddPromotionalBannerScreenState
                                 }
                               },
                             ),
+
                             if (totalDaysCount.isNotEmpty)
                               Text(
                                 languages.daysSelected(totalDaysCount),
-                                style: boldTextStyle(color: primary, size: 12),
+                                style: context.boldTextStyle(
+                                  color: context.primary,
+                                  size: 12,
+                                ),
                               ).paddingTop(8),
+
                             if (totalDaysCount.isNotEmpty &&
                                 DateTime.parse(startingDate)
                                     .isAfter(DateTime.now())) ...[
@@ -692,8 +751,10 @@ class _AddPromotionalBannerScreenState
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(languages.notes,
-                                      style: boldTextStyle(size: 12)),
+                                  Text(
+                                    languages.notes,
+                                    style: context.boldTextStyle(size: 12),
+                                  ),
                                   const SizedBox(width: 2),
                                   Text(
                                     languages.selecteDateNote
@@ -701,16 +762,20 @@ class _AddPromotionalBannerScreenState
                                             startingDate.validate())
                                         .replaceAll(
                                             "{endDate}", endingDate.validate()),
-                                    style: secondaryTextStyle(size: 12),
+                                    style: context.secondaryTextStyle(size: 12),
                                   ).expand(),
                                 ],
                               ),
                             ],
+
+                            // Payment Methods
                             if (paymentList.isNotEmpty) ...[
                               20.height,
-                              Text(languages.lblChoosePaymentMethod,
-                                  style: boldTextStyle()),
-                              4.height,
+                              Text(
+                                languages.lblChoosePaymentMethod,
+                                style: context.boldTextStyle(),
+                              ),
+                              8.height,
                               AnimatedListView(
                                 itemCount: paymentList.length,
                                 shrinkWrap: true,
@@ -734,44 +799,54 @@ class _AddPromotionalBannerScreenState
                                     },
                                     child: RadioListTile<PaymentSetting>(
                                       dense: true,
-                                      activeColor: primary,
+                                      activeColor: context.primary,
                                       value: paymentData,
                                       controlAffinity:
                                           ListTileControlAffinity.trailing,
                                       contentPadding: EdgeInsets.zero,
                                       visualDensity: VisualDensity.compact,
-                                      title: Text(paymentData.title.validate(),
-                                          style: primaryTextStyle()),
+                                      title: Text(
+                                        paymentData.title.validate(),
+                                        style: context.primaryTextStyle(),
+                                      ),
                                     ),
                                   );
                                 },
                               ),
+
                               16.height,
+
+                              // Total Amount Card
                               Container(
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 12, horizontal: 16),
                                 decoration: boxDecorationDefault(
-                                    borderRadius: radius(),
-                                    color: context.cardColor),
-                                child: Column(
+                                  borderRadius: radius(12),
+                                  color: context.cardSecondary,
+                                  border: Border.all(
+                                    color: context.cardSecondaryBorder,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(languages.lblTotalAmount,
-                                            style: boldTextStyle()),
-                                        16.width,
-                                        Observer(builder: (context) {
-                                          return PriceWidget(
-                                              price: totalAmount.toDouble(),
-                                              color: primary);
-                                        }),
-                                      ],
+                                    Text(
+                                      languages.lblTotalAmount,
+                                      style: context.boldTextStyle(),
                                     ),
+                                    16.width,
+                                    Observer(builder: (context) {
+                                      return PriceWidget(
+                                        price: totalAmount.toDouble(),
+                                        color: context.primaryLiteColor,
+                                        isBoldText: true,
+                                      );
+                                    }),
                                   ],
                                 ),
                               ),
+
                               16.height,
                             ],
                           ],
@@ -780,6 +855,8 @@ class _AddPromotionalBannerScreenState
                     ],
                   ),
                 ).expand(),
+
+                // Submit Button
                 Observer(
                   builder: (_) => AppButton(
                     margin:
@@ -788,9 +865,9 @@ class _AddPromotionalBannerScreenState
                         isPaymentPending ? languages.pay : languages.lblSubmit,
                     height: 40,
                     color: appStore.isLoading
-                        ? primary.withValues(alpha: 0.5)
-                        : primary,
-                    textStyle: boldTextStyle(color: white),
+                        ? context.primary.withValues(alpha: 0.5)
+                        : context.primary,
+                    textStyle: context.boldTextStyle(color: context.onPrimary),
                     width: context.width(),
                     onTap: appStore.isLoading
                         ? () {}
