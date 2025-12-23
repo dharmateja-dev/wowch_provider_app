@@ -2429,6 +2429,9 @@ class LanguageHi extends Languages {
   String get selectMethod => 'विधि का चयन करें';
 
   @override
+  String get lblSelectPaymentMethod => 'भुगतान विधि चुनें';
+
+  @override
   String get handymanEarning => 'नौकरानी की कमाई';
 
   @override

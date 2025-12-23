@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../../components/cached_image_widget.dart';
 import '../../../components/price_widget.dart';
 import '../../../main.dart';
-import '../../../utils/configs.dart';
 import '../../../utils/images.dart';
 import '../add_handyman_payout_screen.dart';
 import '../model/earning_list_model.dart';
@@ -22,23 +23,34 @@ class EarningItemWidget extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       margin: const EdgeInsets.symmetric(vertical: 8),
       width: context.width(),
-      decoration: BoxDecoration(
-        border: Border.all(color: context.dividerColor),
-        borderRadius: radius(),
-        color: context.cardColor,
+      decoration: boxDecorationDefault(
+        color: context.cardSecondary,
+        borderRadius: radius(12),
+        border: Border.all(color: context.cardSecondaryBorder),
       ),
       child: Column(
         children: [
+          // Header - Profile Info
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
                 children: [
-                  CachedImageWidget(
-                    url: earningModel.handymanImage.validate(),
-                    height: 50,
-                    circle: true,
-                    fit: BoxFit.cover,
+                  Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: context.primary.withValues(alpha: 0.3),
+                        width: 2,
+                      ),
+                    ),
+                    child: CachedImageWidget(
+                      url: earningModel.handymanImage.validate(),
+                      height: 50,
+                      width: 50,
+                      circle: true,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                   16.width,
                   Column(
@@ -46,21 +58,25 @@ class EarningItemWidget extends StatelessWidget {
                     children: [
                       Text(
                         earningModel.handymanName.validate(),
-                        style: boldTextStyle(size: 12),
-                        textAlign: TextAlign.right,
+                        style: context.boldTextStyle(size: 14),
+                        textAlign: TextAlign.left,
                       ),
                       4.height,
                       Text(
                         earningModel.email.validate(),
-                        style: secondaryTextStyle(),
-                        textAlign: TextAlign.right,
+                        style: context.primaryTextStyle(size: 12),
+                        textAlign: TextAlign.left,
                       ),
                     ],
                   ).expand(),
                 ],
               ).expand(),
               IconButton(
-                icon: const Icon(Icons.info_outline_rounded, size: 22),
+                icon: Icon(
+                  Icons.info_outline_rounded,
+                  size: 22,
+                  color: context.iconMuted,
+                ),
                 onPressed: () {
                   showModalBottomSheet(
                     backgroundColor: Colors.transparent,
@@ -73,171 +89,78 @@ class EarningItemWidget extends StatelessWidget {
               ),
             ],
           ),
-          Divider(color: context.dividerColor, thickness: 1.0, height: 20),
+
+          Divider(color: context.divider, thickness: 0.45, height: 24),
+
+          // Total Bookings & Total Earning Row
           Row(
             children: [
-              Row(
-                children: [
-                  Image.asset(total_booking,
-                      height: 16, color: context.primaryColor),
-                  16.width,
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        languages.lblTotalBooking,
-                        style: secondaryTextStyle(),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      4.height,
-                      Text(
-                        earningModel.totalBookings.validate().toString(),
-                        style: boldTextStyle(color: context.primaryColor),
-                      ),
-                    ],
-                  ).expand(),
-                ],
+              _buildStatItem(
+                context: context,
+                icon: total_booking,
+                label: languages.lblTotalBooking,
+                value: earningModel.totalBookings.validate().toString(),
+                isPrice: false,
               ).expand(),
               16.width,
-              Row(
-                children: [
-                  Image.asset(ic_un_fill_wallet,
-                      height: 16, color: context.primaryColor),
-                  16.width,
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        languages.totalEarning,
-                        style: secondaryTextStyle(),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      4.height,
-                      PriceWidget(
-                        price: earningModel.totalEarning.validate(),
-                        color: context.primaryColor,
-                        isBoldText: true,
-                        size: 14,
-                      ),
-                    ],
-                  ).expand(),
-                ],
+              _buildStatItem(
+                context: context,
+                icon: ic_un_fill_wallet,
+                label: languages.totalEarning,
+                priceValue: earningModel.totalEarning.validate(),
+                isPrice: true,
               ).expand(),
             ],
           ),
-          Divider(color: context.dividerColor, thickness: 1.0, height: 20),
-          Row(
-            children: [
-              Row(
-                children: [
-                  Image.asset(ic_un_fill_wallet,
-                      height: 16, color: context.primaryColor),
-                  16.width,
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        languages.myEarning,
-                        style: secondaryTextStyle(),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      4.height,
-                      PriceWidget(
-                        price: earningModel.providerTotalAmount.validate(),
-                        color: context.primaryColor,
-                        isBoldText: true,
-                        size: 14,
-                      ),
-                    ],
-                  ).expand(),
-                ],
-              ).expand(),
-              16.width,
-              /*     Row(
-                children: [
-                  Image.asset(ic_un_fill_wallet, height: 16, color: context.primaryColor),
-                  16.width,
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        languages.adminEarning,
-                        style: secondaryTextStyle(),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      4.height,
-                      PriceWidget(
-                        price: earningModel.adminEarning.validate(),
-                        color: context.primaryColor,
-                        isBoldText: true,
-                        size: 14,
-                      ),
-                    ],
-                  ).expand(),
-                ],
-              ).expand(),*/
-            ],
+
+          Divider(
+              color: context.cardSecondaryBorder, thickness: 1.0, height: 24),
+
+          // My Earning Row
+          _buildStatItem(
+            context: context,
+            icon: ic_un_fill_wallet,
+            label: languages.myEarning,
+            priceValue: earningModel.providerTotalAmount.validate(),
+            isPrice: true,
           ),
-          Divider(color: context.dividerColor, thickness: 1.0, height: 20),
-          Row(
-            children: [
-              Image.asset(ic_un_fill_wallet,
-                  height: 16, color: context.primaryColor),
-              16.width,
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    languages.handymanPayDue,
-                    style: secondaryTextStyle(),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  4.height,
-                  PriceWidget(
-                    price: earningModel.handymanDueAmount.validate(),
-                    color: context.primaryColor,
-                    isBoldText: true,
-                    size: 14,
-                  ),
-                ],
-              ).expand(),
-            ],
+
+          Divider(
+              color: context.cardSecondaryBorder, thickness: 1.0, height: 24),
+
+          // Due Amount Row
+          _buildStatItem(
+            context: context,
+            icon: ic_un_fill_wallet,
+            label: languages.handymanPayDue,
+            priceValue: earningModel.handymanDueAmount.validate(),
+            isPrice: true,
+            valueColor: earningModel.handymanDueAmount.validate() > 0
+                ? context.error
+                : context.primary,
           ),
-          Divider(color: context.dividerColor, thickness: 1.0, height: 20),
-          Row(
-            children: [
-              Image.asset(ic_un_fill_wallet,
-                  height: 16, color: context.primaryColor),
-              16.width,
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    languages.handymanPaidAmount,
-                    style: secondaryTextStyle(),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  4.height,
-                  PriceWidget(
-                    price: earningModel.handymanPaidEarning.validate(),
-                    color: context.primaryColor,
-                    isBoldText: true,
-                    size: 14,
-                  ),
-                ],
-              ).expand(),
-            ],
+
+          Divider(
+              color: context.cardSecondaryBorder, thickness: 1.0, height: 24),
+
+          // Paid Amount Row
+          _buildStatItem(
+            context: context,
+            icon: ic_un_fill_wallet,
+            label: languages.handymanPaidAmount,
+            priceValue: earningModel.handymanPaidEarning.validate(),
+            isPrice: true,
+            valueColor: context.primary,
           ),
+
+          // Payout Button
           if (earningModel.handymanDueAmount.validate() > 0)
             AppButton(
               text: languages.payout,
-              color: primary,
+              color: context.primary,
+              textColor: context.onPrimary,
+              textStyle: context.boldTextStyle(color: context.onPrimary),
+              shapeBorder: RoundedRectangleBorder(borderRadius: radius(8)),
               width: context.width(),
               margin: const EdgeInsets.only(top: 16),
               padding: EdgeInsets.zero,
@@ -256,7 +179,7 @@ class EarningItemWidget extends StatelessWidget {
     ).onTap(
       () {
         showModalBottomSheet(
-          backgroundColor: Colors.transparent,
+          backgroundColor: context.bottomSheetBackgroundColor,
           context: context,
           builder: (_) {
             return EarningDetailBottomSheet(earningModel);
@@ -266,6 +189,54 @@ class EarningItemWidget extends StatelessWidget {
       hoverColor: Colors.transparent,
       highlightColor: Colors.transparent,
       splashColor: Colors.transparent,
+    );
+  }
+
+  Widget _buildStatItem({
+    required BuildContext context,
+    required String icon,
+    required String label,
+    String? value,
+    num? priceValue,
+    required bool isPrice,
+    Color? valueColor,
+  }) {
+    return Row(
+      children: [
+        Image.asset(
+          icon,
+          height: 18,
+          color: context.primary,
+        ),
+        12.width,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: context.primaryTextStyle(size: 12),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            4.height,
+            if (isPrice)
+              PriceWidget(
+                price: priceValue ?? 0,
+                color: valueColor ?? context.primary,
+                isBoldText: true,
+                size: 14,
+              )
+            else
+              Text(
+                value ?? '',
+                style: context.boldTextStyle(
+                  size: 14,
+                  color: valueColor ?? context.primary,
+                ),
+              ),
+          ],
+        ).expand(),
+      ],
     );
   }
 }

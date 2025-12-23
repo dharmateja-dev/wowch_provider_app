@@ -1560,6 +1560,8 @@ abstract class Languages {
 
   String get selectMethod;
 
+  String get lblSelectPaymentMethod;
+
   String get handymanEarning;
 
   String get handymanEarnings;

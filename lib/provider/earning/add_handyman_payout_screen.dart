@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../components/base_scaffold_widget.dart';
 import '../../main.dart';
 import '../../utils/common.dart';
-import '../../utils/configs.dart';
 import '../../utils/constant.dart';
 import 'handyman_earning_repository.dart';
 import 'model/earning_list_model.dart';
@@ -77,6 +78,7 @@ class _AddHandymanPayoutScreenState extends State<AddHandymanPayoutScreen> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
+      scaffoldBackgroundColor: context.scaffoldSecondary,
       appBarTitle: languages.addHandymanPayout,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -87,6 +89,11 @@ class _AddHandymanPayoutScreenState extends State<AddHandymanPayoutScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               16.height,
+              Text(
+                languages.lblSelectPaymentMethod,
+                style: context.primaryTextStyle(),
+              ),
+              8.height,
               DropdownButtonFormField<String>(
                 items: [
                   DropdownMenuItem(
@@ -100,9 +107,10 @@ class _AddHandymanPayoutScreenState extends State<AddHandymanPayoutScreen> {
                           Text(languages.lblWallet, style: primaryTextStyle()),
                     ),
                 ],
-                dropdownColor: context.cardColor,
-                decoration:
-                    inputDecoration(context, hintText: languages.selectMethod),
+                dropdownColor: context.cardSecondary,
+                decoration: inputDecoration(context,
+                    hintText: languages.selectMethod,
+                    fillColor: context.profileInputFillColor),
                 initialValue: selectedMethod,
                 validator: (value) {
                   if (value == null) return errorThisFieldRequired;
@@ -114,15 +122,26 @@ class _AddHandymanPayoutScreenState extends State<AddHandymanPayoutScreen> {
                 },
               ),
               24.height,
+              Text(
+                languages.hintDescription,
+                style: context.primaryTextStyle(),
+              ),
+              8.height,
               AppTextField(
                 textFieldType: TextFieldType.MULTILINE,
                 controller: descriptionCont,
                 nextFocus: earningFocus,
                 errorThisFieldRequired: languages.hintRequired,
                 decoration: inputDecoration(context,
+                    fillColor: context.profileInputFillColor,
                     hintText: languages.hintDescription),
               ),
               16.height,
+              Text(
+                languages.handymanEarning,
+                style: context.primaryTextStyle(),
+              ),
+              8.height,
               AppTextField(
                 textFieldType: TextFieldType.NUMBER,
                 controller: earningCont,
@@ -130,12 +149,14 @@ class _AddHandymanPayoutScreenState extends State<AddHandymanPayoutScreen> {
                 focus: earningFocus,
                 errorThisFieldRequired: languages.hintRequired,
                 decoration: inputDecoration(context,
+                    fillColor: context.profileInputFillColor,
                     hintText: languages.handymanEarning),
               ),
-              20.height,
+              24.height,
               AppButton(
                 text: languages.btnSave,
-                color: primary,
+                textColor: context.onPrimary,
+                color: context.primary,
                 width: context.width(),
                 onTap: () {
                   saveProviderPayout();

@@ -2451,6 +2451,9 @@ class LanguageDe extends Languages {
   String get selectMethod => 'Wählen Sie Methode';
 
   @override
+  String get lblSelectPaymentMethod => 'Zahlungsmethode auswählen';
+
+  @override
   String get handymanEarning => 'Handwerker verdienen';
 
   @override

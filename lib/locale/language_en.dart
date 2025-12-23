@@ -2420,6 +2420,9 @@ class LanguageEn extends Languages {
   String get selectMethod => 'Select Method';
 
   @override
+  String get lblSelectPaymentMethod => 'Select Payment Method';
+
+  @override
   String get handymanEarning => 'Handyman Earning';
 
   @override

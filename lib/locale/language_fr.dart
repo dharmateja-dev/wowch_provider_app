@@ -2463,6 +2463,9 @@ class LanguageFr extends Languages {
   String get selectMethod => 'Sélectionnez la méthode';
 
   @override
+  String get lblSelectPaymentMethod => 'Sélectionner le mode de paiement';
+
+  @override
   String get handymanEarning => 'Gagner un bricoleur';
 
   @override

@@ -2389,6 +2389,9 @@ class LanguageAr extends Languages {
   String get selectMethod => 'حدد الطريقة';
 
   @override
+  String get lblSelectPaymentMethod => 'اختر طريقة الدفع';
+
+  @override
   String get handymanEarning => 'كسب العامل الماهر';
 
   @override

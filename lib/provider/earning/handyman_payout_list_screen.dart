@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../components/app_widgets.dart';
@@ -57,6 +59,7 @@ class _HandymanPayoutListScreenState extends State<HandymanPayoutListScreen> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
+      scaffoldBackgroundColor: context.scaffoldSecondary,
       appBarTitle: languages.handymanPayoutList,
       body: SnapHelperWidget<List<PayoutData>>(
         future: future,
@@ -77,8 +80,9 @@ class _HandymanPayoutListScreenState extends State<HandymanPayoutListScreen> {
                 width: context.width(),
                 decoration: boxDecorationWithRoundedCorners(
                   borderRadius: radius(),
-                  backgroundColor: context.scaffoldBackgroundColor,
-                  border: Border.all(color: context.dividerColor, width: 1.0),
+                  backgroundColor: context.cardSecondary,
+                  border: Border.all(
+                      color: context.cardSecondaryBorder, width: 1.0),
                 ),
                 padding: EdgeInsets.all(16),
                 child: Column(
@@ -89,10 +93,10 @@ class _HandymanPayoutListScreenState extends State<HandymanPayoutListScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(languages.paymentMethod,
-                            style: secondaryTextStyle(size: 16)),
+                            style: context.primaryTextStyle(size: 16)),
                         Text(
                           data.paymentMethod.validate().capitalizeFirstLetter(),
-                          style: boldTextStyle(color: primary),
+                          style: context.boldTextStyle(color: context.primary),
                         ),
                       ],
                     ),
@@ -101,7 +105,7 @@ class _HandymanPayoutListScreenState extends State<HandymanPayoutListScreen> {
                         children: [
                           16.height,
                           Text(data.description.validate(),
-                              style: secondaryTextStyle()),
+                              style: context.primaryTextStyle()),
                         ],
                       ),
                     16.height,
@@ -109,8 +113,8 @@ class _HandymanPayoutListScreenState extends State<HandymanPayoutListScreen> {
                       padding:
                           EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                       decoration: boxDecorationWithRoundedCorners(
-                        backgroundColor: context.cardColor,
-                        borderRadius: radius(),
+                        backgroundColor: context.cardSecondary,
+                        borderRadius: radius(8),
                       ),
                       width: context.width(),
                       child: Column(
@@ -120,11 +124,11 @@ class _HandymanPayoutListScreenState extends State<HandymanPayoutListScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(languages.lblAmount,
-                                  style: secondaryTextStyle(size: 14)),
+                                  style: context.primaryTextStyle(size: 14)),
                               16.width,
                               PriceWidget(
                                 price: data.amount.validate(),
-                                color: primary,
+                                color: context.primary,
                                 isBoldText: true,
                               ).flexible(),
                             ],
@@ -134,11 +138,11 @@ class _HandymanPayoutListScreenState extends State<HandymanPayoutListScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(languages.lblDate,
-                                  style: secondaryTextStyle(size: 14)),
+                                  style: context.primaryTextStyle(size: 14)),
                               Text(
                                 formatDate(data.createdAt.validate(),
                                     format: DATE_FORMAT_2),
-                                style: boldTextStyle(size: 14),
+                                style: context.boldTextStyle(size: 14),
                               ),
                             ],
                           )

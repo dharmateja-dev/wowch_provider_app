@@ -230,6 +230,12 @@ class AddHandymanCommissionTypeListScreenState
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  16.height,
+                  Text(
+                    languages.typeName,
+                    style: context.boldTextStyle(),
+                  ),
+                  8.height,
                   AppTextField(
                     textFieldType: TextFieldType.NAME,
                     controller: nameCont,
@@ -242,6 +248,11 @@ class AddHandymanCommissionTypeListScreenState
                         fillColor: context.profileInputFillColor),
                   ),
                   16.height,
+                  Text(
+                    languages.commission,
+                    style: context.boldTextStyle(),
+                  ),
+                  8.height,
                   AppTextField(
                     textFieldType: TextFieldType.OTHER,
                     controller: commissionCont,
@@ -266,6 +277,11 @@ class AddHandymanCommissionTypeListScreenState
                     },
                   ),
                   16.height,
+                  Text(
+                    languages.lblType,
+                    style: context.boldTextStyle(),
+                  ),
+                  8.height,
                   DropdownButtonFormField<String>(
                     items: [
                       DropdownMenuItem(
@@ -295,6 +311,11 @@ class AddHandymanCommissionTypeListScreenState
                     },
                   ),
                   16.height,
+                  Text(
+                    languages.lblStatus,
+                    style: context.boldTextStyle(),
+                  ),
+                  8.height,
                   DropdownButtonFormField<String>(
                     items: [
                       DropdownMenuItem(

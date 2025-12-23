@@ -10,6 +10,7 @@ import 'package:handyman_provider_flutter/utils/constant.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
 import 'package:handyman_provider_flutter/utils/model_keys.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -137,7 +138,7 @@ class SubscriptionWidgetState extends State<SubscriptionWidget> {
           width: 1,
           color: widget.data.status.validate() == SUBSCRIPTION_STATUS_ACTIVE
               ? context.primary
-              : context.error,
+              : context.cardSecondaryBorder,
         ),
       ),
       width: context.width(),
@@ -146,26 +147,24 @@ class SubscriptionWidgetState extends State<SubscriptionWidget> {
         children: [
           Text(
             '${formatBookingDate(widget.data.startAt.validate().toString(), format: 'MMMM d, yyyy')} - ${formatBookingDate(widget.data.endAt.validate().toString(), format: 'MMMM d, yyyy')}',
-            style: boldTextStyle(letterSpacing: 1.3),
+            style: context.boldTextStyle(letterSpacing: 1.3),
           ),
           16.height,
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(languages.lblPlan,
-                  style: primaryTextStyle(color: context.textGrey)),
+              Text(languages.lblPlan, style: context.primaryTextStyle()),
               Text(widget.data.title.validate().capitalizeFirstLetter(),
-                  style: boldTextStyle()),
+                  style: context.boldTextStyle()),
             ],
           ),
           16.height,
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(languages.lblType,
-                  style: primaryTextStyle(color: context.textGrey)),
+              Text(languages.lblType, style: context.primaryTextStyle()),
               Text(widget.data.type.validate().capitalizeFirstLetter(),
-                  style: boldTextStyle()),
+                  style: context.boldTextStyle()),
             ],
           ),
           if (widget.data.identifier != FREE)
@@ -177,7 +176,7 @@ class SubscriptionWidgetState extends State<SubscriptionWidget> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(languages.lblAmount,
-                        style: primaryTextStyle(color: context.textGrey)),
+                        style: context.primaryTextStyle()),
                     16.width,
                     PriceWidget(
                       price: widget.data.amount.validate(),
