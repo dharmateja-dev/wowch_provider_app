@@ -216,6 +216,8 @@ abstract class Languages {
 
   String get lblServiceAddress;
 
+  String get lblServiceZone;
+
   String get lblServices;
 
   String get lblEditService;

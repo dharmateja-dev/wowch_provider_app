@@ -321,6 +321,9 @@ class LanguageAr extends Languages {
   String get lblServiceAddress => 'عناوين الخدمة';
 
   @override
+  String get lblServiceZone => 'اختر مناطق الخدمة';
+
+  @override
   String get lblServices => 'خدمات';
 
   @override

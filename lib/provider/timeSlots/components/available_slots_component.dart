@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/provider/timeSlots/components/slot_widget.dart';
-import 'package:handyman_provider_flutter/utils/configs.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class AvailableSlotsComponent extends StatefulWidget {
@@ -49,70 +49,93 @@ class _AvailableSlotsComponentState extends State<AvailableSlotsComponent> {
 
   @override
   Widget build(BuildContext context) {
+    // Calculate slot width for 3 columns
+    // Screen width - outer padding(16*2) - container padding(16*2) - spacing between slots(12*2)
+    double availableWidth = context.width() - 32 - 32 - 24;
+    double slotWidth = availableWidth / 3;
+
     if (widget.isProvider.validate()) {
-      return Wrap(
-        spacing: 16,
-        runSpacing: 16,
-        children: List.generate(24, (index) {
-          String value =
-              "${(index + 1).toString().length >= 2 ? index + 1 : '0${index + 1}'}:00:00";
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          // Use LayoutBuilder to get actual available width
+          double actualSlotWidth =
+              (constraints.maxWidth - 24) / 3; // 24 = spacing (12 * 2)
 
-          bool isSelected = localSelectedSlot.contains(value);
+          return Wrap(
+            spacing: 12,
+            runSpacing: 12,
+            children: List.generate(24, (index) {
+              String value =
+                  "${(index + 1).toString().length >= 2 ? index + 1 : '0${index + 1}'}:00:00";
 
-          return SlotWidget(
-            isAvailable: false,
-            isSelected: isSelected,
-            activeColor: primary,
-            value: value,
-            onTap: () {
-              if (isSelected) {
-                localSelectedSlot.remove(value);
-              } else {
-                localSelectedSlot.add(value);
-              }
+              bool isSelected = localSelectedSlot.contains(value);
 
-              setState(() {});
+              return SlotWidget(
+                isAvailable: false,
+                isSelected: isSelected,
+                activeColor: context.primary,
+                width: actualSlotWidth,
+                value: value,
+                onTap: () {
+                  if (isSelected) {
+                    localSelectedSlot.remove(value);
+                  } else {
+                    localSelectedSlot.add(value);
+                  }
 
-              widget.onChanged.call(localSelectedSlot);
-            },
+                  setState(() {});
+
+                  widget.onChanged.call(localSelectedSlot);
+                },
+              );
+            }),
           );
-        }),
+        },
       );
     }
-    return Wrap(
-      spacing: 16,
-      runSpacing: 16,
-      children: List.generate(widget.availableSlots.length, (index) {
-        String value = widget.availableSlots[index];
 
-        if (widget.selectedSlots.validate().isNotEmpty) {
-          if (widget.selectedSlots.validate().first == value) {
-            selectedIndex = index;
-          }
-        }
-        bool isSelected = selectedIndex == index;
-        bool isAvailable = widget.availableSlots.contains(value);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        double actualSlotWidth = (constraints.maxWidth - 24) / 3;
 
-        return SlotWidget(
-          isAvailable: isAvailable,
-          isSelected: isSelected,
-          value: value,
-          onTap: () {
-            if (isAvailable) {
-              if (isSelected) {
-                selectedIndex = -1;
-                widget.onChanged.call([]);
-              } else {
+        return Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          children: List.generate(widget.availableSlots.length, (index) {
+            String value = widget.availableSlots[index];
+
+            if (widget.selectedSlots.validate().isNotEmpty) {
+              if (widget.selectedSlots.validate().first == value) {
                 selectedIndex = index;
-                widget.onChanged.call([value]);
               }
-              setState(() {});
-            } else {
-              toast(languages.thisSlotIsNotAvailable);
             }
-          },
+            bool isSelected = selectedIndex == index;
+            bool isAvailable = widget.availableSlots.contains(value);
+
+            return SlotWidget(
+              isAvailable: isAvailable,
+              isSelected: isSelected,
+              activeColor: context.primary,
+              width: actualSlotWidth,
+              value: value,
+              onTap: () {
+                if (isAvailable) {
+                  if (isSelected) {
+                    selectedIndex = -1;
+                    widget.onChanged.call([]);
+                  } else {
+                    selectedIndex = index;
+                    widget.onChanged.call([value]);
+                  }
+                  setState(() {});
+                } else {
+                  toast(languages.thisSlotIsNotAvailable);
+                }
+              },
+            );
+          }),
         );
-      }),
+      },
     );
   }
 }

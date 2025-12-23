@@ -323,6 +323,9 @@ class LanguageEn extends Languages {
   String get lblServiceAddress => 'Service Addresses';
 
   @override
+  String get lblServiceZone => 'Select Service Zones';
+
+  @override
   String get lblServices => 'Services';
 
   @override

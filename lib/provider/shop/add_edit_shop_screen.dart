@@ -986,7 +986,7 @@ class _AddEditShopScreenState extends State<AddEditShopScreen> {
                     ),
                   ),
 
-                  16.height,
+                  8.height,
 
                   // Shop Start Time
                   Text(languages.shopStartTime, style: context.boldTextStyle()),
@@ -1056,9 +1056,31 @@ class _AddEditShopScreenState extends State<AddEditShopScreen> {
                       }
                     },
                   ),
-
                   16.height,
 
+                  // Email
+                  Text(languages.hintEmailAddressTxt,
+                      style: context.boldTextStyle()),
+                  8.height,
+                  AppTextField(
+                    textFieldType: TextFieldType.EMAIL_ENHANCED,
+                    controller: emailController,
+                    focus: emailFocus,
+                    decoration: inputDecoration(
+                      context,
+                      hintText: languages.hintEmailAddressTxt,
+                      fillColor: context.profileInputFillColor,
+                      borderRadius: 8,
+                      prefixIcon: Icon(Icons.email_outlined,
+                              size: 20, color: context.iconMuted)
+                          .paddingAll(14),
+                    ),
+                    isValidationRequired: true,
+                    errorThisFieldRequired: languages.hintRequired,
+                    errorInvalidEmail: languages.enterValidEmail,
+                  ),
+
+                  16.height,
                   // Phone Number
                   Text(languages.hintContactNumberTxt,
                       style: context.boldTextStyle()),
@@ -1104,30 +1126,6 @@ class _AddEditShopScreenState extends State<AddEditShopScreen> {
                         null,
                   ),
 
-                  16.height,
-
-                  // Email
-                  Text(languages.hintEmailAddressTxt,
-                      style: context.boldTextStyle()),
-                  8.height,
-                  AppTextField(
-                    textFieldType: TextFieldType.EMAIL_ENHANCED,
-                    controller: emailController,
-                    focus: emailFocus,
-                    decoration: inputDecoration(
-                      context,
-                      hintText: languages.hintEmailAddressTxt,
-                      fillColor: context.profileInputFillColor,
-                      borderRadius: 8,
-                      prefixIcon: Icon(Icons.email_outlined,
-                              size: 20, color: context.iconMuted)
-                          .paddingAll(14),
-                    ),
-                    isValidationRequired: true,
-                    errorThisFieldRequired: languages.hintRequired,
-                    errorInvalidEmail: languages.enterValidEmail,
-                  ),
-
                   24.height,
 
                   // Select Service Section
@@ -1153,35 +1151,36 @@ class _AddEditShopScreenState extends State<AddEditShopScreen> {
                             style: context.secondaryTextStyle(),
                           ).center(),
                         if (serviceList.isNotEmpty)
-                          Column(
-                            children: [
-                              ListView.separated(
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                itemCount: servicePage == 1
-                                    ? _initialDisplayServices.length
-                                    : _fullSortedServices.length,
-                                separatorBuilder: (context, index) => Divider(
-                                  color: context.dividerColor,
-                                  height: 1,
-                                  thickness: 0.4,
-                                ).paddingSymmetric(vertical: 4),
-                                itemBuilder: (context, index) {
-                                  final List<ServiceData> _displayList =
-                                      servicePage == 1
-                                          ? _initialDisplayServices
-                                          : _fullSortedServices;
-                                  ServiceData service = _displayList[index];
-                                  return InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        service.isSelected =
-                                            !service.isSelected.validate();
-                                      });
-                                    },
-                                    child: Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 8),
+                          Container(
+                            padding: EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                                color: context.selectServiceContainerColor,
+                                borderRadius: radius(8),
+                                border: Border.all(
+                                    color: context.cardSecondaryBorder)),
+                            child: Column(
+                              children: [
+                                ListView.separated(
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemCount: servicePage == 1
+                                      ? _initialDisplayServices.length
+                                      : _fullSortedServices.length,
+                                  separatorBuilder: (context, index) =>
+                                      8.height,
+                                  itemBuilder: (context, index) {
+                                    final List<ServiceData> _displayList =
+                                        servicePage == 1
+                                            ? _initialDisplayServices
+                                            : _fullSortedServices;
+                                    ServiceData service = _displayList[index];
+                                    return InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          service.isSelected =
+                                              !service.isSelected.validate();
+                                        });
+                                      },
                                       child: Row(
                                         children: [
                                           Expanded(
@@ -1221,27 +1220,27 @@ class _AddEditShopScreenState extends State<AddEditShopScreen> {
                                           ),
                                         ],
                                       ),
-                                    ),
-                                  );
-                                },
-                              ),
-                              if (serviceList.length > 5)
-                                Padding(
-                                  padding: EdgeInsets.only(top: 12),
-                                  child: GestureDetector(
-                                    onTap: isLastPage
-                                        ? onBackToFirstPage
-                                        : onNextPage,
-                                    child: Text(
-                                      isLastPage
-                                          ? languages.viewLess
-                                          : languages.viewMore,
-                                      style: context.primaryTextStyle(
-                                          color: context.primary, size: 12),
+                                    );
+                                  },
+                                ),
+                                if (serviceList.length > 5)
+                                  Padding(
+                                    padding: EdgeInsets.only(top: 12),
+                                    child: GestureDetector(
+                                      onTap: isLastPage
+                                          ? onBackToFirstPage
+                                          : onNextPage,
+                                      child: Text(
+                                        isLastPage
+                                            ? languages.viewLess
+                                            : languages.viewMore,
+                                        style: context.primaryTextStyle(
+                                            color: context.primary, size: 12),
+                                      ),
                                     ),
                                   ),
-                                ),
-                            ],
+                              ],
+                            ),
                           ),
                       ],
                     ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:handyman_provider_flutter/main.dart';
-import 'package:handyman_provider_flutter/utils/colors.dart';
-import 'package:handyman_provider_flutter/utils/configs.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class DaysComponent extends StatefulWidget {
@@ -34,47 +33,48 @@ class DaysComponentState extends State<DaysComponent> {
 
   @override
   Widget build(BuildContext context) {
-    return HorizontalList(
-      itemCount: widget.daysList.length,
-      crossAxisAlignment: WrapCrossAlignment.start,
-      wrapAlignment: WrapAlignment.start,
-      runSpacing: 8,
-      spacing: 8,
-      padding: EdgeInsets.only(left: 16, right: 16, bottom: 16),
-      itemBuilder: (BuildContext context, int index) {
-        String data = widget.daysList[index];
-        return Container(
-          height: 45,
-          width: 65,
-          alignment: Alignment.center,
-          decoration: boxDecorationWithRoundedCorners(
-            backgroundColor: selectedDayIndex == index
-                ? primary
-                : appStore.isDarkMode
-                    ? scaffoldDarkColor
-                    : Colors.white,
-            borderRadius: BorderRadius.circular(defaultRadius),
-          ),
-          child: Text(
-            data.validate().toUpperCase(),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: boldTextStyle(
-              color: selectedDayIndex == index
-                  ? white
-                  : appStore.isDarkMode
-                      ? white
-                      : appTextPrimaryColor,
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+      child: Row(
+        children: List.generate(widget.daysList.length, (index) {
+          String data = widget.daysList[index];
+          bool isSelected = selectedDayIndex == index;
+
+          return GestureDetector(
+            onTap: () {
+              selectedDayIndex = index;
+              setState(() {});
+              widget.onDayChanged?.call(data);
+            },
+            child: Container(
+              height: 36,
+              margin: EdgeInsets.only(
+                  right: index < widget.daysList.length - 1 ? 8 : 0),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              alignment: Alignment.center,
+              decoration: boxDecorationDefault(
+                color: isSelected ? context.primary : context.cardSecondary,
+                borderRadius: radius(8),
+                border: Border.all(
+                  color: isSelected
+                      ? context.primary
+                      : context.cardSecondaryBorder,
+                ),
+              ),
+              child: Text(
+                data.validate().toUpperCase(),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: context.boldTextStyle(
+                  size: 12,
+                  color: isSelected ? context.onPrimary : context.onSurface,
+                ),
+              ),
             ),
-          ),
-        ).onTap(
-          () {
-            selectedDayIndex = index;
-            setState(() {});
-            widget.onDayChanged?.call(data);
-          },
-        );
-      },
+          );
+        }),
+      ),
     );
   }
 }

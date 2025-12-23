@@ -324,6 +324,9 @@ class LanguageFr extends Languages {
   String get lblServiceAddress => 'Adresses de service';
 
   @override
+  String get lblServiceZone => 'Sélectionner les zones de service';
+
+  @override
   String get lblServices => 'Prestations de service';
 
   @override

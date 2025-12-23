@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/main.dart';
-import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class DaysBottomSheet extends StatefulWidget {
@@ -40,9 +41,10 @@ class DaysBottomSheetState extends State<DaysBottomSheet> {
       builder: (context, scrollController) {
         return Container(
           padding: const EdgeInsets.all(16),
-          decoration: boxDecorationWithRoundedCorners(
-              borderRadius: radiusOnly(topLeft: 16, topRight: 16),
-              backgroundColor: context.cardColor),
+          decoration: boxDecorationDefault(
+            borderRadius: radiusOnly(topLeft: 16, topRight: 16),
+            color: context.bottomSheetBackgroundColor,
+          ),
           child: Stack(
             children: [
               SingleChildScrollView(
@@ -51,14 +53,25 @@ class DaysBottomSheetState extends State<DaysBottomSheet> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.max,
                   children: [
+                    // Drag Handle
                     Container(
-                      height: 6,
+                      height: 5,
                       width: 40,
                       decoration: boxDecorationDefault(
-                          borderRadius: radius(60),
-                          color: context.primaryColor),
+                        borderRadius: radius(60),
+                        color: context.iconMuted,
+                      ),
                     ).center(),
                     16.height,
+
+                    // Title
+                    Text(
+                      languages.copyTo,
+                      style: context.boldTextStyle(size: 18),
+                    ),
+                    8.height,
+
+                    // Days List
                     ListView.builder(
                       itemCount: daysList.length,
                       shrinkWrap: true,
@@ -66,23 +79,30 @@ class DaysBottomSheetState extends State<DaysBottomSheet> {
                       itemBuilder: (_, i) {
                         if (daysList[i] == widget.selectedDay)
                           return const SizedBox();
+
+                        bool isChecked = localDayList.contains(daysList[i]);
+
                         return Container(
+                          margin: const EdgeInsets.only(bottom: 4),
+                          decoration: boxDecorationDefault(
+                            color: context.cardSecondary,
+                            borderRadius: radius(8),
+                          ),
                           child: Theme(
                             data: ThemeData(
-                              unselectedWidgetColor: appStore.isDarkMode
-                                  ? context.dividerColor
-                                  : context.iconColor,
+                              unselectedWidgetColor: context.iconMuted,
                             ),
                             child: CheckboxListTile(
                               checkboxShape: RoundedRectangleBorder(
                                   borderRadius: radius(4)),
                               autofocus: false,
-                              activeColor: context.primaryColor,
-                              checkColor: appStore.isDarkMode
-                                  ? context.iconColor
-                                  : context.cardColor,
-                              title: Text(daysList[i], style: boldTextStyle()),
-                              value: localDayList.contains(daysList[i]),
+                              activeColor: context.primary,
+                              checkColor: context.onPrimary,
+                              title: Text(
+                                daysList[i],
+                                style: context.boldTextStyle(),
+                              ),
+                              value: isChecked,
                               onChanged: (bool? value) {
                                 if (localDayList.contains(daysList[i])) {
                                   localDayList.remove(daysList[i]);
@@ -98,16 +118,20 @@ class DaysBottomSheetState extends State<DaysBottomSheet> {
                     ),
                   ],
                 ),
-              ).paddingBottom(60),
+              ).paddingBottom(70),
+
+              // Save Button
               Positioned(
                 bottom: 0,
                 right: 0,
                 left: 0,
                 child: AppButton(
                   text: languages.btnSave,
-                  color: primary,
-                  textStyle: boldTextStyle(color: white),
-                  width: context.width() - context.navigationBarHeight,
+                  color: context.primary,
+                  textColor: context.onPrimary,
+                  textStyle: context.boldTextStyle(color: context.onPrimary),
+                  shapeBorder: RoundedRectangleBorder(borderRadius: radius(8)),
+                  width: context.width() - 32,
                   onTap: () async {
                     if (localDayList.isNotEmpty) finish(context, localDayList);
                   },

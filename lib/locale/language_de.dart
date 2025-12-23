@@ -323,6 +323,9 @@ class LanguageDe extends Languages {
   String get lblServiceAddress => 'Serviceadressen.';
 
   @override
+  String get lblServiceZone => 'Servicebereiche auswählen';
+
+  @override
   String get lblServices => 'Dienstleistungen';
 
   @override

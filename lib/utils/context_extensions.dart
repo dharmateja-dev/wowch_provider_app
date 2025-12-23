@@ -323,6 +323,10 @@ extension ColorSchemeExtension on BuildContext {
   Color get cardSecondaryBorder =>
       isDarkMode ? const Color(0xFF2F2F2F) : const Color(0xFFD6D6D6);
 
+  /// Select service container background - Light: #FFFEFF, Dark: #2A2A2B
+  Color get selectServiceContainerColor =>
+      isDarkMode ? const Color(0xFF2A2A2B) : const Color(0xFFFFFEFF);
+
   /// Profile text field fill color - Light: #FFFFFF, Dark: #101D1C
   Color get profileInputFillColor =>
       isDarkMode ? const Color(0xFF101D1C) : const Color(0xFFFFFFFF);

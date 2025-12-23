@@ -22,6 +22,7 @@ import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/images.dart';
 import 'package:handyman_provider_flutter/utils/model_keys.dart';
 import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -487,7 +488,7 @@ class _AddServicesState extends State<AddServices> {
           children: [
             Text(
               languages.hintServiceName,
-              style: context.primaryTextStyle(),
+              style: context.boldTextStyle(),
             ),
             AppTextField(
               textFieldType: TextFieldType.NAME,
@@ -503,7 +504,7 @@ class _AddServicesState extends State<AddServices> {
             ),
             Text(
               languages.lblCategory,
-              style: context.primaryTextStyle(),
+              style: context.boldTextStyle(),
             ),
             CategorySubCatDropDown(
               categoryId: categoryId == -1 ? null : categoryId,
@@ -519,6 +520,10 @@ class _AddServicesState extends State<AddServices> {
                 setState(() {});
               },
             ),
+            Text(
+              languages.lblServiceZone,
+              style: context.boldTextStyle(),
+            ),
             ServiceAddressComponent(
               selectedList: widget.data?.zones
                       ?.map((zone) => zone.id.validate())
@@ -531,182 +536,257 @@ class _AddServicesState extends State<AddServices> {
             ),
             Row(
               children: [
-                DropdownButtonFormField<StaticDataModel>(
-                  decoration: inputDecoration(context,
-                      fillColor: context.profileInputFillColor,
-                      hintText: languages.lblType),
-                  isExpanded: true,
-                  initialValue: serviceType.isNotEmpty ? getServiceType : null,
-                  dropdownColor: context.cardColor,
-                  items: typeStaticData.map((StaticDataModel data) {
-                    return DropdownMenuItem<StaticDataModel>(
-                      value: data,
-                      child: Text(data.value.validate(),
-                          style: primaryTextStyle()),
-                    );
-                  }).toList(),
-                  validator: (value) {
-                    if (value == null) return errorThisFieldRequired;
-                    return null;
-                  },
-                  onChanged: (StaticDataModel? value) async {
-                    serviceType = value!.key.validate();
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        languages.lblType,
+                        style: context.boldTextStyle(),
+                      ),
+                      8.height,
+                      DropdownButtonFormField<StaticDataModel>(
+                        decoration: inputDecoration(context,
+                            fillColor: context.profileInputFillColor,
+                            hintText: languages.lblType),
+                        isExpanded: true,
+                        initialValue:
+                            serviceType.isNotEmpty ? getServiceType : null,
+                        dropdownColor: context.cardColor,
+                        items: typeStaticData.map((StaticDataModel data) {
+                          return DropdownMenuItem<StaticDataModel>(
+                            value: data,
+                            child: Text(data.value.validate(),
+                                style: context.primaryTextStyle()),
+                          );
+                        }).toList(),
+                        validator: (value) {
+                          if (value == null) return errorThisFieldRequired;
+                          return null;
+                        },
+                        onChanged: (StaticDataModel? value) async {
+                          serviceType = value!.key.validate();
 
-                    if (serviceType == SERVICE_TYPE_FREE) {
-                      priceCont.text = '0';
-                      discountCont.text = '0';
-                    } else if (widget.data != null) {
-                      priceCont.text = widget.data!.serviceDetail!.price
-                          .validate()
-                          .toString();
-                      discountCont.text = widget.data!.serviceDetail!.discount
-                          .validate()
-                          .toString();
-                    } else {
-                      priceCont.text = '';
-                      discountCont.text = '';
-                    }
-                    setState(() {});
-                  },
-                ).expand(),
-                16.width,
-                DropdownButtonFormField<StaticDataModel>(
-                  isExpanded: true,
-                  dropdownColor: context.cardColor,
-                  initialValue: serviceStatusModel != null
-                      ? serviceStatusModel
-                      : statusListStaticData.first,
-                  items: statusListStaticData.map((StaticDataModel data) {
-                    return DropdownMenuItem<StaticDataModel>(
-                      value: data,
-                      child: Text(data.value.validate(),
-                          style: primaryTextStyle()),
-                    );
-                  }).toList(),
-                  decoration: inputDecoration(context,
-                      fillColor: context.profileInputFillColor,
-                      hintText: languages.lblStatus),
-                  onChanged: (StaticDataModel? value) async {
-                    serviceStatus = value!.key.validate();
-                    setState(() {});
-                  },
-                  validator: (value) {
-                    if (value == null) return errorThisFieldRequired;
-                    return null;
-                  },
-                ).expand(),
-              ],
-            ),
-            Row(
-              children: [
-                AppTextField(
-                  textFieldType: TextFieldType.PHONE,
-                  controller: priceCont,
-                  focus: priceFocus,
-                  nextFocus: discountFocus,
-                  enabled: serviceType != SERVICE_TYPE_FREE,
-                  errorThisFieldRequired: languages.hintRequired,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
-                  decoration: inputDecoration(
-                    context,
-                    hintText: languages.hintPrice,
-                    fillColor: context.scaffoldBackgroundColor,
+                          if (serviceType == SERVICE_TYPE_FREE) {
+                            priceCont.text = '0';
+                            discountCont.text = '0';
+                          } else if (widget.data != null) {
+                            priceCont.text = widget.data!.serviceDetail!.price
+                                .validate()
+                                .toString();
+                            discountCont.text = widget
+                                .data!.serviceDetail!.discount
+                                .validate()
+                                .toString();
+                          } else {
+                            priceCont.text = '';
+                            discountCont.text = '';
+                          }
+                          setState(() {});
+                        },
+                      ),
+                    ],
                   ),
-                  validator: (s) {
-                    if (s!.isEmpty) return errorThisFieldRequired;
-
-                    if (s.toDouble() <= 0 && serviceType != SERVICE_TYPE_FREE)
-                      return languages.priceAmountValidationMessage;
-                    return null;
-                  },
-                ).expand(),
+                ),
                 16.width,
-                AppTextField(
-                  textFieldType: TextFieldType.PHONE,
-                  controller: discountCont,
-                  focus: discountFocus,
-                  nextFocus: durationHrFocus,
-                  enabled: serviceType != SERVICE_TYPE_FREE,
-                  decoration: inputDecoration(
-                    context,
-                    hintText: languages.hintDiscount
-                        .capitalizeFirstLetter()
-                        .suffixText(value: ' (%)'),
-                    fillColor: context.scaffoldBackgroundColor,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        languages.lblStatus,
+                        style: context.boldTextStyle(),
+                      ),
+                      8.height,
+                      DropdownButtonFormField<StaticDataModel>(
+                        isExpanded: true,
+                        dropdownColor: context.cardColor,
+                        initialValue: serviceStatusModel != null
+                            ? serviceStatusModel
+                            : statusListStaticData.first,
+                        items: statusListStaticData.map((StaticDataModel data) {
+                          return DropdownMenuItem<StaticDataModel>(
+                            value: data,
+                            child: Text(data.value.validate(),
+                                style: context.primaryTextStyle()),
+                          );
+                        }).toList(),
+                        decoration: inputDecoration(context,
+                            fillColor: context.profileInputFillColor,
+                            hintText: languages.lblStatus),
+                        onChanged: (StaticDataModel? value) async {
+                          serviceStatus = value!.key.validate();
+                          setState(() {});
+                        },
+                        validator: (value) {
+                          if (value == null) return errorThisFieldRequired;
+                          return null;
+                        },
+                      ),
+                    ],
                   ),
-                  isValidationRequired: serviceType != SERVICE_TYPE_FREE,
-                  validator: (s) {
-                    int discount = int.tryParse(s.validate()).validate();
-                    if ((discount < 0 || discount >= 100))
-                      return languages.valueConditionMessage;
-                    else
-                      return null;
-                  },
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
-                ).expand(),
+                ),
               ],
             ),
             Row(
               children: [
                 Expanded(
-                  child: AppTextField(
-                    textFieldType: TextFieldType.PHONE,
-                    controller: durationContHr,
-                    focus: durationHrFocus,
-                    nextFocus: durationMinFocus,
-                    maxLength: 3,
-                    inputFormatters: <TextInputFormatter>[
-                      FilteringTextInputFormatter.digitsOnly
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        languages.hintPrice,
+                        style: context.boldTextStyle(),
+                      ),
+                      8.height,
+                      AppTextField(
+                        textFieldType: TextFieldType.PHONE,
+                        controller: priceCont,
+                        focus: priceFocus,
+                        nextFocus: discountFocus,
+                        enabled: serviceType != SERVICE_TYPE_FREE,
+                        errorThisFieldRequired: languages.hintRequired,
+                        keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true),
+                        decoration: inputDecoration(
+                          context,
+                          hintText: languages.hintPrice,
+                          fillColor: context.profileInputFillColor,
+                        ),
+                        validator: (s) {
+                          if (s!.isEmpty) return errorThisFieldRequired;
+
+                          if (s.toDouble() <= 0 &&
+                              serviceType != SERVICE_TYPE_FREE)
+                            return languages.priceAmountValidationMessage;
+                          return null;
+                        },
+                      ),
                     ],
-                    onChanged: (value) {
-                      currentTime = TimeOfDay(
-                          hour: int.parse(value),
-                          minute: int.parse(durationContMin.text.isEmpty
-                              ? "0"
-                              : durationContMin.text.toString()));
-                    },
-                    errorThisFieldRequired: languages.hintRequired,
-                    decoration: inputDecoration(
-                      context,
-                      hintText: languages.lblDurationHr,
-                      fillColor: context.scaffoldBackgroundColor,
-                      counterText: '',
-                    ),
                   ),
                 ),
-                10.width,
+                16.width,
                 Expanded(
-                  child: AppTextField(
-                    textFieldType: TextFieldType.PHONE,
-                    controller: durationContMin,
-                    focus: durationMinFocus,
-                    nextFocus: descriptionFocus,
-                    inputFormatters: <TextInputFormatter>[
-                      FilteringTextInputFormatter.digitsOnly
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        languages.hintDiscount,
+                        style: context.boldTextStyle(),
+                      ),
+                      8.height,
+                      AppTextField(
+                        textFieldType: TextFieldType.PHONE,
+                        controller: discountCont,
+                        focus: discountFocus,
+                        nextFocus: durationHrFocus,
+                        enabled: serviceType != SERVICE_TYPE_FREE,
+                        decoration: inputDecoration(
+                          context,
+                          hintText: languages.hintDiscount
+                              .capitalizeFirstLetter()
+                              .suffixText(value: ' (%)'),
+                          fillColor: context.profileInputFillColor,
+                        ),
+                        isValidationRequired: serviceType != SERVICE_TYPE_FREE,
+                        validator: (s) {
+                          int discount = int.tryParse(s.validate()).validate();
+                          if ((discount < 0 || discount >= 100))
+                            return languages.valueConditionMessage;
+                          else
+                            return null;
+                        },
+                        keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true),
+                      ),
                     ],
-                    maxLength: 2,
-                    onChanged: (value) {
-                      currentTime = TimeOfDay(
-                          hour: int.parse(durationContHr.text.isEmpty
-                              ? "0"
-                              : durationContHr.text.toString()),
-                          minute: int.parse(value));
-                    },
-                    isValidationRequired:
-                        appStore.selectedLanguage.languageCode ==
-                            DEFAULT_LANGUAGE,
-                    errorThisFieldRequired: languages.hintRequired,
-                    decoration: inputDecoration(
-                      context,
-                      hintText: languages.lblDurationMin,
-                      fillColor: context.scaffoldBackgroundColor,
-                      counterText: '',
-                    ),
                   ),
                 ),
               ],
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        languages.lblDurationHr,
+                        style: context.boldTextStyle(),
+                      ),
+                      8.height,
+                      AppTextField(
+                        textFieldType: TextFieldType.PHONE,
+                        controller: durationContHr,
+                        focus: durationHrFocus,
+                        nextFocus: durationMinFocus,
+                        maxLength: 3,
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                        onChanged: (value) {
+                          currentTime = TimeOfDay(
+                              hour: int.parse(value),
+                              minute: int.parse(durationContMin.text.isEmpty
+                                  ? "0"
+                                  : durationContMin.text.toString()));
+                        },
+                        errorThisFieldRequired: languages.hintRequired,
+                        decoration: inputDecoration(
+                          context,
+                          hintText: languages.lblDurationHr,
+                          fillColor: context.profileInputFillColor,
+                          counterText: '',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                16.width,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        languages.lblDurationMin,
+                        style: context.boldTextStyle(),
+                      ),
+                      8.height,
+                      AppTextField(
+                        textFieldType: TextFieldType.PHONE,
+                        controller: durationContMin,
+                        focus: durationMinFocus,
+                        nextFocus: descriptionFocus,
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                        maxLength: 2,
+                        onChanged: (value) {
+                          currentTime = TimeOfDay(
+                              hour: int.parse(durationContHr.text.isEmpty
+                                  ? "0"
+                                  : durationContHr.text.toString()),
+                              minute: int.parse(value));
+                        },
+                        isValidationRequired:
+                            appStore.selectedLanguage.languageCode ==
+                                DEFAULT_LANGUAGE,
+                        errorThisFieldRequired: languages.hintRequired,
+                        decoration: inputDecoration(
+                          context,
+                          hintText: languages.lblDurationMin,
+                          fillColor: context.profileInputFillColor,
+                          counterText: '',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            Text(
+              languages.hintDescription,
+              style: context.boldTextStyle(),
             ),
             AppTextField(
               textFieldType: TextFieldType.MULTILINE,
@@ -717,7 +797,7 @@ class _AddServicesState extends State<AddServices> {
               promptFieldInputDecorationChatGPT:
                   inputDecoration(context).copyWith(
                 hintText: languages.writeHere,
-                fillColor: context.scaffoldBackgroundColor,
+                fillColor: context.profileInputFillColor,
                 filled: true,
               ),
               testWithoutKeyChatGPT: appConfigurationStore.testWithoutKey,
@@ -726,19 +806,17 @@ class _AddServicesState extends State<AddServices> {
               isValidationRequired: checkValidationLanguage(),
               decoration: inputDecoration(
                 context,
-                hintText: languages.hintDescription,
-                fillColor: context.scaffoldBackgroundColor,
+                hintText: languages.writeHere,
+                fillColor: context.profileInputFillColor,
               ),
             ),
             Container(
               decoration: boxDecorationDefault(
-                  color: context.scaffoldBackgroundColor,
-                  borderRadius: radius()),
+                  color: context.profileInputFillColor, borderRadius: radius()),
               padding: const EdgeInsets.only(left: 16, right: 4),
               child: Theme(
                 data: ThemeData(
-                  unselectedWidgetColor:
-                      appStore.isDarkMode ? context.dividerColor : context.icon,
+                  unselectedWidgetColor: context.iconMuted,
                 ),
                 child: CheckboxListTile(
                   checkboxShape:
@@ -762,19 +840,17 @@ class _AddServicesState extends State<AddServices> {
             Container(
               width: context.width(),
               decoration: boxDecorationDefault(
-                  color: context.scaffoldBackgroundColor,
-                  borderRadius: radius()),
+                  color: context.cardSecondary, borderRadius: radius()),
               padding: const EdgeInsets.only(left: 16, right: 4, top: 8),
               child: Theme(
                 data: ThemeData(
-                  unselectedWidgetColor:
-                      appStore.isDarkMode ? context.dividerColor : context.icon,
+                  unselectedWidgetColor: context.iconMuted,
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(languages.visitOption, style: boldTextStyle()),
+                    Text(languages.visitOption, style: context.boldTextStyle()),
                     8.height,
                     AnimatedWrap(
                       itemCount: visitTypeData.length,
@@ -891,8 +967,7 @@ class _AddServicesState extends State<AddServices> {
                 serviceType == SERVICE_TYPE_FIXED)
               Container(
                 decoration: boxDecorationDefault(
-                    color: context.scaffoldBackgroundColor,
-                    borderRadius: radius()),
+                    color: context.cardSecondary, borderRadius: radius()),
                 child: SettingItemWidget(
                   title: languages.enablePrePayment,
                   subTitle: languages.enablePrePaymentMessage,
@@ -919,7 +994,7 @@ class _AddServicesState extends State<AddServices> {
                 decoration: inputDecoration(
                   context,
                   hintText: languages.advancePayAmountPer,
-                  fillColor: context.scaffoldBackgroundColor,
+                  fillColor: context.profileInputFillColor,
                   counterText: '',
                 ),
                 keyboardType: TextInputType.number,
@@ -986,9 +1061,25 @@ class _AddServicesState extends State<AddServices> {
                               imageFiles.isNotEmpty) {
                             showConfirmDialogCustom(
                               context,
+                              height: 80,
+                              width: 290,
+                              shape: appDialogShape(8),
                               dialogType: DialogType.DELETE,
+                              title: languages.lblDoYouWantToDelete,
+                              titleColor: context.dialogTitleColor,
+                              backgroundColor: context.dialogBackgroundColor,
+                              primaryColor: context.error,
+                              customCenterWidget: Image.asset(
+                                ic_warning,
+                                color: context.dialogIconColor,
+                                height: 70,
+                                width: 70,
+                                fit: BoxFit.cover,
+                              ),
                               positiveText: languages.lblDelete,
+                              positiveTextColor: context.onPrimary,
                               negativeText: languages.lblCancel,
+                              negativeTextColor: context.dialogCancelColor,
                               onAccept: (p0) {
                                 imageFiles.removeWhere(
                                     (element) => element.path == value);
@@ -1007,9 +1098,25 @@ class _AddServicesState extends State<AddServices> {
                           } else {
                             showConfirmDialogCustom(
                               context,
+                              height: 80,
+                              width: 290,
+                              shape: appDialogShape(8),
                               dialogType: DialogType.DELETE,
+                              title: languages.lblDoYouWantToDelete,
+                              titleColor: context.dialogTitleColor,
+                              backgroundColor: context.dialogBackgroundColor,
+                              primaryColor: context.error,
+                              customCenterWidget: Image.asset(
+                                ic_warning,
+                                color: context.dialogIconColor,
+                                height: 70,
+                                width: 70,
+                                fit: BoxFit.cover,
+                              ),
                               positiveText: languages.lblDelete,
+                              positiveTextColor: context.onPrimary,
                               negativeText: languages.lblCancel,
+                              negativeTextColor: context.dialogCancelColor,
                               onAccept: (p0) {
                                 imageFiles.removeWhere(
                                     (element) => element.path == value);

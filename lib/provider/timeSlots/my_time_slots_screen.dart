@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:handyman_provider_flutter/components/app_widgets.dart';
+import 'package:handyman_provider_flutter/components/back_widget.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/provider/timeSlots/components/days_component.dart';
@@ -10,7 +12,31 @@ import 'package:handyman_provider_flutter/provider/timeSlots/edit_time_slot_scre
 import 'package:handyman_provider_flutter/provider/timeSlots/models/slot_data.dart';
 import 'package:handyman_provider_flutter/provider/timeSlots/services/time_slot_services.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
+
+// Dummy time slots for testing UI
+const List<String> dummyTimeSlots = [
+  '07:00:00',
+  '08:00:00',
+  '09:00:00',
+  '10:00:00',
+  '11:00:00',
+  '12:00:00',
+  '13:00:00',
+  '14:00:00',
+  '15:00:00',
+  '16:00:00',
+  '17:00:00',
+  '18:00:00',
+  '19:00:00',
+  '20:00:00',
+  '21:00:00',
+  '22:00:00',
+  '23:00:00',
+  '00:00:00',
+];
 
 class MyTimeSlotsScreen extends StatefulWidget {
   final bool isFromService;
@@ -27,6 +53,7 @@ class _MyTimeSlotsScreenState extends State<MyTimeSlotsScreen> {
   String selectedDay = daysList.first;
 
   bool isTimeSlotAvailableForAll = false;
+  bool useDummyData = true; // Toggle for dummy data
 
   @override
   void initState() {
@@ -35,8 +62,19 @@ class _MyTimeSlotsScreenState extends State<MyTimeSlotsScreen> {
   }
 
   void init() async {
-    timeSlotsList = await getProviderTimeSlots();
-    setState(() {});
+    if (useDummyData) {
+      // Use dummy data for UI testing
+      timeSlotsList = daysList.map((day) {
+        return SlotData(
+          day: dayListMap[day],
+          slot: dummyTimeSlots.toList(),
+        );
+      }).toList();
+      setState(() {});
+    } else {
+      timeSlotsList = await getProviderTimeSlots();
+      setState(() {});
+    }
   }
 
   @override
@@ -80,23 +118,30 @@ class _MyTimeSlotsScreenState extends State<MyTimeSlotsScreen> {
         : [];
 
     return Scaffold(
-      appBar: appBarWidget(
-        languages.myTimeSlots,
-        textColor: white,
-        color: context.primaryColor,
+      backgroundColor: context.scaffoldSecondary,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: context.primary,
+        leading: BackWidget(color: context.onPrimary),
+        title: Text(
+          languages.myTimeSlots,
+          style: context.boldTextStyle(color: context.onPrimary, size: 18),
+        ),
+        centerTitle: true,
       ),
       body: Stack(
         children: [
           SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                16.height,
+                // Day Selection Card
                 Container(
-                  margin: const EdgeInsets.only(left: 16, right: 16, top: 16),
-                  decoration: boxDecorationWithRoundedCorners(
-                    backgroundColor: context.cardColor,
-                    borderRadius: BorderRadius.circular(defaultRadius),
+                  decoration: boxDecorationDefault(
+                    color: context.cardSecondary,
+                    borderRadius: radius(12),
+                    border: Border.all(color: context.cardSecondaryBorder),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -104,9 +149,16 @@ class _MyTimeSlotsScreenState extends State<MyTimeSlotsScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(languages.day, style: boldTextStyle()),
+                          Text(
+                            languages.day,
+                            style: context.boldTextStyle(),
+                          ),
                           IconButton(
-                            icon: const Icon(Icons.edit, size: 20),
+                            icon: Icon(
+                              Icons.edit_outlined,
+                              size: 20,
+                              color: context.iconMuted,
+                            ),
                             onPressed: () async {
                               await EditTimeSlotScreen(
                                 slotData: timeSlotsList,
@@ -143,7 +195,7 @@ class _MyTimeSlotsScreenState extends State<MyTimeSlotsScreen> {
                             },
                           ),
                         ],
-                      ).paddingSymmetric(horizontal: 16, vertical: 8),
+                      ).paddingOnly(left: 16, right: 8, top: 8),
                       DaysComponent(
                         daysList: daysList,
                         onDayChanged: (day) {
@@ -154,28 +206,37 @@ class _MyTimeSlotsScreenState extends State<MyTimeSlotsScreen> {
                     ],
                   ),
                 ),
+
+                // 24-hour format toggle
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text(languages.use24HourFormat,
-                        style: secondaryTextStyle(size: 14)),
-                    16.width,
+                    Text(
+                      languages.use24HourFormat,
+                      style: context.secondaryTextStyle(size: 14),
+                    ),
+                    8.width,
                     Observer(builder: (context) {
                       return Transform.scale(
                         scale: 0.8,
-                        child: Switch.adaptive(
+                        child: CupertinoSwitch(
+                          activeTrackColor: context.primary,
                           value: appStore.is24HourFormat,
                           onChanged: (value) {
                             appStore.set24HourFormat(value);
                           },
                         ),
                       );
-                    })
+                    }),
                   ],
-                ).paddingOnly(right: 16, top: 16, bottom: 16),
-                SlotsComponent(timeSlotList: temp)
-                    .paddingOnly(left: 16, right: 16),
-                32.height,
+                ).paddingSymmetric(vertical: 16),
+
+                // Time Slots Card
+                SlotsComponent(timeSlotList: temp),
+
+                24.height,
+
+                // Disclaimer
                 DisclaimerWidget(),
               ],
             ),

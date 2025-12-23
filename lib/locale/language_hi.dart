@@ -324,6 +324,9 @@ class LanguageHi extends Languages {
   String get lblServiceAddress => 'सेवा पते';
 
   @override
+  String get lblServiceZone => 'सेवा क्षेत्र चुनें';
+
+  @override
   String get lblServices => 'सेवाएं';
 
   @override

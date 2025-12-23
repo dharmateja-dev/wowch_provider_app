@@ -6,6 +6,8 @@ import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/provider/bank_details/add_bank_screen.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 import '../../models/bank_list_response.dart';
 import '../../utils/common.dart';
@@ -131,6 +133,7 @@ class _BankDetailsState extends State<BankDetails> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
+      scaffoldBackgroundColor: context.scaffoldSecondary,
       appBarTitle: languages.bankList,
       actions: [
         IconButton(
@@ -146,7 +149,7 @@ class _BankDetailsState extends State<BankDetails> {
             url: ic_add,
             height: 14,
             width: 14,
-            color: white,
+            color: context.onPrimary,
           ),
         ).visible(rolesAndPermissionStore.bankAdd),
       ],
@@ -170,9 +173,9 @@ class _BankDetailsState extends State<BankDetails> {
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 margin: const EdgeInsets.all(8),
                 decoration: boxDecorationWithRoundedCorners(
-                  borderRadius: BorderRadius.circular(8),
-                  backgroundColor: context.cardColor,
-                ),
+                    borderRadius: BorderRadius.circular(8),
+                    backgroundColor: context.secondaryContainer,
+                    border: Border.all(color: context.primary, width: 1)),
                 width: context.width(),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -181,8 +184,7 @@ class _BankDetailsState extends State<BankDetails> {
                       children: [
                         Marquee(
                                 child: Text(data.bankName.validate(),
-                                    style: primaryTextStyle(
-                                        size: 14, weight: FontWeight.bold)))
+                                    style: context.boldTextStyle()))
                             .expand(),
                         16.width,
                         Container(
@@ -190,16 +192,17 @@ class _BankDetailsState extends State<BankDetails> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 10, vertical: 2),
                           decoration: BoxDecoration(
-                              color: primary,
+                              color: context.primary,
                               borderRadius: BorderRadius.circular(50)),
                           child: Text(languages.lbldefault,
-                              style: primaryTextStyle(size: 10, color: white)),
+                              style: context.primaryTextStyle(
+                                  size: 10, color: context.onPrimary)),
                         ).visible(data.isDefault == 1),
                       ],
                     ),
                     8.height,
                     Text(bankAccountWidget(data.accountNo.validate()),
-                        style: secondaryTextStyle()),
+                        style: context.primaryTextStyle()),
                     8.height,
                     OptionListWidget(optionList: optionList(bankHistory: data)),
                   ],
