@@ -947,6 +947,9 @@ class LanguageFr extends Languages {
   String get noDocumentSubTitle => "Aucun document de vérification";
 
   @override
+  String get lblDocuments => "Documents";
+
+  @override
   String get noConversation => "Aucune conversation";
 
   @override

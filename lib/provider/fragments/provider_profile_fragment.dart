@@ -380,6 +380,7 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                         ServiceListScreen().launch(context);
                       },
                     ),
+                  //Provider Document
                   if (appStore.userType != USER_TYPE_HANDYMAN &&
                       rolesAndPermissionStore.providerDocumentList)
                     SettingItemWidget(
@@ -397,6 +398,7 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                         VerifyProviderScreen().launch(context);
                       },
                     ),
+                  //Blogs
                   if (appStore.userType != USER_TYPE_HANDYMAN &&
                       appConfigurationStore.blogStatus)
                     SettingItemWidget(
@@ -414,6 +416,7 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                         const BlogListScreen().launch(context);
                       },
                     ),
+                  //Handyman
                   if (rolesAndPermissionStore.handymanList)
                     SettingItemWidget(
                       decoration:
@@ -430,6 +433,7 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                         HandymanListScreen().launch(context);
                       },
                     ),
+                  //Help Desk
                   if (appStore.isLoggedIn &&
                       rolesAndPermissionStore.helpDeskList)
                     SettingItemWidget(
@@ -447,6 +451,7 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                         HelpDeskListScreen().launch(context);
                       },
                     ),
+                  //Handyman Payout
                   if (appStore.userType != USER_TYPE_HANDYMAN &&
                       rolesAndPermissionStore.handymanPayout)
                     SettingItemWidget(
@@ -464,6 +469,7 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                         const HandymanEarningListScreen().launch(context);
                       },
                     ),
+                  //Handyman Type
                   if (rolesAndPermissionStore.handymanTypeList)
                     SettingItemWidget(
                       decoration:
@@ -481,6 +487,7 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                             .launch(context);
                       },
                     ),
+                  //Service Package
                   if (appConfigurationStore.servicePackageStatus &&
                       rolesAndPermissionStore.servicePackageList)
                     SettingItemWidget(
@@ -498,6 +505,7 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                         PackageListScreen().launch(context);
                       },
                     ),
+                  //Service Addon
                   if (appConfigurationStore.serviceAddonStatus &&
                       rolesAndPermissionStore.serviceAddOnList)
                     SettingItemWidget(
@@ -515,6 +523,7 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                         AddonServiceListScreen().launch(context);
                       },
                     ),
+                  //Time Slots
                   if (appConfigurationStore.slotServiceStatus)
                     SettingItemWidget(
                       decoration:
@@ -531,6 +540,7 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                         MyTimeSlotsScreen().launch(context);
                       },
                     ),
+                  //Post Job
                   if (rolesAndPermissionStore.postJobList)
                     SettingItemWidget(
                       decoration:
@@ -547,6 +557,7 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                         BidListScreen().launch(context);
                       },
                     ),
+                  //Tax
                   if (rolesAndPermissionStore.taxList)
                     SettingItemWidget(
                       decoration:
@@ -563,6 +574,7 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                         TaxesScreen().launch(context);
                       },
                     ),
+                  //Wallet History
                   if (appStore.earningTypeCommission)
                     SettingItemWidget(
                       decoration:
@@ -579,6 +591,7 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                         WalletHistoryScreen().launch(context);
                       },
                     ),
+                  //Bank Details
                   if (rolesAndPermissionStore.bankList)
                     SettingItemWidget(
                       decoration:
@@ -597,6 +610,7 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                         const BankDetails().launch(context);
                       },
                     ),
+                  //Promotional Banner
                   if (appStore.userType == USER_TYPE_PROVIDER &&
                       appConfigurationStore.isPromotionalBanner)
                     SettingItemWidget(
@@ -614,6 +628,7 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                         PromotionalBannerListScreen().launch(context);
                       },
                     ),
+
                   SettingItemWidget(
                     decoration: BoxDecoration(
                         color: context.scaffoldSecondary,

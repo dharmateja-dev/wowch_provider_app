@@ -170,6 +170,7 @@ class _AddBlogScreenState extends State<AddBlogScreen> {
                   Text(languages.lblImage, style: context.boldTextStyle()),
                   8.height,
                   CustomImagePicker(
+                    height: 170,
                     key: uniqueKey,
                     onRemoveClick: (value) {
                       if (tempAttachments.validate().isNotEmpty &&

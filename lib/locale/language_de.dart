@@ -942,6 +942,9 @@ class LanguageDe extends Languages {
   String get noDocumentSubTitle => "Kein Dokument zur Überprüfung";
 
   @override
+  String get lblDocuments => "Dokumente";
+
+  @override
   String get noConversation => "Kein Gespräch";
 
   @override

@@ -9,11 +9,48 @@ import '../../components/empty_error_state_widget.dart';
 import '../../components/price_widget.dart';
 import '../../main.dart';
 import '../../models/user_data.dart';
-import '../../utils/common.dart';
-import '../../utils/configs.dart';
-import '../../utils/constant.dart';
 import 'handyman_earning_repository.dart';
 import 'model/payout_history_response.dart';
+
+// Dummy data for testing UI
+final List<PayoutData> dummyPayoutList = [
+  PayoutData(
+    id: 1,
+    amount: 2500.00,
+    paymentMethod: 'bank_transfer',
+    description:
+        'Monthly payout for December 2024 - Completed service payments',
+    createdAt: 'Dec 20, 2024',
+  ),
+  PayoutData(
+    id: 2,
+    amount: 1850.50,
+    paymentMethod: 'paypal',
+    description: 'Weekly bonus payout',
+    createdAt: 'Dec 15, 2024',
+  ),
+  PayoutData(
+    id: 3,
+    amount: 3200.00,
+    paymentMethod: 'cash',
+    description: '',
+    createdAt: 'Dec 10, 2024',
+  ),
+  PayoutData(
+    id: 4,
+    amount: 750.25,
+    paymentMethod: 'stripe',
+    description: 'Emergency service bonus',
+    createdAt: 'Dec 05, 2024',
+  ),
+  PayoutData(
+    id: 5,
+    amount: 4500.00,
+    paymentMethod: 'bank_transfer',
+    description: 'November 2024 earnings settlement',
+    createdAt: 'Nov 28, 2024',
+  ),
+];
 
 class HandymanPayoutListScreen extends StatefulWidget {
   final UserData user;
@@ -32,6 +69,8 @@ class _HandymanPayoutListScreenState extends State<HandymanPayoutListScreen> {
   int currentPage = 1;
   bool isLastPage = false;
 
+  bool useDummyData = true; // Toggle for dummy data
+
   @override
   void initState() {
     super.initState();
@@ -39,21 +78,101 @@ class _HandymanPayoutListScreenState extends State<HandymanPayoutListScreen> {
   }
 
   void init() async {
-    future = getHandymanPayoutHistoryList(
-      currentPage,
-      id: widget.user.id!,
-      payoutList: payoutList,
-      callback: (res) {
-        appStore.setLoading(false);
-        isLastPage = res;
-        setState(() {});
-      },
-    );
+    if (useDummyData) {
+      // Use dummy data for UI testing
+      future = Future.value(dummyPayoutList);
+      payoutList = dummyPayoutList;
+      setState(() {});
+    } else {
+      future = getHandymanPayoutHistoryList(
+        currentPage,
+        id: widget.user.id!,
+        payoutList: payoutList,
+        callback: (res) {
+          appStore.setLoading(false);
+          isLastPage = res;
+          setState(() {});
+        },
+      );
+    }
   }
 
   @override
   void setState(fn) {
     if (mounted) super.setState(fn);
+  }
+
+  // Get payment method icon
+  IconData _getPaymentIcon(String? method) {
+    switch (method?.toLowerCase()) {
+      case 'bank_transfer':
+        return Icons.account_balance;
+      case 'paypal':
+        return Icons.payments_outlined;
+      case 'stripe':
+        return Icons.credit_card;
+      case 'cash':
+        return Icons.money;
+      default:
+        return Icons.payment;
+    }
+  }
+
+  // Get formatted payment method name
+  String _getPaymentMethodName(String? method) {
+    switch (method?.toLowerCase()) {
+      case 'bank_transfer':
+        return 'Bank Transfer';
+      case 'paypal':
+        return 'PayPal';
+      case 'stripe':
+        return 'Stripe';
+      case 'cash':
+        return 'Cash';
+      default:
+        return method?.capitalizeFirstLetter() ?? 'Unknown';
+    }
+  }
+
+  // Manual date formatter for display
+  String _formatDisplayDate(String? dateStr) {
+    if (dateStr == null || dateStr.isEmpty) return '';
+
+    // If already formatted (e.g., "Dec 20, 2024"), return as is
+    if (!dateStr.contains('-') && !dateStr.contains('/')) {
+      return dateStr;
+    }
+
+    try {
+      // Try to parse API date format (yyyy-MM-dd HH:mm:ss)
+      final parts = dateStr.split(' ')[0].split('-');
+      if (parts.length == 3) {
+        final year = parts[0];
+        final month = int.parse(parts[1]);
+        final day = parts[2];
+
+        const months = [
+          '',
+          'Jan',
+          'Feb',
+          'Mar',
+          'Apr',
+          'May',
+          'Jun',
+          'Jul',
+          'Aug',
+          'Sep',
+          'Oct',
+          'Nov',
+          'Dec'
+        ];
+
+        return '${months[month]} $day, $year';
+      }
+    } catch (e) {
+      // Return original if parsing fails
+    }
+    return dateStr;
   }
 
   @override
@@ -67,8 +186,8 @@ class _HandymanPayoutListScreenState extends State<HandymanPayoutListScreen> {
         onSuccess: (payoutList) {
           return AnimatedListView(
             shrinkWrap: true,
-            physics: AlwaysScrollableScrollPhysics(),
-            padding: EdgeInsets.fromLTRB(16, 8, 16, 60),
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 60),
             itemCount: payoutList.length,
             slideConfiguration:
                 SlideConfiguration(delay: 50.milliseconds, verticalOffset: 400),
@@ -76,76 +195,148 @@ class _HandymanPayoutListScreenState extends State<HandymanPayoutListScreen> {
               PayoutData data = payoutList[index];
 
               return Container(
-                margin: EdgeInsets.only(top: 8, bottom: 8),
+                margin: const EdgeInsets.only(top: 8, bottom: 8),
                 width: context.width(),
-                decoration: boxDecorationWithRoundedCorners(
-                  borderRadius: radius(),
-                  backgroundColor: context.cardSecondary,
+                decoration: boxDecorationDefault(
+                  borderRadius: radius(8),
+                  color: context.cardSecondary,
                   border: Border.all(
                       color: context.cardSecondaryBorder, width: 1.0),
                 ),
-                padding: EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(languages.paymentMethod,
-                            style: context.primaryTextStyle(size: 16)),
-                        Text(
-                          data.paymentMethod.validate().capitalizeFirstLetter(),
-                          style: context.boldTextStyle(color: context.primary),
-                        ),
-                      ],
-                    ),
-                    if (data.description.validate().isNotEmpty)
-                      Column(
-                        children: [
-                          16.height,
-                          Text(data.description.validate(),
-                              style: context.primaryTextStyle()),
-                        ],
-                      ),
-                    16.height,
+                    // Header with Payment Method
                     Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                      decoration: boxDecorationWithRoundedCorners(
-                        backgroundColor: context.cardSecondary,
-                        borderRadius: radius(8),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: context.secondaryContainer,
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(8),
+                          topRight: Radius.circular(8),
+                        ),
                       ),
-                      width: context.width(),
-                      child: Column(
+                      child: Row(
                         children: [
-                          Row(
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: context.primaryLiteColor
+                                  .withValues(alpha: 0.3),
+                              borderRadius: radius(8),
+                            ),
+                            child: Icon(
+                              _getPaymentIcon(data.paymentMethod),
+                              color: context.primary,
+                              size: 22,
+                            ),
+                          ),
+                          12.width,
+                          Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(languages.lblAmount,
-                                  style: context.primaryTextStyle(size: 14)),
-                              16.width,
-                              PriceWidget(
-                                price: data.amount.validate(),
-                                color: context.primary,
-                                isBoldText: true,
-                              ).flexible(),
+                              Text(
+                                languages.paymentMethod,
+                                style: context.primaryTextStyle(size: 12),
+                              ),
+                              4.height,
+                              Text(
+                                _getPaymentMethodName(data.paymentMethod),
+                                style: context.boldTextStyle(
+                                    color: context.primary),
+                              ),
                             ],
                           ),
-                          16.height,
+                        ],
+                      ),
+                    ),
+
+                    // Description (if exists)
+                    if (data.description.validate().isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.description_outlined,
+                              color: context.iconMuted,
+                              size: 18,
+                            ),
+                            8.width,
+                            Text(
+                              data.description.validate(),
+                              style: context.primaryTextStyle(size: 13),
+                            ).expand(),
+                          ],
+                        ),
+                      ),
+
+                    // Amount and Date Section
+                    Container(
+                      margin: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(16),
+                      decoration: boxDecorationDefault(
+                        color: context.scaffoldSecondary,
+                        borderRadius: radius(10),
+                      ),
+                      child: Column(
+                        children: [
+                          // Amount Row
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(languages.lblDate,
-                                  style: context.primaryTextStyle(size: 14)),
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.attach_money,
+                                    color: context.iconMuted,
+                                    size: 18,
+                                  ),
+                                  6.width,
+                                  Text(
+                                    languages.lblAmount,
+                                    style: context.primaryTextStyle(size: 14),
+                                  ),
+                                ],
+                              ),
+                              PriceWidget(
+                                price: data.amount.validate(),
+                                color: context.primaryLiteColor,
+                                isBoldText: true,
+                                size: 16,
+                              ),
+                            ],
+                          ),
+
+                          const Divider(height: 24),
+
+                          // Date Row
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.calendar_today_outlined,
+                                    color: context.iconMuted,
+                                    size: 18,
+                                  ),
+                                  6.width,
+                                  Text(
+                                    languages.lblDate,
+                                    style: context.primaryTextStyle(size: 14),
+                                  ),
+                                ],
+                              ),
                               Text(
-                                formatDate(data.createdAt.validate(),
-                                    format: DATE_FORMAT_2),
+                                useDummyData
+                                    ? data.createdAt.validate()
+                                    : _formatDisplayDate(data.createdAt),
                                 style: context.boldTextStyle(size: 14),
                               ),
                             ],
-                          )
+                          ),
                         ],
                       ),
                     ),
@@ -154,7 +345,7 @@ class _HandymanPayoutListScreenState extends State<HandymanPayoutListScreen> {
               );
             },
             onNextPage: () {
-              if (!isLastPage) {
+              if (!isLastPage && !useDummyData) {
                 currentPage++;
 
                 appStore.setLoading(true);
@@ -172,14 +363,14 @@ class _HandymanPayoutListScreenState extends State<HandymanPayoutListScreen> {
             },
             emptyWidget: NoDataWidget(
               title: languages.noPayoutFound,
-              imageWidget: EmptyStateWidget(),
+              imageWidget: const EmptyStateWidget(),
             ),
           );
         },
         errorBuilder: (error) {
           return NoDataWidget(
             title: error,
-            imageWidget: ErrorStateWidget(),
+            imageWidget: const ErrorStateWidget(),
             retryText: languages.reload,
             onRetry: () {
               currentPage = 1;

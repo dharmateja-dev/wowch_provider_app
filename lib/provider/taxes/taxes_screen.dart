@@ -6,7 +6,9 @@ import 'package:handyman_provider_flutter/models/tax_list_response.dart';
 import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/provider/taxes/shimmer/taxes_shimmer.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/num_extenstions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../components/app_widgets.dart';
@@ -49,12 +51,13 @@ class _TaxesScreenState extends State<TaxesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: UniqueKey(),
+      backgroundColor: context.scaffoldSecondary,
       appBar: appBarWidget(
         languages.lblTaxes,
         showBack: true,
         backWidget: BackWidget(),
-        textColor: Colors.white,
-        color: context.primaryColor,
+        textColor: context.onPrimary,
+        color: context.primary,
       ),
       body: Stack(
         children: [
@@ -64,7 +67,7 @@ class _TaxesScreenState extends State<TaxesScreen> {
               return AnimatedListView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 itemCount: list.length,
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(16),
                 disposeScrollController: false,
                 shrinkWrap: true,
                 listAnimationType: ListAnimationType.FadeIn,
@@ -74,41 +77,79 @@ class _TaxesScreenState extends State<TaxesScreen> {
 
                   return Container(
                     padding: const EdgeInsets.all(16),
-                    margin: const EdgeInsets.all(8),
-                    decoration: boxDecorationWithRoundedCorners(
-                      borderRadius: radius(),
-                      backgroundColor: context.cardColor,
+                    margin: const EdgeInsets.only(bottom: 12),
+                    decoration: boxDecorationDefault(
+                      borderRadius: radius(12),
+                      color: context.cardSecondary,
+                      border: Border.all(color: context.cardSecondaryBorder),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // Tax Name Row
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(languages.lblTaxName,
-                                style: secondaryTextStyle(size: 14)),
-                            Text('${data.title.validate()}',
-                                style: boldTextStyle()),
+                            Text(
+                              languages.lblTaxName,
+                              style: context.primaryTextStyle(size: 14),
+                            ),
+                            Text(
+                              '${data.title.validate()}',
+                              style: context.boldTextStyle(),
+                            ),
                           ],
                         ),
-                        8.height,
+
+                        12.height,
+
+                        // Divider
+                        Divider(
+                          color: context.cardSecondaryBorder,
+                          height: 1,
+                        ),
+
+                        12.height,
+
+                        // Tax Value Row
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(languages.lblMyTax,
-                                style: secondaryTextStyle(size: 14)),
+                            Text(
+                              languages.lblMyTax,
+                              style: context.primaryTextStyle(size: 14),
+                            ),
                             Row(
                               children: [
                                 Text(
                                   isCommissionTypePercent(data.type)
-                                      ? ' ${data.value.validate()}%'
-                                      : ' ${data.value.validate().toPriceFormat()}',
-                                  style: boldTextStyle(),
+                                      ? '${data.value.validate()}%'
+                                      : data.value.validate().toPriceFormat(),
+                                  style: context.boldTextStyle(
+                                    color: context.primaryLiteColor,
+                                  ),
                                 ),
-                                Text(' (${data.type.capitalizeFirstLetter()})',
-                                    style: boldTextStyle()),
+                                4.width,
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  decoration: boxDecorationDefault(
+                                    color: context.primaryLiteColor
+                                        .withValues(alpha: 0.3),
+                                    borderRadius: radius(6),
+                                  ),
+                                  child: Text(
+                                    data.type.capitalizeFirstLetter(),
+                                    style: context.boldTextStyle(
+                                      size: 12,
+                                      color: context.primary,
+                                    ),
+                                  ),
+                                ),
                               ],
-                            )
+                            ),
                           ],
                         ),
                       ],

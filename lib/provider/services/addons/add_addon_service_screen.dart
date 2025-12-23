@@ -4,8 +4,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:handyman_provider_flutter/components/custom_image_picker.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/context_ext.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -39,7 +41,7 @@ class _AddAddonServiceScreenState extends State<AddAddonServiceScreen> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   UniqueKey formWidgetKey = UniqueKey();
 
-  /// TextEditing controlle
+  /// TextEditing controllers
   TextEditingController addonNameCont = TextEditingController();
   TextEditingController addonPriceCont = TextEditingController();
 
@@ -156,10 +158,30 @@ class _AddAddonServiceScreenState extends State<AddAddonServiceScreen> {
     }
   }
 
+  void _showImgPickDialog(BuildContext context) {
+    showInDialog(
+      context,
+      contentPadding: const EdgeInsets.symmetric(vertical: 16),
+      title: Text(languages.chooseAction, style: context.boldTextStyle()),
+      builder: (p0) {
+        return FilePickerDialog(isSelected: false);
+      },
+    ).then((file) async {
+      if (file != null) {
+        if (file == GalleryFileTypes.CAMERA) {
+          _getFromCamera();
+        } else if (file == GalleryFileTypes.GALLERY) {
+          _getFromGallery();
+        }
+      }
+    });
+  }
+
   //----------------------------------- UI -----------------------------------/
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
+      scaffoldBackgroundColor: context.scaffoldSecondary,
       appBarTitle:
           isUpdate ? languages.editAddonService : languages.addAddonService,
       body: Stack(
@@ -176,7 +198,11 @@ class _AddAddonServiceScreenState extends State<AddAddonServiceScreen> {
                 padding: const EdgeInsets.only(
                     left: 16, right: 16, top: 16, bottom: 90),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Image Section
+                    Text(languages.lblImage, style: context.boldTextStyle()),
+                    8.height,
                     if (imageFile != null && imageFile!.path.isNotEmpty)
                       Center(
                         child: Stack(
@@ -184,19 +210,22 @@ class _AddAddonServiceScreenState extends State<AddAddonServiceScreen> {
                           alignment: Alignment.center,
                           children: [
                             SizedBox(
-                              width: 110,
-                              height: 110,
+                              width: 140,
+                              height: 140,
                               child: LoaderWidget(),
                             ).visible(imageFile!.path.isNotEmpty),
-                            CachedImageWidget(
-                              url: imageFile!.path,
-                              height: 110,
-                              width: 110,
-                              fit: BoxFit.cover,
-                            ).cornerRadiusWithClipRRect(defaultRadius),
+                            ClipRRect(
+                              borderRadius: radius(12),
+                              child: CachedImageWidget(
+                                url: imageFile!.path,
+                                height: 140,
+                                width: 140,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                             Positioned(
-                              top: 110 * 3 / 4 + 4,
-                              left: 110 * 3 / 4 + 4,
+                              top: 140 * 3 / 4 + 4,
+                              left: 140 * 3 / 4 + 4,
                               child: GestureDetector(
                                 onTap: () {
                                   hideKeyboard(context);
@@ -205,14 +234,20 @@ class _AddAddonServiceScreenState extends State<AddAddonServiceScreen> {
                                 child: Container(
                                   padding: const EdgeInsets.all(3),
                                   decoration: boxDecorationDefault(
-                                      shape: BoxShape.circle,
-                                      color: Colors.white),
+                                    shape: BoxShape.circle,
+                                    color: context.cardSecondary,
+                                  ),
                                   child: Container(
-                                    padding: const EdgeInsets.all(5),
+                                    padding: const EdgeInsets.all(6),
                                     decoration: boxDecorationDefault(
-                                        shape: BoxShape.circle, color: primary),
-                                    child: const Icon(Icons.edit,
-                                        size: 16, color: Colors.white),
+                                      shape: BoxShape.circle,
+                                      color: context.primary,
+                                    ),
+                                    child: Icon(
+                                      Icons.edit,
+                                      size: 16,
+                                      color: context.onPrimary,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -229,41 +264,56 @@ class _AddAddonServiceScreenState extends State<AddAddonServiceScreen> {
                               _showImgPickDialog(context);
                             },
                             child: DottedBorderWidget(
-                              color: context.primaryColor,
-                              radius: defaultRadius,
+                              color: context.primary,
+                              radius: 12,
                               child: Container(
+                                height: 160,
                                 padding: const EdgeInsets.all(26),
                                 alignment: Alignment.center,
-                                decoration: boxDecorationWithShadow(
-                                    blurRadius: 0,
-                                    backgroundColor: context.cardColor,
-                                    borderRadius: radius()),
+                                decoration: boxDecorationDefault(
+                                  color: context.uploadCardBackground,
+                                  borderRadius: radius(12),
+                                ),
                                 child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    ic_no_photo.iconImage(
-                                        context: context, size: 46),
+                                    ic_gallery_add.iconImage(
+                                        context: context, size: 42),
                                     8.height,
-                                    Text(languages.chooseImage,
-                                        style: secondaryTextStyle()),
+                                    Text(
+                                      languages.chooseImage,
+                                      style: context.primaryTextStyle(),
+                                    ),
                                   ],
                                 ),
                               ),
                             ),
                           ),
-                          16.height,
-                          Text(languages.noteYouCanUpload,
-                              style: secondaryTextStyle(size: 10)),
+                          12.height,
+                          Text(
+                            languages.noteYouCanUpload,
+                            style: context.primaryTextStyle(size: 10),
+                          ),
                         ],
                       ),
-                    16.height,
+
+                    24.height,
+
+                    // Form Widget
                     buildFormWidget(),
-                    50.height,
+
+                    24.height,
+
+                    // Save Button
                     Observer(
                       builder: (context) => AppButton(
                         text: context.translate.btnSave,
                         height: 40,
-                        color: context.primaryColor,
-                        textStyle: boldTextStyle(color: white),
+                        color: appStore.isLoading
+                            ? context.primary.withValues(alpha: 0.5)
+                            : context.primary,
+                        textStyle:
+                            context.boldTextStyle(color: context.onPrimary),
                         width: context.width() - context.navigationBarHeight,
                         onTap: appStore.isLoading
                             ? null
@@ -294,197 +344,155 @@ class _AddAddonServiceScreenState extends State<AddAddonServiceScreen> {
     );
   }
 
-  // void _showBottomSheet(BuildContext context) {
-  //   showModalBottomSheet<void>(
-  //     backgroundColor: context.cardColor,
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return Column(
-  //         mainAxisSize: MainAxisSize.min,
-  //         crossAxisAlignment: CrossAxisAlignment.stretch,
-  //         children: <Widget>[
-  //           SettingItemWidget(
-  //             title: languages.lblGallery,
-  //             leading: Icon(Icons.image, color: context.iconColor),
-  //             onTap: () async {
-  //               _getFromGallery();
-  //               finish(context);
-  //             },
-  //           ),
-  //           SettingItemWidget(
-  //             title: languages.camera,
-  //             leading: Icon(Icons.camera, color: context.iconColor),
-  //             onTap: () {
-  //               _getFromCamera();
-  //               finish(context);
-  //             },
-  //           ),
-  //         ],
-  //       ).paddingAll(16.0);
-  //     },
-  //   );
-  // }
-  void _showImgPickDialog(BuildContext context) {
-    showInDialog(
-      context,
-      contentPadding: const EdgeInsets.symmetric(vertical: 16),
-      title: Text(languages.chooseAction, style: boldTextStyle()),
-      builder: (p0) {
-        return FilePickerDialog(isSelected: false);
-      },
-    ).then((file) async {
-      if (file != null) {
-        if (file == GalleryFileTypes.CAMERA) {
-          _getFromCamera();
-        } else if (file == GalleryFileTypes.GALLERY) {
-          _getFromGallery();
-        }
-      }
-    });
-  }
-
   // region Form Widget
   Widget buildFormWidget() {
     return Container(
       key: formWidgetKey,
-      padding: const EdgeInsets.all(16),
-      decoration: boxDecorationWithRoundedCorners(
-        borderRadius: radius(),
-        backgroundColor: context.cardColor,
-      ),
-      child: Wrap(
-        runSpacing: 16,
-        children: [
-          Form(
-            key: formKey,
-            autovalidateMode: AutovalidateMode.disabled,
-            child: Column(
-              children: [
-                8.height,
-                AppTextField(
-                  controller: addonNameCont,
-                  textFieldType: TextFieldType.NAME,
-                  nextFocus: addonPriceFocus,
-                  errorThisFieldRequired: context.translate.hintRequired,
-                  isValidationRequired: checkValidationLanguage(),
-                  decoration: inputDecoration(context,
-                      hintText: languages.addonServiceName,
-                      fillColor: context.scaffoldBackgroundColor),
-                ),
-                24.height,
-                Observer(builder: (context) {
-                  return Container(
-                    width: context.width(),
-                    alignment: Alignment.centerLeft,
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
-                    decoration: boxDecorationWithRoundedCorners(
-                        backgroundColor: context.scaffoldBackgroundColor),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Marquee(
-                              child: Text(
-                                appStore.selectedServiceData.name
-                                        .validate()
-                                        .isNotEmpty
-                                    ? appStore.selectedServiceData.name
-                                        .validate()
-                                    : languages.selectService,
-                                style: appStore.selectedServiceData.name
-                                        .validate()
-                                        .isNotEmpty
-                                    ? primaryTextStyle()
-                                    : secondaryTextStyle(),
-                              ).paddingSymmetric(horizontal: 16, vertical: 12),
-                            ).expand(),
-                            TextButton(
-                              child: Text(
-                                  appStore.selectedServiceData.name != null
-                                      ? context.translate.lblEdit
-                                      : languages.hintAddService,
-                                  style: boldTextStyle()),
-                              onPressed: () async {
-                                serviceId = await SelectAddonServiceComponent(
-                                  serviceAddonData: widget.addonServiceData,
-                                  selectedServiceId:
-                                      appStore.selectedServiceData.id,
-                                  isUpdate: widget.addonServiceData != null
-                                      ? true
-                                      : false,
-                                  languageCode:
-                                      appStore.selectedLanguage.languageCode,
-                                ).launch(context);
-                                if (serviceId == null && isUpdate) {
-                                  serviceId = widget.addonServiceData!.serviceId
-                                      .validate();
-                                }
-                                setState(() {});
-                              },
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
-                }),
-                24.height,
-                AppTextField(
-                  controller: addonPriceCont,
-                  textFieldType: TextFieldType.NUMBER,
-                  focus: addonPriceFocus,
-                  decoration: inputDecoration(
-                    context,
-                    hintText: languages.lblPrice,
-                    fillColor: context.scaffoldBackgroundColor,
-                    prefix: Text(appConfigurationStore.currencySymbol,
-                        style: primaryTextStyle(size: LABEL_TEXT_SIZE),
-                        textAlign: TextAlign.center),
-                  ),
-                  validator: (s) {
-                    if (s!.isEmpty) return errorThisFieldRequired;
-
-                    if (s.toDouble() <= 0)
-                      return languages.priceAmountValidationMessage;
-                    return null;
-                  },
-                ),
-                24.height,
-
-                ///StaticDataModel logic : changes in active/ inactive status
-                DropdownButtonFormField<StaticDataModel>(
-                  dropdownColor: context.scaffoldBackgroundColor,
-                  initialValue: addonStatusModel ?? statusListStaticData.first,
-                  items: statusListStaticData.map((StaticDataModel data) {
-                    return DropdownMenuItem<StaticDataModel>(
-                      value: data,
-                      child: Text(data.value.validate(),
-                          style: primaryTextStyle()),
-                    );
-                  }).toList(),
-                  decoration: inputDecoration(
-                    context,
-                    fillColor: context.scaffoldBackgroundColor,
-                    hintText: context.translate.lblStatus,
-                  ),
-                  onTap: () {
-                    hideKeyboard(context);
-                  },
-                  onChanged: (StaticDataModel? value) async {
-                    addonStatus = value!.key.validate();
-                    setState(() {});
-                  },
-                  validator: (value) {
-                    if (value == null) return errorThisFieldRequired;
-                    return null;
-                  },
-                ),
-              ],
+      padding: const EdgeInsets.all(8),
+      child: Form(
+        key: formKey,
+        autovalidateMode: AutovalidateMode.disabled,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Addon Name
+            Text(languages.addonServiceName, style: context.boldTextStyle()),
+            8.height,
+            AppTextField(
+              controller: addonNameCont,
+              textFieldType: TextFieldType.NAME,
+              nextFocus: addonPriceFocus,
+              errorThisFieldRequired: context.translate.hintRequired,
+              isValidationRequired: checkValidationLanguage(),
+              decoration: inputDecoration(
+                context,
+                hintText: languages.addonServiceName,
+                fillColor: context.profileInputFillColor,
+              ),
             ),
-          ),
-        ],
+
+            16.height,
+
+            // Select Service
+            Text(languages.selectService, style: context.boldTextStyle()),
+            8.height,
+            Observer(builder: (context) {
+              return Container(
+                width: context.width(),
+                alignment: Alignment.centerLeft,
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                decoration: boxDecorationDefault(
+                  color: context.profileInputFillColor,
+                  border: Border.all(color: context.cardSecondaryBorder),
+                  borderRadius: radius(8),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Marquee(
+                      child: Text(
+                        appStore.selectedServiceData.name.validate().isNotEmpty
+                            ? appStore.selectedServiceData.name.validate()
+                            : languages.selectService,
+                        style: appStore.selectedServiceData.name
+                                .validate()
+                                .isNotEmpty
+                            ? context.primaryTextStyle()
+                            : context.secondaryTextStyle(),
+                      ).paddingSymmetric(horizontal: 16, vertical: 12),
+                    ).expand(),
+                    GestureDetector(
+                      child: Text(
+                        appStore.selectedServiceData.name != null
+                            ? context.translate.lblEdit
+                            : languages.hintAddService,
+                        style: context.boldTextStyle(color: context.primary),
+                      ),
+                      onTap: () async {
+                        serviceId = await SelectAddonServiceComponent(
+                          serviceAddonData: widget.addonServiceData,
+                          selectedServiceId: appStore.selectedServiceData.id,
+                          isUpdate:
+                              widget.addonServiceData != null ? true : false,
+                          languageCode: appStore.selectedLanguage.languageCode,
+                        ).launch(context);
+                        if (serviceId == null && isUpdate) {
+                          serviceId =
+                              widget.addonServiceData!.serviceId.validate();
+                        }
+                        setState(() {});
+                      },
+                    ),
+                    8.width,
+                  ],
+                ),
+              );
+            }),
+
+            16.height,
+
+            // Price
+            Text(languages.lblPrice, style: context.boldTextStyle()),
+            8.height,
+            AppTextField(
+              controller: addonPriceCont,
+              textFieldType: TextFieldType.NUMBER,
+              focus: addonPriceFocus,
+              decoration: inputDecoration(
+                context,
+                hintText: languages.lblPrice,
+                fillColor: context.profileInputFillColor,
+                prefix: Text(
+                  appConfigurationStore.currencySymbol,
+                  style: context.primaryTextStyle(),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              validator: (s) {
+                if (s!.isEmpty) return errorThisFieldRequired;
+
+                if (s.toDouble() <= 0)
+                  return languages.priceAmountValidationMessage;
+                return null;
+              },
+            ),
+
+            16.height,
+
+            // Status
+            Text(context.translate.lblStatus, style: context.boldTextStyle()),
+            8.height,
+            DropdownButtonFormField<StaticDataModel>(
+              dropdownColor: context.cardSecondary,
+              initialValue: addonStatusModel ?? statusListStaticData.first,
+              items: statusListStaticData.map((StaticDataModel data) {
+                return DropdownMenuItem<StaticDataModel>(
+                  value: data,
+                  child: Text(
+                    data.value.validate(),
+                    style: context.primaryTextStyle(),
+                  ),
+                );
+              }).toList(),
+              decoration: inputDecoration(
+                context,
+                fillColor: context.profileInputFillColor,
+                hintText: context.translate.lblStatus,
+              ),
+              onTap: () {
+                hideKeyboard(context);
+              },
+              onChanged: (StaticDataModel? value) async {
+                addonStatus = value!.key.validate();
+                setState(() {});
+              },
+              validator: (value) {
+                if (value == null) return errorThisFieldRequired;
+                return null;
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -937,6 +937,9 @@ class LanguageEn extends Languages {
   String get noDocumentSubTitle => "No document for verify";
 
   @override
+  String get lblDocuments => "Documents";
+
+  @override
   String get noConversation => "No Conversation";
 
   @override

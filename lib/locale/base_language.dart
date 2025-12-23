@@ -614,6 +614,8 @@ abstract class Languages {
 
   String get noDocumentSubTitle;
 
+  String get lblDocuments;
+
   String get noConversation;
 
   String get jobRequestList;

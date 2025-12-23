@@ -941,6 +941,9 @@ class LanguageHi extends Languages {
   String get noDocumentSubTitle => "सत्यापित के लिए कोई दस्तावेज नहीं";
 
   @override
+  String get lblDocuments => "दस्तावेज़";
+
+  @override
   String get noConversation => "कोई बातचीत नहीं";
 
   @override

@@ -925,6 +925,9 @@ class LanguageAr extends Languages {
   String get noDocumentSubTitle => "لا يوجد وثيقة للتحقق";
 
   @override
+  String get lblDocuments => "الوثائق";
+
+  @override
   String get noConversation => "لا محادثة";
 
   @override

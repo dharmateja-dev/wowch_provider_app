@@ -13,7 +13,10 @@ import 'package:handyman_provider_flutter/provider/packages/components/selected_
 import 'package:handyman_provider_flutter/provider/packages/select_service_screen.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/context_ext.dart';
+import 'package:handyman_provider_flutter/utils/images.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../components/chat_gpt_loder.dart';
@@ -229,17 +232,22 @@ class _AddPackageScreenState extends State<AddPackageScreen> {
     return Container(
       key: formWidgetKey,
       padding: const EdgeInsets.all(16),
-      decoration: boxDecorationWithRoundedCorners(
-        borderRadius: radius(),
-        backgroundColor: context.cardColor,
+      decoration: boxDecorationDefault(
+        borderRadius: radius(12),
+        color: context.cardSecondary,
+        border: Border.all(color: context.cardSecondaryBorder),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Form(
             key: formKey,
             autovalidateMode: AutovalidateMode.disabled,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Package Name
+                Text(languages.packageName, style: context.boldTextStyle()),
                 8.height,
                 AppTextField(
                   controller: packageNameCont,
@@ -247,33 +255,46 @@ class _AddPackageScreenState extends State<AddPackageScreen> {
                   nextFocus: packageDescriptionFocus,
                   errorThisFieldRequired: context.translate.hintRequired,
                   isValidationRequired: checkValidationLanguage(),
-                  decoration: inputDecoration(context,
-                      hintText: languages.packageName,
-                      fillColor: context.scaffoldBackgroundColor),
+                  decoration: inputDecoration(
+                    context,
+                    hintText: languages.packageName,
+                    fillColor: context.profileInputFillColor,
+                  ),
                 ),
+
                 24.height,
+
+                // Select Service
+                Text(languages.selectService, style: context.boldTextStyle()),
+                8.height,
                 Observer(builder: (context) {
                   return Container(
                     width: context.width(),
                     alignment: Alignment.centerLeft,
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    decoration: boxDecorationWithRoundedCorners(
-                        backgroundColor: context.scaffoldBackgroundColor),
+                    decoration: boxDecorationDefault(
+                      color: context.profileInputFillColor,
+                      borderRadius: radius(8),
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(languages.selectService,
-                                    style: secondaryTextStyle())
-                                .paddingSymmetric(horizontal: 16, vertical: 12),
+                            Text(
+                              appStore.selectedServiceList.isEmpty
+                                  ? languages.hintAddService
+                                  : '${appStore.selectedServiceList.length} ${languages.selectService}',
+                              style: context.secondaryTextStyle(),
+                            ).paddingSymmetric(horizontal: 16, vertical: 12),
                             TextButton(
                               child: Text(
-                                  appStore.selectedServiceList.isNotEmpty
-                                      ? context.translate.lblEdit
-                                      : languages.hintAddService,
-                                  style: boldTextStyle()),
+                                appStore.selectedServiceList.isNotEmpty
+                                    ? context.translate.lblEdit
+                                    : languages.hintAddService,
+                                style: context.boldTextStyle(
+                                    color: context.primary),
+                              ),
                               onPressed: () async {
                                 Map? res = await SelectServiceScreen(
                                   categoryId: selectedCategoryId,
@@ -308,7 +329,13 @@ class _AddPackageScreenState extends State<AddPackageScreen> {
                     ),
                   );
                 }),
+
                 24.height,
+
+                // Package Description
+                Text(languages.packageDescription,
+                    style: context.boldTextStyle()),
+                8.height,
                 AppTextField(
                   controller: packageDescriptionCont,
                   textFieldType: TextFieldType.MULTILINE,
@@ -320,7 +347,7 @@ class _AddPackageScreenState extends State<AddPackageScreen> {
                   promptFieldInputDecorationChatGPT:
                       inputDecoration(context).copyWith(
                     hintText: languages.writeHere,
-                    fillColor: context.scaffoldBackgroundColor,
+                    fillColor: context.profileInputFillColor,
                     filled: true,
                   ),
                   testWithoutKeyChatGPT:
@@ -328,136 +355,190 @@ class _AddPackageScreenState extends State<AddPackageScreen> {
                   loaderWidgetForChatGPT: const ChatGPTLoadingWidget(),
                   errorThisFieldRequired: context.translate.hintRequired,
                   isValidationRequired: checkValidationLanguage(),
-                  decoration: inputDecoration(context,
-                      hintText: languages.packageDescription,
-                      fillColor: context.scaffoldBackgroundColor),
+                  decoration: inputDecoration(
+                    context,
+                    hintText: languages.packageDescription,
+                    fillColor: context.profileInputFillColor,
+                  ),
                   validator: (value) {
                     if (value!.isEmpty) return context.translate.hintRequired;
                     return null;
                   },
                 ),
+
                 24.height,
+
+                // Price and Status Row
                 Row(
                   children: [
-                    AppTextField(
-                      controller: packagePriceCont,
-                      textFieldType: TextFieldType.NUMBER,
-                      focus: packagePriceFocus,
-                      decoration: inputDecoration(
-                        context,
-                        hintText: languages.packagePrice,
-                        fillColor: context.scaffoldBackgroundColor,
-                        prefix: Text(appConfigurationStore.currencySymbol,
-                            style: primaryTextStyle(size: LABEL_TEXT_SIZE),
-                            textAlign: TextAlign.center),
-                      ),
-                      validator: (s) {
-                        if (s!.isEmpty) return errorThisFieldRequired;
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(languages.packagePrice,
+                              style: context.boldTextStyle()),
+                          8.height,
+                          AppTextField(
+                            controller: packagePriceCont,
+                            textFieldType: TextFieldType.NUMBER,
+                            focus: packagePriceFocus,
+                            decoration: inputDecoration(
+                              context,
+                              hintText: languages.packagePrice,
+                              fillColor: context.profileInputFillColor,
+                              prefix: Text(
+                                appConfigurationStore.currencySymbol,
+                                style: context.primaryTextStyle(),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            validator: (s) {
+                              if (s!.isEmpty) return errorThisFieldRequired;
 
-                        if (s.toDouble() <= 0)
-                          return languages.priceAmountValidationMessage;
-                        return null;
-                      },
-                    ).expand(),
+                              if (s.toDouble() <= 0)
+                                return languages.priceAmountValidationMessage;
+                              return null;
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
                     16.width,
-
-                    ///StaticDataModel logic : changes in active/ inactive status
-                    DropdownButtonFormField<StaticDataModel>(
-                      dropdownColor: context.scaffoldBackgroundColor,
-                      initialValue:
-                          packageStatusModel ?? statusListStaticData.first,
-                      items: statusListStaticData.map((StaticDataModel data) {
-                        return DropdownMenuItem<StaticDataModel>(
-                          value: data,
-                          child: Text(data.value.validate(),
-                              style: primaryTextStyle()),
-                        );
-                      }).toList(),
-                      decoration: inputDecoration(
-                        context,
-                        fillColor: context.scaffoldBackgroundColor,
-                        hintText: context.translate.lblStatus,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(context.translate.lblStatus,
+                              style: context.boldTextStyle()),
+                          8.height,
+                          DropdownButtonFormField<StaticDataModel>(
+                            dropdownColor: context.cardSecondary,
+                            initialValue: packageStatusModel ??
+                                statusListStaticData.first,
+                            items: statusListStaticData
+                                .map((StaticDataModel data) {
+                              return DropdownMenuItem<StaticDataModel>(
+                                value: data,
+                                child: Text(
+                                  data.value.validate(),
+                                  style: context.primaryTextStyle(),
+                                ),
+                              );
+                            }).toList(),
+                            decoration: inputDecoration(
+                              context,
+                              fillColor: context.profileInputFillColor,
+                              hintText: context.translate.lblStatus,
+                            ),
+                            onTap: () {
+                              hideKeyboard(context);
+                            },
+                            onChanged: (StaticDataModel? value) async {
+                              packageStatus = value!.key.validate();
+                              setState(() {});
+                            },
+                            validator: (value) {
+                              if (value == null) return errorThisFieldRequired;
+                              return null;
+                            },
+                          ),
+                        ],
                       ),
-                      onTap: () {
-                        hideKeyboard(context);
-                      },
-                      onChanged: (StaticDataModel? value) async {
-                        packageStatus = value!.key.validate();
-                        setState(() {});
-                      },
-                      validator: (value) {
-                        if (value == null) return errorThisFieldRequired;
-                        return null;
-                      },
-                    ).expand(),
+                    ),
                   ],
                 ),
+
                 24.height,
+
+                // Start Date and End Date Row
                 Row(
                   children: [
-                    AppTextField(
-                      controller: startDateCont,
-                      textFieldType: TextFieldType.OTHER,
-                      focus: startDateFocus,
-                      decoration: inputDecoration(context,
-                          hintText: languages.startDate,
-                          fillColor: context.scaffoldBackgroundColor),
-                      isValidationRequired: false,
-                      onTap: () {
-                        hideKeyboard(context);
-                        selectDateAndTime(
-                            context, startDateCont, currentDateTime);
-                        endDateCont.text = "";
-                        setState(() {});
-                      },
-                    ).expand(),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(languages.startDate,
+                              style: context.boldTextStyle()),
+                          8.height,
+                          AppTextField(
+                            controller: startDateCont,
+                            textFieldType: TextFieldType.OTHER,
+                            focus: startDateFocus,
+                            decoration: inputDecoration(
+                              context,
+                              hintText: languages.startDate,
+                              fillColor: context.profileInputFillColor,
+                            ),
+                            isValidationRequired: false,
+                            onTap: () {
+                              hideKeyboard(context);
+                              selectDateAndTime(
+                                  context, startDateCont, currentDateTime);
+                              endDateCont.text = "";
+                              setState(() {});
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
                     16.width,
-                    AppTextField(
-                      controller: endDateCont,
-                      textFieldType: TextFieldType.OTHER,
-                      focus: endDateFocus,
-                      decoration: inputDecoration(context,
-                          hintText: languages.endDate,
-                          fillColor: context.scaffoldBackgroundColor),
-                      isValidationRequired: false,
-                      onTap: () {
-                        hideKeyboard(context);
-                        selectDateAndTime(context, endDateCont, selectedDate);
-                      },
-                    ).expand(),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(languages.endDate,
+                              style: context.boldTextStyle()),
+                          8.height,
+                          AppTextField(
+                            controller: endDateCont,
+                            textFieldType: TextFieldType.OTHER,
+                            focus: endDateFocus,
+                            decoration: inputDecoration(
+                              context,
+                              hintText: languages.endDate,
+                              fillColor: context.profileInputFillColor,
+                            ),
+                            isValidationRequired: false,
+                            onTap: () {
+                              hideKeyboard(context);
+                              selectDateAndTime(
+                                  context, endDateCont, selectedDate);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
+
                 24.height,
+
+                // Featured Checkbox
                 Container(
                   decoration: boxDecorationDefault(
-                      color: context.scaffoldBackgroundColor,
-                      borderRadius: radius()),
+                    color: context.profileInputFillColor,
+                    borderRadius: radius(8),
+                  ),
                   padding: const EdgeInsets.only(left: 16, right: 4),
-                  child: Theme(
-                      data: ThemeData(
-                        unselectedWidgetColor: appStore.isDarkMode
-                            ? context.dividerColor
-                            : context.iconColor,
-                      ),
-                      child: CheckboxListTile(
-                        checkboxShape:
-                            RoundedRectangleBorder(borderRadius: radius(4)),
-                        activeColor: context.primaryColor,
-                        checkColor: appStore.isDarkMode
-                            ? context.iconColor
-                            : context.cardColor,
-                        value: isFeature,
-                        contentPadding: EdgeInsets.zero,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: radius(),
-                            side: BorderSide(color: context.primaryColor)),
-                        title: Text(languages.hintSetAsFeature,
-                            style: secondaryTextStyle()),
-                        onChanged: (bool? v) {
-                          isFeature = v.validate();
-                          setState(() {});
-                        },
-                      )),
+                  child: CheckboxListTile(
+                    checkboxShape:
+                        RoundedRectangleBorder(borderRadius: radius(4)),
+                    activeColor: context.primary,
+                    checkColor: context.onPrimary,
+                    value: isFeature,
+                    contentPadding: EdgeInsets.zero,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: radius(8),
+                    ),
+                    title: Text(
+                      languages.hintSetAsFeature,
+                      style: context.primaryTextStyle(),
+                    ),
+                    onChanged: (bool? v) {
+                      isFeature = v.validate();
+                      setState(() {});
+                    },
+                  ),
                 ),
               ],
             ),
@@ -648,10 +729,11 @@ class _AddPackageScreenState extends State<AddPackageScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: context.scaffoldSecondary,
       appBar: appBarWidget(
         isUpdate ? languages.editPackage : languages.addPackage,
-        textColor: white,
-        color: context.primaryColor,
+        textColor: context.onPrimary,
+        color: context.primary,
       ),
       body: Stack(
         alignment: AlignmentDirectional.center,
@@ -669,17 +751,38 @@ class _AddPackageScreenState extends State<AddPackageScreen> {
                 padding: const EdgeInsets.only(
                     top: 16, left: 16.0, right: 16.0, bottom: 25.0),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Image Picker Label
+                    Text(languages.lblImage, style: context.boldTextStyle()),
+                    8.height,
                     CustomImagePicker(
                       key: uniqueKey,
+                      height: 170,
                       onRemoveClick: (value) {
                         if (tempAttachments.validate().isNotEmpty &&
                             imageFiles.isNotEmpty) {
                           showConfirmDialogCustom(
                             context,
                             dialogType: DialogType.DELETE,
+                            title: languages.lblDoYouWantToDelete,
+                            height: 80,
+                            width: 290,
+                            shape: appDialogShape(8),
+                            backgroundColor: context.dialogBackgroundColor,
+                            titleColor: context.dialogTitleColor,
+                            primaryColor: context.error,
+                            customCenterWidget: Image.asset(
+                              ic_warning,
+                              color: context.dialogIconColor,
+                              height: 70,
+                              width: 70,
+                              fit: BoxFit.cover,
+                            ),
                             positiveText: languages.lblDelete,
+                            positiveTextColor: context.onPrimary,
                             negativeText: languages.lblCancel,
+                            negativeTextColor: context.primary,
                             onAccept: (p0) {
                               imageFiles.removeWhere(
                                   (element) => element.path == value);
@@ -698,8 +801,24 @@ class _AddPackageScreenState extends State<AddPackageScreen> {
                           showConfirmDialogCustom(
                             context,
                             dialogType: DialogType.DELETE,
+                            title: languages.lblDoYouWantToDelete,
+                            height: 80,
+                            width: 290,
+                            shape: appDialogShape(8),
+                            backgroundColor: context.dialogBackgroundColor,
+                            titleColor: context.dialogTitleColor,
+                            primaryColor: context.error,
+                            customCenterWidget: Image.asset(
+                              ic_warning,
+                              color: context.dialogIconColor,
+                              height: 70,
+                              width: 70,
+                              fit: BoxFit.cover,
+                            ),
                             positiveText: languages.lblDelete,
+                            positiveTextColor: context.onPrimary,
                             negativeText: languages.lblCancel,
+                            negativeTextColor: context.primary,
                             onAccept: (p0) {
                               imageFiles.removeWhere(
                                   (element) => element.path == value);
@@ -722,24 +841,34 @@ class _AddPackageScreenState extends State<AddPackageScreen> {
                         setState(() {});
                       },
                     ),
-                    8.height,
+
+                    16.height,
+
+                    // Form Widget
                     buildFormWidget(),
+
+                    24.height,
+
+                    // Save Button
                     Observer(
-                        builder: (context) => AppButton(
-                              text: context.translate.btnSave,
-                              height: 40,
-                              color: context.primaryColor,
-                              textStyle: boldTextStyle(color: white),
-                              width:
-                                  context.width() - context.navigationBarHeight,
-                              onTap: appStore.isLoading
-                                  ? null
-                                  : () {
-                                      ifNotTester(context, () {
-                                        checkValidation(isSave: true);
-                                      });
-                                    },
-                            ))
+                      builder: (context) => AppButton(
+                        text: context.translate.btnSave,
+                        height: 40,
+                        color: appStore.isLoading
+                            ? context.primary.withValues(alpha: 0.5)
+                            : context.primary,
+                        textStyle:
+                            context.boldTextStyle(color: context.onPrimary),
+                        width: context.width() - context.navigationBarHeight,
+                        onTap: appStore.isLoading
+                            ? null
+                            : () {
+                                ifNotTester(context, () {
+                                  checkValidation(isSave: true);
+                                });
+                              },
+                      ),
+                    ),
                   ],
                 ),
               ).expand(),

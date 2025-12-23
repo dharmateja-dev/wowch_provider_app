@@ -3,17 +3,17 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:handyman_provider_flutter/main.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
-import '../../utils/common.dart';
-import '../../utils/constant.dart';
-import '../../utils/images.dart';
 import '../components/app_widgets.dart';
 import '../components/base_scaffold_widget.dart';
 import '../components/chat_gpt_loder.dart';
 import '../components/custom_image_picker.dart';
-import '../utils/configs.dart';
+import '../utils/common.dart';
+import '../utils/images.dart';
 import '../utils/model_keys.dart';
 import 'help_desk_repository.dart';
 
@@ -53,7 +53,7 @@ class _AddHelpDeskScreenState extends State<AddHelpDeskScreen> {
     if (mounted) super.setState(fn);
   }
 
-  //region Add Blog
+  //region Add Help Desk
   Future<void> checkValidation() async {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
@@ -83,6 +83,7 @@ class _AddHelpDeskScreenState extends State<AddHelpDeskScreen> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
+      scaffoldBackgroundColor: context.scaffoldSecondary,
       appBarTitle: languages.helpDesk,
       body: Stack(
         children: [
@@ -97,8 +98,11 @@ class _AddHelpDeskScreenState extends State<AddHelpDeskScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(languages.subject,
-                            style: boldTextStyle(size: LABEL_TEXT_SIZE)),
+                        // Subject Field
+                        Text(
+                          languages.subject,
+                          style: context.boldTextStyle(),
+                        ),
                         8.height,
                         AppTextField(
                           controller: subjectCont,
@@ -108,15 +112,26 @@ class _AddHelpDeskScreenState extends State<AddHelpDeskScreen> {
                           decoration: inputDecoration(
                             context,
                             hintText: languages.eGDamagedFurniture,
+                            fillColor: context.profileInputFillColor,
                           ),
                           maxLength: 120,
+                          buildCounter: (context,
+                                  {required currentLength,
+                                  required isFocused,
+                                  maxLength}) =>
+                              null,
                           suffix: ic_document
                               .iconImage(context: context, size: 10)
                               .paddingAll(14),
                         ),
+
                         16.height,
-                        Text(languages.hintDescription,
-                            style: boldTextStyle(size: LABEL_TEXT_SIZE)),
+
+                        // Description Field
+                        Text(
+                          languages.hintDescription,
+                          style: context.boldTextStyle(),
+                        ),
                         8.height,
                         AppTextField(
                           textFieldType: TextFieldType.MULTILINE,
@@ -128,9 +143,9 @@ class _AddHelpDeskScreenState extends State<AddHelpDeskScreen> {
                           promptFieldInputDecorationChatGPT:
                               inputDecoration(context).copyWith(
                             hintText: languages.writeHere,
-                            fillColor: context.scaffoldBackgroundColor,
+                            fillColor: context.profileInputFillColor,
                             filled: true,
-                            hintStyle: primaryTextStyle(),
+                            hintStyle: context.primaryTextStyle(),
                           ),
                           testWithoutKeyChatGPT:
                               appConfigurationStore.testWithoutKey,
@@ -138,18 +153,46 @@ class _AddHelpDeskScreenState extends State<AddHelpDeskScreen> {
                           decoration: inputDecoration(
                             context,
                             hintText: languages.eGDuringTheService,
+                            fillColor: context.profileInputFillColor,
                           ),
                         ),
+
                         16.height,
+
+                        // Attachment Label
+                        Text(
+                          languages.lblImage,
+                          style: context.boldTextStyle(),
+                        ),
+                        8.height,
+
+                        // Image Picker with increased height
                         CustomImagePicker(
                           key: uniqueKey,
+                          height: 170,
                           isMultipleImages: false,
                           onRemoveClick: (value) {
                             showConfirmDialogCustom(
                               context,
                               dialogType: DialogType.DELETE,
+                              title: languages.lblDoYouWantToDelete,
+                              height: 80,
+                              width: 290,
+                              shape: appDialogShape(8),
+                              backgroundColor: context.dialogBackgroundColor,
+                              titleColor: context.dialogTitleColor,
+                              primaryColor: context.error,
+                              customCenterWidget: Image.asset(
+                                ic_warning,
+                                color: context.dialogIconColor,
+                                height: 70,
+                                width: 70,
+                                fit: BoxFit.cover,
+                              ),
                               positiveText: languages.lblDelete,
+                              positiveTextColor: context.onPrimary,
                               negativeText: languages.lblCancel,
+                              negativeTextColor: context.primary,
                               onAccept: (p0) {
                                 imageFiles.removeWhere(
                                     (element) => element.path == value);
@@ -167,6 +210,8 @@ class _AddHelpDeskScreenState extends State<AddHelpDeskScreen> {
                   ),
                 ),
               ),
+
+              // Submit Button
               Observer(
                 builder: (_) => AppButton(
                   margin:
@@ -174,9 +219,9 @@ class _AddHelpDeskScreenState extends State<AddHelpDeskScreen> {
                   text: languages.lblSubmit,
                   height: 40,
                   color: appStore.isLoading
-                      ? primary.withValues(alpha: 0.5)
-                      : primary,
-                  textStyle: boldTextStyle(color: white),
+                      ? context.primary.withValues(alpha: 0.5)
+                      : context.primary,
+                  textStyle: context.boldTextStyle(color: context.onPrimary),
                   width: context.width() - context.navigationBarHeight,
                   onTap: appStore.isLoading
                       ? () {}

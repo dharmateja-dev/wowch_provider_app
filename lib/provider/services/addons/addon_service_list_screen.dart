@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:handyman_provider_flutter/components/base_scaffold_widget.dart';
 import 'package:handyman_provider_flutter/provider/services/addons/shimmer/addon_service_list_shimmer.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/images.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../../components/app_widgets.dart';
@@ -32,7 +35,7 @@ class _AddonServiceListScreenState extends State<AddonServiceListScreen> {
     init();
 
     afterBuildCreated(() {
-      setStatusBarColor(context.primaryColor);
+      setStatusBarColor(context.primary);
     });
   }
 
@@ -46,7 +49,7 @@ class _AddonServiceListScreenState extends State<AddonServiceListScreen> {
     );
   }
 
-  // region Delete Package
+  // region Delete Addon Service
   void removeAddonService({int? addonId}) {
     deleteAddonService(addonId.validate()).then((value) async {
       toast(value.message.validate());
@@ -66,11 +69,26 @@ class _AddonServiceListScreenState extends State<AddonServiceListScreen> {
   }) async {
     showConfirmDialogCustom(
       context,
+      dialogType: DialogType.DELETE,
       title:
           '${languages.areYouSureWantToDeleteThe} ${addonServiceData.name.validate()} ${languages.addOns}?',
-      primaryColor: context.primaryColor,
+      height: 80,
+      width: 290,
+      shape: appDialogShape(8),
+      backgroundColor: context.dialogBackgroundColor,
+      titleColor: context.dialogTitleColor,
+      primaryColor: context.error,
+      customCenterWidget: Image.asset(
+        ic_warning,
+        color: context.dialogIconColor,
+        height: 70,
+        width: 70,
+        fit: BoxFit.cover,
+      ),
       positiveText: languages.lblYes,
+      positiveTextColor: context.onPrimary,
       negativeText: languages.lblNo,
+      negativeTextColor: context.primary,
       onAccept: (context) async {
         ifNotTester(context, () {
           appStore.setLoading(true);
@@ -91,10 +109,11 @@ class _AddonServiceListScreenState extends State<AddonServiceListScreen> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
+      scaffoldBackgroundColor: context.scaffoldSecondary,
       appBarTitle: languages.addOns,
       actions: [
         IconButton(
-          icon: const Icon(Icons.add, size: 28, color: white),
+          icon: Icon(Icons.add, size: 28, color: context.onPrimary),
           onPressed: () async {
             bool? res = await AddAddonServiceScreen().launch(context);
 
@@ -115,7 +134,7 @@ class _AddonServiceListScreenState extends State<AddonServiceListScreen> {
             onSuccess: (snap) {
               return AnimatedListView(
                 physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(16),
                 shrinkWrap: true,
                 listAnimationType: ListAnimationType.FadeIn,
                 fadeInConfiguration: FadeInConfiguration(duration: 2.seconds),
@@ -146,98 +165,185 @@ class _AddonServiceListScreenState extends State<AddonServiceListScreen> {
 
                   return Container(
                     width: context.width(),
-                    margin: const EdgeInsets.all(8),
-                    padding: const EdgeInsets.only(
-                      top: 16,
-                      bottom: 16,
-                      left: 16,
-                      right: 8,
+                    margin: const EdgeInsets.only(bottom: 12),
+                    decoration: boxDecorationDefault(
+                      borderRadius: radius(12),
+                      color: context.cardSecondary,
+                      border: Border.all(
+                        color: context.cardSecondaryBorder,
+                        width: 1,
+                      ),
                     ),
-                    decoration: boxDecorationRoundedWithShadow(
-                      defaultRadius.toInt(),
-                      backgroundColor: context.cardColor,
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Column(
                       children: [
-                        CachedImageWidget(
-                          url: data.serviceAddonImage.validate().isNotEmpty
-                              ? data.serviceAddonImage.validate()
-                              : '',
-                          height: 70,
-                          fit: BoxFit.cover,
-                          radius: defaultRadius,
-                        ),
-                        16.width,
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            4.height,
-                            Marquee(
-                              child: Text(
-                                data.name.validate().capitalizeFirstLetter(),
-                                style: boldTextStyle(),
+                        Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Addon Image
+                              ClipRRect(
+                                borderRadius: radius(10),
+                                child: CachedImageWidget(
+                                  url: data.serviceAddonImage
+                                          .validate()
+                                          .isNotEmpty
+                                      ? data.serviceAddonImage.validate()
+                                      : '',
+                                  height: 70,
+                                  width: 70,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
-                            ),
-                            4.height,
-                            if (data.serviceName.isNotEmpty)
-                              Text(
-                                data.serviceName.validate(),
-                                style: secondaryTextStyle(),
-                              ).paddingBottom(4),
-                            PriceWidget(
-                              price: data.price.validate(),
-                              hourlyTextColor: Colors.white,
-                              size: 16,
-                            ),
-                          ],
-                        ).expand(),
-                        PopupMenuButton(
-                          icon: Icon(
-                            Icons.more_vert,
-                            size: 24,
-                            color: context.iconColor,
+                              16.width,
+
+                              // Addon Details
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // Addon Name
+                                  Marquee(
+                                    child: Text(
+                                      data.name
+                                          .validate()
+                                          .capitalizeFirstLetter(),
+                                      style: context.boldTextStyle(size: 15),
+                                    ),
+                                  ),
+
+                                  // Service Name (which service this addon belongs to)
+                                  if (data.serviceName.isNotEmpty) ...[
+                                    4.height,
+                                    Text(
+                                      data.serviceName.validate(),
+                                      style:
+                                          context.secondaryTextStyle(size: 12),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+
+                                  8.height,
+
+                                  // Price
+                                  PriceWidget(
+                                    price: data.price.validate(),
+                                    color: context.primaryLiteColor,
+                                    size: 16,
+                                    isBoldText: true,
+                                  ),
+                                ],
+                              ).expand(),
+
+                              // Popup Menu
+                              if (rolesAndPermissionStore.serviceAddOnEdit ||
+                                  rolesAndPermissionStore.serviceAddOnDelete)
+                                PopupMenuButton(
+                                  icon: Icon(
+                                    Icons.more_vert,
+                                    size: 22,
+                                    color: context.iconMuted,
+                                  ),
+                                  color: context.cardSecondary,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: radius(8),
+                                  ),
+                                  padding: EdgeInsets.zero,
+                                  onSelected: (selection) async {
+                                    if (selection == 1) {
+                                      bool? res = await AddAddonServiceScreen(
+                                        addonServiceData: data,
+                                      ).launch(context);
+
+                                      if (res ?? false) {
+                                        appStore.setLoading(true);
+                                        init();
+
+                                        setState(() {});
+                                      }
+                                    } else if (selection == 2) {
+                                      confirmationDialog(
+                                          addonServiceData: data);
+                                    }
+                                  },
+                                  itemBuilder: (context) {
+                                    List<PopupMenuEntry<int>> menuItems = [];
+
+                                    if (rolesAndPermissionStore
+                                        .serviceAddOnEdit) {
+                                      menuItems.add(
+                                        PopupMenuItem(
+                                          value: 1,
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.edit_outlined,
+                                                size: 18,
+                                                color: context.primary,
+                                              ),
+                                              8.width,
+                                              Text(
+                                                languages.lblEdit,
+                                                style:
+                                                    context.primaryTextStyle(),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    }
+
+                                    if (rolesAndPermissionStore
+                                        .serviceAddOnDelete) {
+                                      menuItems.add(
+                                        PopupMenuItem(
+                                          value: 2,
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.delete_outline,
+                                                size: 18,
+                                                color: context.error,
+                                              ),
+                                              8.width,
+                                              Text(
+                                                languages.lblDelete,
+                                                style: context.primaryTextStyle(
+                                                  color: context.error,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    }
+
+                                    return menuItems;
+                                  },
+                                ),
+                            ],
                           ),
-                          color: context.scaffoldBackgroundColor,
-                          padding: const EdgeInsets.all(8),
-                          onSelected: (selection) async {
-                            if (selection == 1) {
-                              bool? res = await AddAddonServiceScreen(
-                                addonServiceData: data,
-                              ).launch(context);
-
-                              if (res ?? false) {
-                                appStore.setLoading(true);
-                                init();
-
-                                setState(() {});
-                              }
-                            } else if (selection == 2) {
-                              confirmationDialog(addonServiceData: data);
-                            }
-                          },
-                          itemBuilder: (context) => [
-                            if (rolesAndPermissionStore.serviceAddOnEdit)
-                              PopupMenuItem(
-                                child: Text(
-                                  languages.lblEdit,
-                                  style: boldTextStyle(),
-                                ),
-                                value: 1,
-                              ),
-                            if (rolesAndPermissionStore.serviceAddOnDelete)
-                              PopupMenuItem(
-                                child: Text(
-                                  languages.lblDelete,
-                                  style: boldTextStyle(),
-                                ),
-                                value: 2,
-                              ),
-                          ],
-                        ).visible(rolesAndPermissionStore.serviceAddOnEdit ||
-                            rolesAndPermissionStore.serviceAddOnDelete),
+                        ),
                       ],
                     ),
+                  ).onTap(
+                    () async {
+                      if (rolesAndPermissionStore.serviceAddOnEdit) {
+                        bool? res = await AddAddonServiceScreen(
+                          addonServiceData: data,
+                        ).launch(context);
+
+                        if (res ?? false) {
+                          appStore.setLoading(true);
+                          init();
+
+                          setState(() {});
+                        }
+                      }
+                    },
+                    highlightColor: context.primary.withValues(alpha: 0.1),
+                    hoverColor: context.primary.withValues(alpha: 0.05),
+                    splashColor: context.primary.withValues(alpha: 0.1),
                   );
                 },
               );

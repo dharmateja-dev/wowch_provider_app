@@ -11,7 +11,9 @@ import 'package:handyman_provider_flutter/provider/packages/components/selected_
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/context_ext.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../models/caregory_response.dart';
@@ -101,7 +103,6 @@ class _SelectServiceScreenState extends State<SelectServiceScreen> {
       serviceList.addAll(value.data!);
 
       if (appStore.selectedServiceList.validate().isNotEmpty) {
-        //appStore.selectedServiceList.any((e1) => serviceList.any((e2) => e2.id == e1.id));
         appStore.selectedServiceList.validate().forEach((e1) {
           serviceList.forEach((e2) {
             if (e2.id == e1.id) {
@@ -216,10 +217,11 @@ class _SelectServiceScreenState extends State<SelectServiceScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: context.scaffoldSecondary,
       appBar: appBarWidget(
         languages.selectService,
-        textColor: white,
-        color: context.primaryColor,
+        textColor: context.onPrimary,
+        color: context.primary,
       ),
       body: Stack(
         children: [
@@ -238,146 +240,212 @@ class _SelectServiceScreenState extends State<SelectServiceScreen> {
             },
             children: [
               24.height,
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                          '${languages.categoryBasedPackage} ${appStore.isCategoryWisePackageService ? languages.enabled : languages.disabled}',
-                          style: boldTextStyle(size: LABEL_TEXT_SIZE)),
-                      4.height,
-                      Text(languages.subTitleOfSelectService,
-                          style: secondaryTextStyle()),
-                    ],
-                  ).expand(),
-                  Transform.scale(
-                    scale: 0.8,
-                    child: Switch.adaptive(
-                      value: isPackageTypeSingle.validate(),
-                      activeThumbColor: context.primaryColor,
-                      inactiveTrackColor: const Color(0xFF848B9B),
-                      onChanged: (v) {
-                        showConfirmDialogCustom(
-                          context,
-                          dialogType: DialogType.CONFIRMATION,
-                          primaryColor: context.primaryColor,
-                          title:
-                              '${languages.doYouWantTo} ${!appStore.isCategoryWisePackageService ? languages.enable : languages.disable} ${languages.categoryBasedPackage}?',
-                          positiveText: context.translate.lblYes,
-                          negativeText: context.translate.lblNo,
-                          onAccept: (p0) {
-                            if (appStore.isCategoryWisePackageService) {
-                              appStore.selectedServiceList.clear();
-                              appStore.setLoading(true);
-                              searchCont.text = '';
 
-                              fetchAllServices(categoryId: -1);
-                            } else {
-                              appStore.selectedServiceList.clear();
-                              categoryId = -1;
-                              searchCont.text = '';
-
-                              appStore.setLoading(true);
-
-                              fetchAllServices(categoryId: categoryId);
-                              serviceList.clear();
-                            }
-                            isPackageTypeSingle = v;
-                            appStore.setCategoryBasedPackageService(
-                                isPackageTypeSingle.validate());
-                            setState(() {});
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ).paddingSymmetric(horizontal: 16),
-              24.height,
-              // Category and subCategory Dropdown
-              if (isPackageTypeSingle.validate())
-                Column(
+              // Category Based Package Toggle
+              Container(
+                padding: const EdgeInsets.all(16),
+                margin: const EdgeInsets.symmetric(horizontal: 16),
+                decoration: boxDecorationDefault(
+                  color: context.cardSecondary,
+                  borderRadius: radius(12),
+                  border: Border.all(color: context.cardSecondaryBorder),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    DropdownButtonFormField<CategoryData>(
-                      decoration: inputDecoration(context,
-                          fillColor: context.cardColor,
-                          hintText: languages.hintSelectCategory),
-                      initialValue: selectedCategory,
-                      dropdownColor: context.cardColor,
-                      items: categoryList.map((data) {
-                        return DropdownMenuItem<CategoryData>(
-                          value: data,
-                          child: Text(data.name.validate(),
-                              style: primaryTextStyle()),
-                        );
-                      }).toList(),
-                      onChanged: (CategoryData? value) async {
-                        selectedCategory = value!;
-                        categoryId = value.id;
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${languages.categoryBasedPackage} ${appStore.isCategoryWisePackageService ? languages.enabled : languages.disabled}',
+                          style: context.boldTextStyle(),
+                        ),
+                        4.height,
+                        Text(
+                          languages.subTitleOfSelectService,
+                          style: context.secondaryTextStyle(size: 12),
+                        ),
+                      ],
+                    ).expand(),
+                    Transform.scale(
+                      scale: 0.8,
+                      child: Switch.adaptive(
+                        value: isPackageTypeSingle.validate(),
+                        activeColor: context.primary,
+                        activeTrackColor:
+                            context.primary.withValues(alpha: 0.3),
+                        inactiveThumbColor: context.iconMuted,
+                        inactiveTrackColor:
+                            context.iconMuted.withValues(alpha: 0.3),
+                        onChanged: (v) {
+                          showConfirmDialogCustom(
+                            context,
+                            dialogType: DialogType.CONFIRMATION,
+                            primaryColor: context.primary,
+                            backgroundColor: context.dialogBackgroundColor,
+                            titleColor: context.dialogTitleColor,
+                            title:
+                                '${languages.doYouWantTo} ${!appStore.isCategoryWisePackageService ? languages.enable : languages.disable} ${languages.categoryBasedPackage}?',
+                            positiveText: context.translate.lblYes,
+                            positiveTextColor: context.onPrimary,
+                            negativeText: context.translate.lblNo,
+                            negativeTextColor: context.primary,
+                            onAccept: (p0) {
+                              if (appStore.isCategoryWisePackageService) {
+                                appStore.selectedServiceList.clear();
+                                appStore.setLoading(true);
+                                searchCont.text = '';
 
-                        serviceList.clear();
-                        subCategoryList.clear();
-                        appStore.selectedServiceList.clear();
-                        subCategoryId = -1;
+                                fetchAllServices(categoryId: -1);
+                              } else {
+                                appStore.selectedServiceList.clear();
+                                categoryId = -1;
+                                searchCont.text = '';
 
-                        appStore.setLoading(true);
-                        getSubCategory(categoryId: categoryId.validate());
-                      },
-                    ),
-                    16.height,
-                    DropdownButtonFormField<CategoryData>(
-                      decoration: inputDecoration(context,
-                          fillColor: context.cardColor,
-                          hintText: languages.lblSelectSubCategory),
-                      initialValue: selectedSubCategory,
-                      dropdownColor: context.cardColor,
-                      items: subCategoryList.map((data) {
-                        return DropdownMenuItem<CategoryData>(
-                          value: data,
-                          child: Text(data.name.validate(),
-                              style: primaryTextStyle()),
-                        );
-                      }).toList(),
-                      onChanged: (CategoryData? value) async {
-                        selectedSubCategory = value!;
-                        subCategoryId = value.id;
+                                appStore.setLoading(true);
 
-                        if (selectedSubCategory != null) {
-                          appStore.setLoading(true);
-                          fetchAllServices(
-                              categoryId: categoryId.validate(),
-                              subCategoryId: subCategoryId,
-                              searchText: '');
-                        }
-                      },
+                                fetchAllServices(categoryId: categoryId);
+                                serviceList.clear();
+                              }
+                              isPackageTypeSingle = v;
+                              appStore.setCategoryBasedPackageService(
+                                  isPackageTypeSingle.validate());
+                              setState(() {});
+                            },
+                          );
+                        },
+                      ),
                     ),
                   ],
-                ).paddingSymmetric(horizontal: 16),
+                ),
+              ),
+
+              24.height,
+
+              // Category and subCategory Dropdown
+              if (isPackageTypeSingle.validate())
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  decoration: boxDecorationDefault(
+                    color: context.cardSecondary,
+                    borderRadius: radius(12),
+                    border: Border.all(color: context.cardSecondaryBorder),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Category Label
+                      Text(languages.hintSelectCategory,
+                          style: context.boldTextStyle()),
+                      8.height,
+                      DropdownButtonFormField<CategoryData>(
+                        decoration: inputDecoration(
+                          context,
+                          fillColor: context.profileInputFillColor,
+                          hintText: languages.hintSelectCategory,
+                        ),
+                        initialValue: selectedCategory,
+                        dropdownColor: context.cardSecondary,
+                        items: categoryList.map((data) {
+                          return DropdownMenuItem<CategoryData>(
+                            value: data,
+                            child: Text(
+                              data.name.validate(),
+                              style: context.primaryTextStyle(),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (CategoryData? value) async {
+                          selectedCategory = value!;
+                          categoryId = value.id;
+
+                          serviceList.clear();
+                          subCategoryList.clear();
+                          appStore.selectedServiceList.clear();
+                          subCategoryId = -1;
+
+                          appStore.setLoading(true);
+                          getSubCategory(categoryId: categoryId.validate());
+                        },
+                      ),
+
+                      16.height,
+
+                      // Sub Category Label
+                      Text(languages.lblSelectSubCategory,
+                          style: context.boldTextStyle()),
+                      8.height,
+                      DropdownButtonFormField<CategoryData>(
+                        decoration: inputDecoration(
+                          context,
+                          fillColor: context.profileInputFillColor,
+                          hintText: languages.lblSelectSubCategory,
+                        ),
+                        initialValue: selectedSubCategory,
+                        dropdownColor: context.cardSecondary,
+                        items: subCategoryList.map((data) {
+                          return DropdownMenuItem<CategoryData>(
+                            value: data,
+                            child: Text(
+                              data.name.validate(),
+                              style: context.primaryTextStyle(),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (CategoryData? value) async {
+                          selectedSubCategory = value!;
+                          subCategoryId = value.id;
+
+                          if (selectedSubCategory != null) {
+                            appStore.setLoading(true);
+                            fetchAllServices(
+                                categoryId: categoryId.validate(),
+                                subCategoryId: subCategoryId,
+                                searchText: '');
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ),
 
               // Search Service TextField
               if (!isPackageTypeSingle.validate())
-                AppTextField(
-                  controller: searchCont,
-                  textFieldType: TextFieldType.NAME,
-                  decoration: inputDecoration(context,
-                      hintText: languages.lblSearchHere),
-                  onFieldSubmitted: (s) {
-                    appStore.setLoading(true);
-
-                    fetchAllServices(searchText: s);
-                  },
-                ).paddingSymmetric(horizontal: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(languages.lblSearchHere,
+                          style: context.boldTextStyle()),
+                      8.height,
+                      AppTextField(
+                        controller: searchCont,
+                        textFieldType: TextFieldType.NAME,
+                        decoration: inputDecoration(
+                          context,
+                          hintText: languages.lblSearchHere,
+                          fillColor: context.profileInputFillColor,
+                        ),
+                        onFieldSubmitted: (s) {
+                          appStore.setLoading(true);
+                          fetchAllServices(searchText: s);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
 
               // Selected Service Section
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   16.height,
-                  Text(languages.includedInThisPackage,
-                          style: boldTextStyle(size: LABEL_TEXT_SIZE))
-                      .paddingSymmetric(horizontal: 16),
+                  Text(
+                    languages.includedInThisPackage,
+                    style: context.boldTextStyle(),
+                  ).paddingSymmetric(horizontal: 16),
                   16.height,
                   if (!appStore.isLoading &&
                       appStore.selectedServiceList.isNotEmpty)
@@ -394,37 +462,49 @@ class _SelectServiceScreenState extends State<SelectServiceScreen> {
                       height: 120,
                       width: context.width(),
                       margin: const EdgeInsets.symmetric(horizontal: 16),
-                      decoration: boxDecorationRoundedWithShadow(
-                          defaultRadius.toInt(),
-                          backgroundColor: context.cardColor),
-                      child: Text(languages.packageServicesWillAppearHere,
-                              style: secondaryTextStyle())
-                          .center(),
+                      decoration: boxDecorationDefault(
+                        borderRadius: radius(12),
+                        color: context.cardSecondary,
+                        border: Border.all(color: context.cardSecondaryBorder),
+                      ),
+                      child: Text(
+                        languages.packageServicesWillAppearHere,
+                        style: context.secondaryTextStyle(),
+                      ).center(),
                     ),
                   16.height,
                 ],
               ),
-              //
+
               if (appStore.selectedServiceList.isEmpty) 16.height,
 
               // Service List Section
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(languages.lblServices,
-                      style: boldTextStyle(size: LABEL_TEXT_SIZE)),
-                  Text(languages.showingFixPriceServices,
-                      style: secondaryTextStyle()),
-                  8.height,
-                ],
-              ).paddingSymmetric(horizontal: 16),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      languages.lblServices,
+                      style: context.boldTextStyle(),
+                    ),
+                    4.height,
+                    Text(
+                      languages.showingFixPriceServices,
+                      style: context.secondaryTextStyle(size: 12),
+                    ),
+                  ],
+                ),
+              ),
+
               if ((serviceList.isNotEmpty) &&
                   (categoryId != -1 || !isPackageTypeSingle.validate()))
                 AnimatedListView(
                   itemCount: serviceList.length,
                   shrinkWrap: true,
                   padding: const EdgeInsets.only(
-                      left: 8, right: 8, top: 8, bottom: 70),
+                      left: 16, right: 16, top: 8, bottom: 70),
                   disposeScrollController: false,
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (_, i) {
@@ -433,38 +513,64 @@ class _SelectServiceScreenState extends State<SelectServiceScreen> {
 
                     return Container(
                       width: context.width(),
-                      margin: const EdgeInsets.all(8),
-                      padding: const EdgeInsets.all(8),
-                      decoration: boxDecorationRoundedWithShadow(
-                          defaultRadius.toInt(),
-                          backgroundColor: context.cardColor),
+                      margin: const EdgeInsets.only(bottom: 12),
+                      padding: const EdgeInsets.all(12),
+                      decoration: boxDecorationDefault(
+                        borderRadius: radius(12),
+                        color: context.cardSecondary,
+                        border: Border.all(
+                          color: isSelected
+                              ? context.primaryLiteColor
+                              : context.cardSecondaryBorder,
+                          width: isSelected ? 2 : 1,
+                        ),
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Row(
                             children: [
-                              CachedImageWidget(
-                                url: data.imageAttachments!.isNotEmpty
-                                    ? data.imageAttachments!.first.validate()
-                                    : "",
-                                height: 50,
-                                fit: BoxFit.cover,
-                                radius: defaultRadius,
+                              ClipRRect(
+                                borderRadius: radius(10),
+                                child: CachedImageWidget(
+                                  url: data.imageAttachments!.isNotEmpty
+                                      ? data.imageAttachments!.first.validate()
+                                      : "",
+                                  height: 50,
+                                  width: 50,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                               16.width,
-                              Text(data.name.validate(),
-                                      style: secondaryTextStyle(
-                                          color: context.iconColor))
-                                  .expand(),
+                              Text(
+                                data.name.validate(),
+                                style: context.primaryTextStyle(),
+                              ).expand(),
                             ],
                           ).expand(),
                           16.width,
-                          Icon(
-                              isSelected
-                                  ? Icons.check_circle
-                                  : Icons.radio_button_unchecked,
-                              size: 28,
-                              color: isSelected ? primary : context.iconColor),
+                          Container(
+                            padding: const EdgeInsets.all(2),
+                            decoration: BoxDecoration(
+                              color: isSelected
+                                  ? context.primaryLiteColor
+                                  : Colors.transparent,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: isSelected
+                                    ? context.primaryLiteColor
+                                    : context.iconMuted,
+                                width: 2,
+                              ),
+                            ),
+                            child: Icon(
+                              Icons.check,
+                              size: 18,
+                              color: isSelected
+                                  ? context.onPrimary
+                                  : Colors.transparent,
+                            ),
+                          ),
                           8.width,
                         ],
                       ).onTap(
@@ -478,6 +584,8 @@ class _SelectServiceScreenState extends State<SelectServiceScreen> {
 
                           setState(() {});
                         },
+                        highlightColor: context.primary.withValues(alpha: 0.1),
+                        splashColor: context.primary.withValues(alpha: 0.1),
                       ),
                     );
                   },
@@ -500,7 +608,9 @@ class _SelectServiceScreenState extends State<SelectServiceScreen> {
                     ).visible((!appStore.isLoading && serviceList.isEmpty));
                   },
                 ),
+
               16.height,
+
               Observer(builder: (context) {
                 return NoDataWidget(
                   imageWidget: const EmptyStateWidget(),
@@ -518,8 +628,7 @@ class _SelectServiceScreenState extends State<SelectServiceScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.check, color: Colors.white),
-        backgroundColor: context.primaryColor,
+        backgroundColor: context.primary,
         onPressed: () {
           Map res = {
             "categoryId": categoryId,
@@ -530,6 +639,7 @@ class _SelectServiceScreenState extends State<SelectServiceScreen> {
           };
           finish(context, res);
         },
+        child: Icon(Icons.check, color: context.onPrimary),
       ),
     );
   }
