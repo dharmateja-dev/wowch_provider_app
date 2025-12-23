@@ -5,6 +5,8 @@ import 'package:handyman_provider_flutter/models/total_earning_response.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class TotalEarningWidget extends StatelessWidget {
@@ -20,8 +22,8 @@ class TotalEarningWidget extends StatelessWidget {
       width: context.width(),
       decoration: boxDecorationWithRoundedCorners(
         borderRadius: radius(),
-        backgroundColor: context.scaffoldBackgroundColor,
-        border: Border.all(color: context.dividerColor),
+        backgroundColor: context.cardSecondary,
+        border: Border.all(color: context.cardSecondaryBorder),
       ),
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -30,10 +32,10 @@ class TotalEarningWidget extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(languages.paymentMethod, style: primaryTextStyle()),
+              Text(languages.paymentMethod, style: context.boldTextStyle()),
               Text(
                 totalEarning.paymentMethod.validate().capitalizeFirstLetter(),
-                style: boldTextStyle(color: primary),
+                style: context.boldTextStyle(color: context.primary),
               ),
             ],
           ),
@@ -42,15 +44,16 @@ class TotalEarningWidget extends StatelessWidget {
               children: [
                 16.height,
                 Text(totalEarning.description.validate(),
-                    style: secondaryTextStyle()),
+                    style: context.primaryTextStyle()),
               ],
             ),
           16.height,
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             decoration: boxDecorationWithRoundedCorners(
-              backgroundColor: context.cardColor,
+              backgroundColor: context.selectServiceContainerColor,
               borderRadius: radius(),
+              border: Border.all(color: context.cardSecondaryBorder),
             ),
             width: context.width(),
             child: Column(
@@ -60,11 +63,11 @@ class TotalEarningWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(languages.lblAmount,
-                        style: secondaryTextStyle(size: 14)),
+                        style: context.primaryTextStyle(size: 14)),
                     16.width,
                     PriceWidget(
                             price: totalEarning.amount.validate(),
-                            color: primary,
+                            color: context.primary,
                             size: 14)
                         .flexible(),
                   ],
@@ -74,11 +77,41 @@ class TotalEarningWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(languages.lblDate,
-                        style: secondaryTextStyle(size: 14)),
-                    Text(
-                      formatDate(totalEarning.createdAt.validate().toString(),
-                          format: DATE_FORMAT_9),
-                      style: boldTextStyle(size: 14),
+                        style: context.primaryTextStyle(size: 14)),
+                    Builder(
+                      builder: (context) {
+                        final dateStr =
+                            totalEarning.createdAt.validate().toString();
+                        try {
+                          final dateTime = DateTime.tryParse(dateStr);
+                          if (dateTime != null) {
+                            const months = [
+                              'Jan',
+                              'Feb',
+                              'Mar',
+                              'Apr',
+                              'May',
+                              'Jun',
+                              'Jul',
+                              'Aug',
+                              'Sep',
+                              'Oct',
+                              'Nov',
+                              'Dec'
+                            ];
+                            return Text(
+                              '${months[dateTime.month - 1]} ${dateTime.day}, ${dateTime.year}',
+                              style: context.boldTextStyle(size: 14),
+                            );
+                          }
+                        } catch (e) {
+                          // Fallback to original format
+                        }
+                        return Text(
+                          formatDate(dateStr, format: DATE_FORMAT_9),
+                          style: context.boldTextStyle(size: 14),
+                        );
+                      },
                     ),
                   ],
                 )

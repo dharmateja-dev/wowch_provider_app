@@ -327,6 +327,11 @@ extension ColorSchemeExtension on BuildContext {
   Color get selectServiceContainerColor =>
       isDarkMode ? const Color(0xFF2A2A2B) : const Color(0xFFFFFEFF);
 
+  /// Lite green container background - Light: #E8F3EF, Dark: #2D3430
+  /// Use for soft greenish/mint container backgrounds
+  Color get liteGreenContainer =>
+      isDarkMode ? const Color(0xFF2D3430) : const Color(0xFFE0EBE5);
+
   /// Profile text field fill color - Light: #FFFFFF, Dark: #101D1C
   Color get profileInputFillColor =>
       isDarkMode ? const Color(0xFF101D1C) : const Color(0xFFFFFFFF);

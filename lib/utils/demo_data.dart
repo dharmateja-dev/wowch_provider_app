@@ -2177,20 +2177,123 @@ class DemoBookingDetailData {
       if (h != null) {
         handymanData = {
           'id': h.id,
-          'first_name': h.firstName ?? 'Mike',
-          'last_name': h.lastName ?? 'Johnson',
-          'display_name': h.displayName ?? 'Mike Johnson',
-          'email': h.email ?? 'handyman@demo.com',
+          'first_name': h.firstName ?? 'Pedro',
+          'last_name': h.lastName ?? 'Norris',
+          'display_name': h.displayName ?? 'Pedro Norris',
+          'email': h.email ?? 'demo@user.com',
           'contact_number': h.contactNumber ?? '+1 (555) 987-6543',
-          'address': '1520 Oak Street, Apt 3B, Los Angeles, CA 90015',
+          'address': 'Vistar yojna, Lucknow, Uttar Pradesh, 226031, India',
           'profile_image':
-              h.profileImage ?? 'https://i.pravatar.cc/300?u=handyman',
+              h.profileImage ?? 'https://i.pravatar.cc/300?u=pedro',
           'user_type': 'handyman',
           'status': 1,
           'is_verified_handyman': h.isVerifiedHandyman ?? 1,
           'designation': h.designation ?? 'Senior Technician',
           'handyman_rating': h.handymanRating ?? 4.8,
         };
+      }
+    }
+
+    // Calculate pricing
+    final price = booking.amount ?? 42.00;
+    final discountPercent = booking.discount ?? 2;
+    final discountAmount = (price * discountPercent / 100);
+    final couponDiscount = 4.00;
+    final subTotal = price - discountAmount - couponDiscount;
+    final taxPercent = 5;
+    final taxAmount = (subTotal * taxPercent / 100);
+    final bookingFee = 4.86;
+    final totalAmount = subTotal + taxAmount;
+
+    // Generate taxes array
+    final taxes = [
+      {
+        'id': 1,
+        'title': 'Service Tax ($taxPercent%)',
+        'type': 'percent',
+        'value': taxPercent,
+        'amount': taxAmount.toStringAsFixed(2),
+      },
+      {
+        'id': 2,
+        'title': 'Booking Fee',
+        'type': 'fixed',
+        'value': bookingFee,
+        'amount': bookingFee.toStringAsFixed(2),
+      },
+    ];
+
+    // Generate coupon data if discount exists
+    Map<String, dynamic>? couponData;
+    if (discountPercent > 0) {
+      couponData = {
+        'id': 1,
+        'code': 'JER5T6P',
+        'discount': discountPercent,
+        'discount_type': 'percent',
+        'discount_amount': couponDiscount,
+        'status': 1,
+      };
+    }
+
+    // Generate payment history for completed/paid bookings
+    List<Map<String, dynamic>> paymentHistory = [];
+    if (booking.status == 'completed' || booking.status == 'paid') {
+      paymentHistory = [
+        {
+          'id': 1,
+          'booking_id': booking.id,
+          'sender_id': booking.customerId,
+          'receiver_id': booking.providerId,
+          'payment_method': booking.paymentMethod ?? 'cash',
+          'payment_status': 'approved',
+          'total_amount': totalAmount,
+          'txn_id': '#11',
+          'datetime':
+              _formatDate(DateTime.now().subtract(const Duration(hours: 12))),
+          'activity_message': 'Handyman: Approve Cash',
+          'created_at':
+              _formatDate(DateTime.now().subtract(const Duration(hours: 12))),
+        },
+      ];
+    }
+
+    // Generate rating data
+    List<Map<String, dynamic>> ratingData = [];
+    if (booking.status == 'completed' ||
+        booking.status == 'paid' ||
+        booking.status == 'cancelled') {
+      ratingData = [
+        {
+          'id': 1,
+          'rating': 5.0,
+          'review': 'New booking received',
+          'service_id': booking.serviceId ?? 1,
+          'booking_id': booking.id,
+          'created_at':
+              _formatDate(DateTime.now().subtract(const Duration(days: 6))),
+          'customer_name': booking.customerName ?? 'Customer',
+          'customer_profile_image':
+              booking.customerImage ?? 'https://i.pravatar.cc/300?u=customer',
+          'service_name': booking.serviceName ?? 'Service',
+          'handyman_id': handymanData?['id'],
+          'handyman_name': handymanData?['display_name'],
+        },
+      ];
+
+      if (booking.status == 'paid') {
+        ratingData.add({
+          'id': 2,
+          'rating': 5.0,
+          'review': 'Very Good',
+          'service_id': booking.serviceId ?? 1,
+          'booking_id': booking.id,
+          'created_at':
+              _formatDate(DateTime.now().subtract(const Duration(days: 1))),
+          'customer_name': 'Pedro Norris',
+          'customer_profile_image': 'https://i.pravatar.cc/300?u=pedro2',
+          'service_name': booking.serviceName ?? 'Service',
+        });
       }
     }
 
@@ -2201,28 +2304,31 @@ class DemoBookingDetailData {
         'service_id': booking.serviceId,
         'provider_id': booking.providerId,
         'quantity': booking.quantity ?? 1,
-        'price': booking.amount ?? 100.00,
-        'type': booking.type ?? 'fixed',
-        'discount': booking.discount ?? 0,
+        'price': price,
+        'type': booking.type ?? 'hourly',
+        'discount': discountPercent,
         'status': booking.status,
         'status_label': booking.statusLabel ??
             booking.status?.replaceAll('_', ' ').toUpperCase(),
         'description':
             booking.description ?? 'Professional service as requested.',
         'provider_name': booking.providerName ?? 'John Provider',
-        'customer_name': booking.customerName ?? 'Customer',
-        'service_name': booking.serviceName ?? 'Service',
+        'customer_name': booking.customerName ?? 'Pedro Norris',
+        'service_name': booking.serviceName ?? 'VIP Escort Protection',
         'payment_status': booking.paymentStatus ?? 'pending',
         'payment_method': booking.paymentMethod ?? 'cash',
-        'total_amount': booking.totalAmount ?? 100.00,
-        'amount': booking.amount ?? 100.00,
+        'total_amount': totalAmount,
+        'amount': price,
+        'final_total_service_price': totalAmount,
+        'sub_total': subTotal,
         'date': booking.date ??
             _formatDate(DateTime.now().add(const Duration(days: 1))),
-        'booking_slot': '10:00:00',
+        'booking_slot': '08:25:00',
         'duration_diff': booking.durationDiff ?? '60',
-        'address': booking.address ?? '123 Demo Street, City, ST 12345',
+        'address': booking.address ??
+            'Vistar yojna, Lucknow, Uttar Pradesh, 226031, India',
         'booking_address_id': booking.bookingAddressId ?? 1,
-        'taxes': [],
+        'taxes': taxes,
         'start_at': booking.startAt,
         'end_at': booking.endAt,
         'reason': booking.reason,
@@ -2234,8 +2340,8 @@ class DemoBookingDetailData {
             [
               'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400'
             ],
-        'total_review': booking.totalReview ?? 0,
-        'total_rating': booking.totalRating ?? 0,
+        'total_review': booking.totalReview ?? (ratingData.length),
+        'total_rating': booking.totalRating ?? 5.0,
         'is_service_hourly': booking.type == 'hourly',
         'is_package_booking': false,
         'booking_type': 'customer_location',
@@ -2243,20 +2349,20 @@ class DemoBookingDetailData {
       },
       'service': {
         'id': booking.serviceId ?? 1,
-        'name': booking.serviceName ?? 'Service',
+        'name': booking.serviceName ?? 'VIP Escort Protection',
         'description': 'Professional service provided by our experienced team.',
         'category_id': 1,
         'category_name': 'General',
         'subcategory_id': null,
         'provider_id': booking.providerId ?? 1,
-        'price': booking.amount ?? 100.00,
-        'price_format': '\$${booking.amount ?? 100.00}',
-        'type': booking.type ?? 'fixed',
-        'discount': booking.discount ?? 0,
+        'price': price,
+        'price_format': '\$$price/hr',
+        'type': booking.type ?? 'hourly',
+        'discount': discountPercent,
         'duration': '2 Hours',
         'status': 1,
         'is_featured': 1,
-        'total_rating': booking.totalRating ?? 4.5,
+        'total_rating': booking.totalRating ?? 5.0,
         'total_review': booking.totalReview ?? 10,
         'attchments': booking.imageAttachments ??
             [
@@ -2277,34 +2383,53 @@ class DemoBookingDetailData {
       },
       'customer': {
         'id': booking.customerId ?? 101,
-        'first_name': booking.customerName?.split(' ').first ?? 'Customer',
+        'first_name': booking.customerName?.split(' ').first ?? 'Pedro',
         'last_name': booking.customerName?.split(' ').length == 2
             ? booking.customerName!.split(' ').last
-            : 'Demo',
-        'display_name': booking.customerName ?? 'Customer Demo',
-        'email':
-            '${(booking.customerName ?? "customer").toLowerCase().replaceAll(' ', '.')}@email.com',
+            : 'Norris',
+        'display_name': booking.customerName ?? 'Pedro Norris',
+        'email': 'demo@user.com',
         'contact_number': '+1 (555) 234-5678',
-        'address': booking.address ?? '1520 Oak Street, Los Angeles, CA 90015',
+        'address': booking.address ??
+            'Vistar yojna, Lucknow, Uttar Pradesh, 226031, India',
         'profile_image':
-            booking.customerImage ?? 'https://i.pravatar.cc/300?u=customer',
+            booking.customerImage ?? 'https://i.pravatar.cc/300?u=pedro',
         'user_type': 'user',
         'status': 1,
       },
       'provider_data': {
         'id': booking.providerId ?? 1,
-        'first_name': 'John',
-        'last_name': 'Provider',
-        'display_name': booking.providerName ?? 'John Provider',
+        'first_name': 'Pedro',
+        'last_name': 'Norris',
+        'display_name': booking.providerName ?? 'Pedro Norris',
         'email': 'provider@servicepro.com',
         'contact_number': '+1 (555) 123-4567',
-        'address': '2847 Sunset Boulevard, Suite 200, Los Angeles, CA 90028',
-        'profile_image': booking.providerImage ??
-            'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400',
+        'address': 'Vistar yojna, Lucknow, Uttar Pradesh, 226031, India',
+        'profile_image':
+            booking.providerImage ?? 'https://i.pravatar.cc/300?u=provider',
         'user_type': 'provider',
         'status': 1,
       },
-      'handyman_data': handymanData != null ? [handymanData] : [],
+      'handyman_data': handymanData != null
+          ? [handymanData]
+          : [
+              {
+                'id': 2,
+                'first_name': 'Pedro',
+                'last_name': 'Norris',
+                'display_name': 'Pedro Norris',
+                'email': 'demo@user.com',
+                'contact_number': '+1 (555) 987-6543',
+                'address':
+                    'Vistar yojna, Lucknow, Uttar Pradesh, 226031, India',
+                'profile_image': 'https://i.pravatar.cc/300?u=pedro',
+                'user_type': 'handyman',
+                'status': 1,
+                'is_verified_handyman': 1,
+                'designation': 'Senior Technician',
+                'handyman_rating': 4.8,
+              }
+            ],
       'booking_activity': _getBookingActivity(
         booking.id ?? bookingId,
         booking.status ?? 'pending',
@@ -2312,25 +2437,11 @@ class DemoBookingDetailData {
         booking.endAt,
         booking.reason,
       ),
-      'rating_data': (booking.status == 'completed' || booking.status == 'paid')
-          ? [
-              {
-                'id': 1,
-                'rating': booking.totalRating ?? 5,
-                'review': 'Great service! Very professional and on time.',
-                'service_id': booking.serviceId ?? 1,
-                'booking_id': booking.id,
-                'created_at': _formatDate(
-                    DateTime.now().subtract(const Duration(days: 1))),
-                'customer_name': booking.customerName ?? 'Customer',
-                'customer_profile_image': booking.customerImage ??
-                    'https://i.pravatar.cc/300?u=customer',
-                'service_name': booking.serviceName ?? 'Service',
-              },
-            ]
-          : [],
+      'rating_data': ratingData,
+      'payment_history': paymentHistory,
       'service_proof': [],
-      'coupon_data': null,
+      'coupon_data': couponData,
+      'extra_charges_list': [],
     };
   }
 }

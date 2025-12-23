@@ -29,7 +29,7 @@ class TotalAmountsComponent extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             margin: const EdgeInsets.symmetric(horizontal: 16),
             decoration: boxDecorationDefault(
-                borderRadius: radius(), color: context.cardSecondary),
+                borderRadius: radius(), color: context.liteGreenContainer),
             child: Column(
               children: [
                 Row(
@@ -53,7 +53,7 @@ class TotalAmountsComponent extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
               margin: const EdgeInsets.symmetric(horizontal: 16),
               decoration: boxDecorationDefault(
-                  borderRadius: radius(), color: context.cardSecondary),
+                  borderRadius: radius(), color: context.liteGreenContainer),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -63,7 +63,7 @@ class TotalAmountsComponent extends StatelessWidget {
                   4.width,
                   PriceWidget(
                       price: paymentBreakdown.providerEarned.toDouble(),
-                      color: darkOrange,
+                      color: context.primary,
                       size: 14),
                 ],
               ),
@@ -72,7 +72,7 @@ class TotalAmountsComponent extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             margin: const EdgeInsets.symmetric(horizontal: 16),
             decoration: boxDecorationDefault(
-                borderRadius: radius(), color: context.cardSecondary),
+                borderRadius: radius(), color: context.liteGreenContainer),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -81,7 +81,7 @@ class TotalAmountsComponent extends StatelessWidget {
                 4.width,
                 PriceWidget(
                     price: paymentBreakdown.handymanEarned.toDouble(),
-                    color: royalBlue,
+                    color: context.primary,
                     size: 14),
               ],
             ),
@@ -91,7 +91,7 @@ class TotalAmountsComponent extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             margin: const EdgeInsets.symmetric(horizontal: 16),
             decoration: boxDecorationDefault(
-                borderRadius: radius(), color: context.cardSecondary),
+                borderRadius: radius(), color: context.liteGreenContainer),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -101,7 +101,7 @@ class TotalAmountsComponent extends StatelessWidget {
                 16.width,
                 PriceWidget(
                     price: paymentBreakdown.tax.toDouble(),
-                    color: redColor,
+                    color: context.primary,
                     size: 14),
               ],
             ),
@@ -111,7 +111,7 @@ class TotalAmountsComponent extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             margin: const EdgeInsets.symmetric(horizontal: 16),
             decoration: boxDecorationDefault(
-                borderRadius: radius(), color: context.cardSecondary),
+                borderRadius: radius(), color: context.liteGreenContainer),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

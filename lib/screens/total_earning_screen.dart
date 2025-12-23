@@ -5,6 +5,7 @@ import 'package:handyman_provider_flutter/components/total_earning_widget.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/models/total_earning_response.dart';
 import 'package:handyman_provider_flutter/networks/rest_apis.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../components/base_scaffold_widget.dart';
@@ -44,6 +45,7 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
+      scaffoldBackgroundColor: context.scaffoldSecondary,
       appBarTitle: languages.lblEarningList,
       body: Stack(
         children: [
@@ -101,7 +103,8 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
               );
             },
           ),
-          Observer(builder: (context) => LoaderWidget().visible(appStore.isLoading)),
+          Observer(
+              builder: (context) => LoaderWidget().visible(appStore.isLoading)),
         ],
       ),
     );

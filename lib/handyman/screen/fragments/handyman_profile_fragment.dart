@@ -117,9 +117,8 @@ class _HandymanProfileFragmentState extends State<HandymanProfileFragment> {
                       margin: const EdgeInsets.all(16),
                       decoration: boxDecorationWithRoundedCorners(
                         backgroundColor: (appStore.handymanAvailability == 1
-                                ? context.primary
-                                : context.error)
-                            .withValues(alpha: 0.1),
+                            ? context.secondaryContainer
+                            : context.error.withValues(alpha: 0.1)),
                         borderRadius: BorderRadius.circular(defaultRadius),
                       ),
                       duration: 300.milliseconds,

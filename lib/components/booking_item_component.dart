@@ -476,9 +476,9 @@ class BookingItemComponentState extends State<BookingItemComponent> {
                     Column(
                       children: [
                         DottedLine(
-                          dashColor: context.cardSecondaryBorder,
+                          dashColor: context.divider,
                           dashGapLength: 5,
-                          dashLength: 8,
+                          dashLength: 4,
                         ).paddingAll(8),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,

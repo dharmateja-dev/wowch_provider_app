@@ -146,6 +146,53 @@ class ProviderDashboardScreenState extends State<ProviderDashboardScreen> {
               textColor: context.onPrimary,
               showBack: false,
               actions: [
+                if (isCurrentFragmentIsBooking)
+                  Observer(
+                    builder: (_) {
+                      int filterCount = filterStore.getActiveFilterCount();
+                      return Stack(
+                        children: [
+                          if (filterCount > 0)
+                            Positioned(
+                              right: 7,
+                              top: 0,
+                              child: Container(
+                                padding: const EdgeInsets.all(5),
+                                decoration: boxDecorationDefault(
+                                  color: context.error,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: FittedBox(
+                                  child: Text(
+                                    '$filterCount',
+                                    style: context.boldTextStyle(
+                                      color: context.onPrimary,
+                                      size: 10,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          IconButton(
+                            icon: ic_filter.iconImage(
+                                context: context,
+                                color: context.onPrimary,
+                                size: 20),
+                            onPressed: () async {
+                              BookingFilterScreen()
+                                  .launch(context)
+                                  .then((value) {
+                                if (value != null) {
+                                  LiveStream().emit(LIVESTREAM_UPDATE_BOOKINGS);
+                                  setState(() {});
+                                }
+                              });
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  ),
                 IconButton(
                   icon: Stack(
                     clipBehavior: Clip.none,
@@ -185,53 +232,6 @@ class ProviderDashboardScreenState extends State<ProviderDashboardScreen> {
                     NotificationFragment().launch(context);
                   },
                 ),
-                if (isCurrentFragmentIsBooking)
-                  Observer(
-                    builder: (_) {
-                      int filterCount = filterStore.getActiveFilterCount();
-                      return Stack(
-                        children: [
-                          IconButton(
-                            icon: ic_filter.iconImage(
-                                context: context,
-                                color: context.onPrimary,
-                                size: 20),
-                            onPressed: () async {
-                              BookingFilterScreen()
-                                  .launch(context)
-                                  .then((value) {
-                                if (value != null) {
-                                  LiveStream().emit(LIVESTREAM_UPDATE_BOOKINGS);
-                                  setState(() {});
-                                }
-                              });
-                            },
-                          ),
-                          if (filterCount > 0)
-                            Positioned(
-                              right: 7,
-                              top: 0,
-                              child: Container(
-                                padding: const EdgeInsets.all(5),
-                                decoration: boxDecorationDefault(
-                                  color: context.error,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: FittedBox(
-                                  child: Text(
-                                    '$filterCount',
-                                    style: context.boldTextStyle(
-                                      color: context.onPrimary,
-                                      size: 10,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                        ],
-                      );
-                    },
-                  ),
               ],
             ),
             body: fragmentList[currentIndex],

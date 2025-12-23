@@ -47,6 +47,7 @@ import 'package:handyman_provider_flutter/utils/constant.dart';
 import 'package:handyman_provider_flutter/utils/extensions/color_extension.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
 import 'package:handyman_provider_flutter/utils/model_keys.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -59,6 +60,7 @@ import '../provider/services/addons/component/service_addons_component.dart';
 import '../utils/images.dart';
 import '../utils/permissions.dart';
 import '../utils/demo_data.dart';
+import '../utils/context_extensions.dart';
 import 'shimmer/booking_detail_shimmer.dart';
 
 class BookingDetailScreen extends StatefulWidget {
@@ -185,11 +187,27 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
     }
     showConfirmDialogCustom(
       context,
+      height: 80,
+      width: 290,
+      shape: appDialogShape(8),
       title: languages.confirmationRequestTxt,
-      primaryColor:
-          status == BookingStatusKeys.rejected ? Colors.redAccent : primary,
+      titleColor: context.dialogTitleColor,
+      backgroundColor: context.dialogBackgroundColor,
+      primaryColor: status == BookingStatusKeys.rejected
+          ? context.error
+          : context.primary,
+      customCenterWidget: Image.asset(
+        ic_warning,
+        color: context.dialogIconColor,
+        height: 70,
+        width: 70,
+        fit: BoxFit.cover,
+      ),
       positiveText: languages.lblYes,
+      positiveTextColor: context.onPrimary,
       negativeText: languages.lblNo,
+      negativeTextColor: context.dialogCancelColor,
+      dialogType: DialogType.CONFIRMATION,
       onAccept: (context) async {
         if (status == BookingStatusKeys.pending) {
           appStore.setLoading(true);
@@ -602,15 +620,16 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
     return Container(
       margin: const EdgeInsets.all(16),
       decoration: boxDecorationDefault(
-        color: context.cardColor,
+        color: context.cardSecondary,
         borderRadius: radius(),
+        border: Border.all(color: context.cardSecondaryBorder),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           DecoratedBox(
             decoration: boxDecorationDefault(
-              color: primary,
+              color: context.primary,
               borderRadius:
                   radiusOnly(topLeft: defaultRadius, topRight: defaultRadius),
             ),
@@ -619,12 +638,13 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
               children: [
                 Text(
                   languages.lblBookingID,
-                  style:
-                      boldTextStyle(size: LABEL_TEXT_SIZE, color: Colors.white),
+                  style: context.boldTextStyle(
+                      size: LABEL_TEXT_SIZE, color: context.onPrimary),
                 ),
                 Text(
                   '#' + bookingResponse.bookingDetail!.id.toString().validate(),
-                  style: boldTextStyle(color: Colors.white, size: 16),
+                  style:
+                      context.boldTextStyle(color: context.onPrimary, size: 14),
                 ),
               ],
             ).paddingSymmetric(horizontal: 16, vertical: 8),
@@ -694,7 +714,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
                           Text(
                             bookingResponse.bookingDetail!.bookingPackage!.name
                                 .validate(),
-                            style: boldTextStyle(size: LABEL_TEXT_SIZE),
+                            style: context.boldTextStyle(size: LABEL_TEXT_SIZE),
                             maxLines: 3,
                             overflow: TextOverflow.ellipsis,
                           )
@@ -702,7 +722,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
                           Text(
                             bookingResponse.bookingDetail!.serviceName
                                 .validate(),
-                            style: boldTextStyle(size: LABEL_TEXT_SIZE),
+                            style: context.boldTextStyle(size: LABEL_TEXT_SIZE),
                             maxLines: 3,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -712,7 +732,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
                           PriceWidget(
                             price: bookingResponse.bookingDetail!.totalAmount
                                 .validate(),
-                            color: primary,
+                            color: context.primary,
                           )
                         else
                           Row(
@@ -725,7 +745,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
                                         SERVICE_TYPE_FREE,
                                 price: bookingResponse.bookingDetail!.amount
                                     .validate(),
-                                color: primary,
+                                color: context.primary,
                                 isHourlyService: bookingResponse
                                     .bookingDetail!.isHourlyService,
                               ),
@@ -734,7 +754,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
                                   0)
                                 Text(
                                   '(${bookingResponse.bookingDetail!.discount.validate()}% ${languages.lblOff})',
-                                  style: boldTextStyle(
+                                  style: context.boldTextStyle(
                                     size: 12,
                                     color: Colors.green,
                                   ),
@@ -755,7 +775,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
                 ReadMoreText(
                   trimLength: 65,
                   bookingResponse.bookingDetail!.description.validate(),
-                  style: secondaryTextStyle(),
+                  style: context.primaryTextStyle(),
                   colorClickableText: context.primaryColor,
                 ).paddingSymmetric(horizontal: 16),
               ],
@@ -768,8 +788,8 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 16),
                   decoration: BoxDecoration(
-                    color: appStore.isDarkMode ? context.cardColor : whiteColor,
-                    border: Border.all(color: context.dividerColor),
+                    color: context.cardSecondary,
+                    border: Border.all(color: context.cardSecondaryBorder),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
@@ -860,17 +880,19 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
             snap.bookingDetail!.reason!.isNotEmpty)))
       return Container(
         padding: const EdgeInsets.only(top: 14, left: 14, bottom: 14),
-        color: redColor.withValues(alpha: 0.2),
+        color: context.error.withValues(alpha: 0.2),
         width: context.width(),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
                 "${languages.cancelled} ${languages.lblReason.toLowerCase()}: ",
-                style: boldTextStyle(size: 12)),
+                style: context.boldTextStyle(size: 12)),
+            2.width,
             Marquee(
                     child: Text(snap.bookingDetail!.reason.validate(),
-                        style: boldTextStyle(color: redColor, size: 12)))
+                        style:
+                            context.boldTextStyle(color: redColor, size: 12)))
                 .expand(),
           ],
         ),
@@ -2243,7 +2265,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
                         TextIcon(
                           spacing: 10,
                           prefix: Image.asset(ic_time_slots,
-                              width: 12, height: 12, color: context.iconColor),
+                              width: 12, height: 12, color: context.icon),
                           text: shop.shopStartTime.validate().isNotEmpty &&
                                   shop.shopEndTime.isNotEmpty
                               ? '${shop.shopStartTime} - ${shop.shopEndTime}'
@@ -2412,6 +2434,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
           child: SafeArea(
             top: false,
             child: AppScaffold(
+              scaffoldBackgroundColor: context.scaffoldSecondary,
               appBarTitle: snap.hasData
                   ? snap.data!.bookingDetail!.status
                       .validate()
