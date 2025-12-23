@@ -7,8 +7,10 @@ import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/models/booking_list_response.dart';
 import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/demo_data.dart';
 import 'package:handyman_provider_flutter/utils/demo_mode.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../components/empty_error_state_widget.dart';
@@ -90,14 +92,112 @@ class BookingFragmentState extends State<BookingFragment>
   void init({String status = ''}) async {
     // Demo Mode: Use demo data instead of backend API
     if (DEMO_MODE_ENABLED) {
-      bookings = demoBookings;
-      totalEarnings = '12500.00';
+      List<BookingData> filteredBookings = demoBookings;
+
+      // Apply booking status filter (from dropdown or filter store)
+      if (status.isNotEmpty && status != BOOKING_PAYMENT_STATUS_ALL) {
+        filteredBookings =
+            filteredBookings.where((b) => b.status == status).toList();
+      } else if (filterStore.bookingStatus.isNotEmpty) {
+        filteredBookings = filteredBookings
+            .where((b) => filterStore.bookingStatus.contains(b.status))
+            .toList();
+      }
+
+      // Apply payment status filter
+      if (filterStore.paymentStatus.isNotEmpty) {
+        filteredBookings = filteredBookings
+            .where((b) => filterStore.paymentStatus.contains(b.paymentStatus))
+            .toList();
+      }
+
+      // Apply payment type filter
+      if (filterStore.paymentType.isNotEmpty) {
+        filteredBookings = filteredBookings
+            .where((b) => filterStore.paymentType.contains(b.paymentMethod))
+            .toList();
+      }
+
+      // Apply service ID filter
+      if (filterStore.serviceId.isNotEmpty) {
+        filteredBookings = filteredBookings
+            .where((b) => filterStore.serviceId.contains(b.serviceId))
+            .toList();
+      }
+
+      // Apply customer ID filter
+      if (filterStore.customerId.isNotEmpty) {
+        filteredBookings = filteredBookings
+            .where((b) => filterStore.customerId.contains(b.customerId))
+            .toList();
+      }
+
+      // Apply handyman ID filter
+      if (filterStore.handymanId.isNotEmpty) {
+        filteredBookings = filteredBookings.where((b) {
+          if (b.handyman == null || b.handyman!.isEmpty) return false;
+          return b.handyman!
+              .any((h) => filterStore.handymanId.contains(h.handymanId));
+        }).toList();
+      }
+
+      // Apply date range filter
+      if (filterStore.startDate.isNotEmpty && filterStore.endDate.isNotEmpty) {
+        try {
+          final startDate = DateTime.parse(filterStore.startDate);
+          final endDate = DateTime.parse(filterStore.endDate);
+          filteredBookings = filteredBookings.where((b) {
+            if (b.date == null) return false;
+            try {
+              final bookingDate = DateTime.parse(b.date!);
+              return bookingDate
+                      .isAfter(startDate.subtract(const Duration(days: 1))) &&
+                  bookingDate.isBefore(endDate.add(const Duration(days: 1)));
+            } catch (e) {
+              return true;
+            }
+          }).toList();
+        } catch (e) {
+          // Ignore date parsing errors
+        }
+      }
+
+      // Apply search text filter
+      if (searchCont.text.isNotEmpty) {
+        final searchText = searchCont.text.toLowerCase();
+        filteredBookings = filteredBookings.where((b) {
+          return (b.serviceName?.toLowerCase().contains(searchText) ?? false) ||
+              (b.customerName?.toLowerCase().contains(searchText) ?? false) ||
+              (b.address?.toLowerCase().contains(searchText) ?? false) ||
+              (b.id?.toString().contains(searchText) ?? false);
+        }).toList();
+      }
+
+      // Calculate earnings based on filtered bookings
+      double total = 0;
+      double providerEarned = 0;
+      double handymanEarned = 0;
+      double tax = 0;
+      double discount = 0;
+
+      for (var b in filteredBookings) {
+        if (b.paymentStatus == PAID) {
+          total += b.totalAmount ?? 0;
+          providerEarned += (b.totalAmount ?? 0) * 0.6;
+          handymanEarned += (b.totalAmount ?? 0) * 0.25;
+          tax += (b.totalAmount ?? 0) * 0.05;
+          discount += b.discount ?? 0;
+        }
+      }
+
+      bookings = filteredBookings;
+      totalEarnings = total.toStringAsFixed(2);
       paymentBreakdownData = PaymentBreakdown(
-        adminEarned: '1875.00',
-        handymanEarned: '3125.00',
-        providerEarned: '7500.00',
-        tax: '625.00',
-        discount: '250.00',
+        adminEarned: (total * 0.15).toStringAsFixed(2),
+        handymanEarned: handymanEarned.toStringAsFixed(2),
+        providerEarned: providerEarned.toStringAsFixed(2),
+        tax: tax.toStringAsFixed(2),
+        discount: discount.toStringAsFixed(2),
       );
       isLastPage = true;
       future = Future.value(bookings);
@@ -151,6 +251,7 @@ class BookingFragmentState extends State<BookingFragment>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: context.scaffoldSecondary,
       body: Stack(
         children: [
           SnapHelperWidget<List<BookingData>>(
@@ -191,39 +292,32 @@ class BookingFragmentState extends State<BookingFragment>
                           padding: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 12),
                           decoration: boxDecorationWithRoundedCorners(
-                            borderRadius: radius(),
-                            backgroundColor: appStore.isDarkMode
-                                ? context.cardColor
-                                : cardLightColor,
-                          ),
+                              borderRadius: radius(),
+                              backgroundColor: context.cardSecondary),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
                                 children: [
                                   Text(languages.totalAmount,
-                                          style: boldTextStyle())
+                                          style: context.boldTextStyle())
                                       .expand(),
-                                  TextButton(
-                                    style: const ButtonStyle(
-                                        padding: WidgetStatePropertyAll(
-                                            EdgeInsets.symmetric(
-                                                vertical: 2, horizontal: 0))),
-                                    onPressed: () {
+                                  GestureDetector(
+                                    onTap: () {
                                       TotalAmountsComponent(
                                         totalEarning: totalEarnings,
                                         paymentBreakdown: paymentBreakdownData,
                                       ).launch(context);
                                     },
                                     child: Text(languages.viewBreakdown,
-                                        style: boldTextStyle(
+                                        style: context.boldTextStyle(
                                             color: defaultStatus, size: 13)),
                                   ).withHeight(25),
                                 ],
                               ),
                               PriceWidget(
                                   price: totalEarnings.toDouble(),
-                                  color: primary),
+                                  color: context.primary),
                             ],
                           ),
                         ),

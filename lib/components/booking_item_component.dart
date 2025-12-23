@@ -347,7 +347,7 @@ class BookingItemComponentState extends State<BookingItemComponent> {
                             style: context.boldTextStyle(size: 12),
                             textAlign: TextAlign.left,
                           ),
-                        ).expand(flex: 5),
+                        ).expand(flex: 4),
                       ],
                     ).paddingAll(8),
                   Row(
@@ -359,12 +359,61 @@ class BookingItemComponentState extends State<BookingItemComponent> {
                       ).expand(flex: 2),
                       8.width,
                       Marquee(
-                        child: Text(
-                          "${formatDate(widget.bookingData.date.validate(), format: DATE_FORMAT_2)} ${languages.at} ${buildTimeWidget(bookingDetail: widget.bookingData)}",
-                          style: context.boldTextStyle(size: 12),
-                          textAlign: TextAlign.left,
+                        child: Builder(
+                          builder: (context) {
+                            final dateStr = widget.bookingData.date.validate();
+                            String formattedDate = dateStr;
+                            String formattedTime = '';
+
+                            try {
+                              final dateTime = DateTime.tryParse(dateStr);
+                              if (dateTime != null) {
+                                // Format: Month Day, Year (e.g., December 12, 2025)
+                                const months = [
+                                  'January',
+                                  'February',
+                                  'March',
+                                  'April',
+                                  'May',
+                                  'June',
+                                  'July',
+                                  'August',
+                                  'September',
+                                  'October',
+                                  'November',
+                                  'December'
+                                ];
+                                formattedDate =
+                                    '${months[dateTime.month - 1]} ${dateTime.day}, ${dateTime.year}';
+
+                                // Format time (e.g., 8:25 AM)
+                                int hour = dateTime.hour;
+                                final minute =
+                                    dateTime.minute.toString().padLeft(2, '0');
+                                final ampm = hour >= 12 ? 'PM' : 'AM';
+                                hour = hour > 12
+                                    ? hour - 12
+                                    : (hour == 0 ? 12 : hour);
+                                formattedTime = '$hour:$minute $ampm';
+                              }
+                            } catch (e) {
+                              // Fallback to original format
+                              formattedDate =
+                                  formatDate(dateStr, format: DATE_FORMAT_2);
+                              formattedTime = buildTimeWidget(
+                                  bookingDetail: widget.bookingData);
+                            }
+
+                            return Text(
+                              formattedTime.isNotEmpty
+                                  ? '$formattedDate ${languages.at} $formattedTime'
+                                  : formattedDate,
+                              style: context.boldTextStyle(size: 12),
+                              textAlign: TextAlign.left,
+                            );
+                          },
                         ),
-                      ).expand(flex: 5),
+                      ).expand(flex: 4),
                     ],
                   ).paddingOnly(left: 8, bottom: 8, right: 8),
                   if (widget.bookingData.customerName.validate().isNotEmpty)
@@ -385,7 +434,7 @@ class BookingItemComponentState extends State<BookingItemComponent> {
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.left,
                           ),
-                        ).expand(flex: 5),
+                        ).expand(flex: 4),
                       ],
                     ).paddingOnly(left: 8, bottom: 8, right: 8),
                   if (widget.bookingData.paymentStatus != null &&
@@ -419,7 +468,7 @@ class BookingItemComponentState extends State<BookingItemComponent> {
                             ),
                             textAlign: TextAlign.left,
                           ),
-                        ).expand(flex: 5),
+                        ).expand(flex: 4),
                       ],
                     ).paddingOnly(left: 8, bottom: 8, right: 8),
                   if (widget.bookingData.handyman.validate().isNotEmpty &&
@@ -501,7 +550,7 @@ class BookingItemComponentState extends State<BookingItemComponent> {
                               ],
                             ).flexible(),
                           ],
-                        ).paddingAll(8),
+                        ).paddingAll(6),
                       ],
                     ),
                 ],

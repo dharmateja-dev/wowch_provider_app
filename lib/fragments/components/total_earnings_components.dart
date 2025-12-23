@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../components/base_scaffold_widget.dart';
@@ -18,6 +20,7 @@ class TotalAmountsComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
+      scaffoldBackgroundColor: context.scaffoldSecondary,
       appBarTitle: languages.lblTotalAmount,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -26,22 +29,23 @@ class TotalAmountsComponent extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             margin: const EdgeInsets.symmetric(horizontal: 16),
             decoration: boxDecorationDefault(
-                borderRadius: radius(), color: context.cardColor),
+                borderRadius: radius(), color: context.cardSecondary),
             child: Column(
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(languages.totalAmount, style: boldTextStyle()),
+                    Text(languages.totalAmount, style: context.boldTextStyle()),
                     16.width,
-                    PriceWidget(price: totalEarning.toDouble(), color: primary),
+                    PriceWidget(
+                        price: totalEarning.toDouble(), color: context.primary),
                   ],
                 ),
               ],
             ).paddingSymmetric(vertical: 6),
           ).paddingTop(16),
           30.height,
-          Text(languages.paymentBreakdown, style: boldTextStyle())
+          Text(languages.paymentBreakdown, style: context.boldTextStyle())
               .paddingSymmetric(horizontal: 16),
           16.height,
           if (isUserTypeProvider)
@@ -49,11 +53,12 @@ class TotalAmountsComponent extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
               margin: const EdgeInsets.symmetric(horizontal: 16),
               decoration: boxDecorationDefault(
-                  borderRadius: radius(), color: context.cardColor),
+                  borderRadius: radius(), color: context.cardSecondary),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(languages.provider, style: boldTextStyle(size: 12))
+                  Text(languages.provider,
+                          style: context.boldTextStyle(size: 12))
                       .expand(),
                   4.width,
                   PriceWidget(
@@ -67,11 +72,11 @@ class TotalAmountsComponent extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             margin: const EdgeInsets.symmetric(horizontal: 16),
             decoration: boxDecorationDefault(
-                borderRadius: radius(), color: context.cardColor),
+                borderRadius: radius(), color: context.cardSecondary),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(languages.handyman, style: boldTextStyle(size: 12))
+                Text(languages.handyman, style: context.boldTextStyle(size: 12))
                     .expand(),
                 4.width,
                 PriceWidget(
@@ -86,11 +91,12 @@ class TotalAmountsComponent extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             margin: const EdgeInsets.symmetric(horizontal: 16),
             decoration: boxDecorationDefault(
-                borderRadius: radius(), color: context.cardColor),
+                borderRadius: radius(), color: context.cardSecondary),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(languages.taxAmount, style: boldTextStyle(size: 12))
+                Text(languages.taxAmount,
+                        style: context.boldTextStyle(size: 12))
                     .expand(),
                 16.width,
                 PriceWidget(
@@ -105,16 +111,17 @@ class TotalAmountsComponent extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             margin: const EdgeInsets.symmetric(horizontal: 16),
             decoration: boxDecorationDefault(
-                borderRadius: radius(), color: context.cardColor),
+                borderRadius: radius(), color: context.cardSecondary),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(languages.hintDiscount, style: boldTextStyle(size: 12))
+                Text(languages.hintDiscount,
+                        style: context.boldTextStyle(size: 12))
                     .expand(),
                 16.width,
                 PriceWidget(
                     price: paymentBreakdown.discount.toDouble(),
-                    color: greenColor,
+                    color: context.primary,
                     size: 14),
               ],
             ),

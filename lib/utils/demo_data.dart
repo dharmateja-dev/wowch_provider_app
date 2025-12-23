@@ -1876,185 +1876,463 @@ class DemoBookingDetailData {
     return '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')} ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}:${dt.second.toString().padLeft(2, '0')}';
   }
 
-  /// Get demo booking detail JSON for a specific booking ID
-  static Map<String, dynamic> getBookingDetailJson(int bookingId) => {
-        'booking_detail': {
-          'id': bookingId,
-          'customer_id': 101,
-          'service_id': 1,
-          'provider_id': 1,
-          'quantity': 1,
-          'price': 150.00,
-          'type': 'fixed',
-          'discount': 10,
-          'status': 'accept',
-          'status_label': 'Accepted',
-          'description':
-              'Home cleaning service including deep cleaning of all rooms, kitchen and bathrooms.',
-          'provider_name': 'John Williams',
-          'customer_name': 'Sarah Johnson',
-          'service_name': 'Home Cleaning',
-          'payment_status': 'pending',
-          'payment_method': 'cash',
-          'total_amount': 135.00,
-          'amount': 150.00,
-          'date': _formatDate(DateTime.now().add(const Duration(days: 1))),
-          'booking_slot': '10:00:00',
-          'duration_diff': '60',
-          'address': '2847 Sunset Boulevard, Los Angeles, CA 90028',
-          'booking_address_id': 1,
-          'taxes': [],
+  /// Get booking activity based on status
+  static List<Map<String, dynamic>> _getBookingActivity(int bookingId,
+      String status, String? startAt, String? endAt, String? reason) {
+    List<Map<String, dynamic>> activities = [
+      {
+        'id': 1,
+        'booking_id': bookingId,
+        'datetime':
+            _formatDate(DateTime.now().subtract(const Duration(hours: 5))),
+        'activity_type': 'add_booking',
+        'activity_message': 'Booking created by customer',
+        'created_at':
+            _formatDate(DateTime.now().subtract(const Duration(hours: 5))),
+      },
+    ];
+
+    switch (status) {
+      case 'pending':
+        // Just created, no additional activity
+        break;
+      case 'accept':
+        activities.add({
+          'id': 2,
+          'booking_id': bookingId,
+          'datetime':
+              _formatDate(DateTime.now().subtract(const Duration(hours: 4))),
+          'activity_type': 'update_booking_status',
+          'activity_message': 'Booking accepted by provider',
           'created_at':
-              _formatDate(DateTime.now().subtract(const Duration(hours: 2))),
-          'updated_at': _formatDate(DateTime.now()),
-          'service_attchments': [
-            'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400'
-          ],
-          'total_review': 24,
-          'total_rating': 4.8,
-          'is_service_hourly': false,
-          'is_package_booking': false,
-          'booking_type': 'customer_location',
-          'visit_type': 'customer_location',
-          'reason': null,
-        },
-        'service': {
-          'id': 1,
-          'name': 'Home Cleaning',
-          'description':
-              'Professional home cleaning service that includes deep cleaning of all rooms, kitchen, and bathrooms. Our experienced cleaners use eco-friendly products.',
-          'category_id': 1,
-          'category_name': 'Cleaning',
-          'subcategory_id': null,
-          'provider_id': 1,
-          'price': 150.00,
-          'price_format': '\$150.00',
-          'type': 'fixed',
-          'discount': 10,
-          'duration': '2 Hours',
-          'status': 1,
-          'is_featured': 1,
-          'total_rating': 4.8,
-          'total_review': 24,
-          'attchments': [
-            'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400'
-          ],
-          'attchments_array': [
-            {
-              'id': 1,
-              'url':
-                  'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400'
-            }
-          ],
-          'image_attchments': [
-            'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400'
-          ],
-        },
-        'customer': {
-          'id': 101,
-          'first_name': 'Sarah',
-          'last_name': 'Johnson',
-          'display_name': 'Sarah Johnson',
-          'email': 'sarah.johnson@email.com',
-          'contact_number': '+1 (555) 234-5678',
-          'address': '1520 Oak Street, Apt 5A, Los Angeles, CA 90015',
-          'profile_image': 'https://i.pravatar.cc/300?u=sarah',
-          'user_type': 'user',
-          'status': 1,
-        },
-        'provider_data': {
-          'id': 1,
-          'first_name': 'John',
-          'last_name': 'Williams',
-          'display_name': 'John Williams',
-          'email': 'john.williams@servicepro.com',
-          'contact_number': '+1 (555) 123-4567',
-          'address': '2847 Sunset Boulevard, Suite 200, Los Angeles, CA 90028',
-          'profile_image':
-              'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400',
-          'user_type': 'provider',
-          'status': 1,
-        },
-        'handyman_data': [
-          {
-            'id': 2,
-            'first_name': 'Mike',
-            'last_name': 'Johnson',
-            'display_name': 'Mike Johnson',
-            'email': 'mike.johnson@servicepro.com',
-            'contact_number': '+1 (555) 987-6543',
-            'address': '1520 Oak Street, Apt 3B, Los Angeles, CA 90015',
-            'profile_image':
-                'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400',
-            'user_type': 'handyman',
-            'status': 1,
-            'is_verified_handyman': 1,
-            'designation': 'Senior Technician',
-            'handyman_rating': 4.8,
-          }
-        ],
-        'booking_activity': [
-          {
-            'id': 1,
-            'booking_id': bookingId,
-            'datetime':
-                _formatDate(DateTime.now().subtract(const Duration(hours: 2))),
-            'activity_type': 'add_booking',
-            'activity_message': 'Booking created by customer',
-            'created_at':
-                _formatDate(DateTime.now().subtract(const Duration(hours: 2))),
-          },
+              _formatDate(DateTime.now().subtract(const Duration(hours: 4))),
+        });
+        activities.add({
+          'id': 3,
+          'booking_id': bookingId,
+          'datetime':
+              _formatDate(DateTime.now().subtract(const Duration(hours: 3))),
+          'activity_type': 'assigned_booking',
+          'activity_message': 'Handyman assigned to booking',
+          'created_at':
+              _formatDate(DateTime.now().subtract(const Duration(hours: 3))),
+        });
+        break;
+      case 'on_going':
+        activities.addAll([
           {
             'id': 2,
             'booking_id': bookingId,
             'datetime':
-                _formatDate(DateTime.now().subtract(const Duration(hours: 1))),
+                _formatDate(DateTime.now().subtract(const Duration(hours: 4))),
             'activity_type': 'update_booking_status',
             'activity_message': 'Booking accepted by provider',
             'created_at':
-                _formatDate(DateTime.now().subtract(const Duration(hours: 1))),
+                _formatDate(DateTime.now().subtract(const Duration(hours: 4))),
           },
           {
             'id': 3,
             'booking_id': bookingId,
-            'datetime': _formatDate(
-                DateTime.now().subtract(const Duration(minutes: 30))),
+            'datetime':
+                _formatDate(DateTime.now().subtract(const Duration(hours: 3))),
             'activity_type': 'assigned_booking',
-            'activity_message': 'Mike Johnson assigned to booking',
-            'created_at': _formatDate(
-                DateTime.now().subtract(const Duration(minutes: 30))),
-          },
-        ],
-        'rating_data': [
-          {
-            'id': 1,
-            'rating': 5,
-            'review':
-                'Excellent service! The cleaner was professional and thorough.',
-            'service_id': 1,
-            'booking_id': bookingId - 1,
+            'activity_message': 'Handyman assigned to booking',
             'created_at':
-                _formatDate(DateTime.now().subtract(const Duration(days: 7))),
-            'customer_name': 'Emily Davis',
-            'customer_profile_image': 'https://i.pravatar.cc/300?u=emily',
-            'service_name': 'Home Cleaning',
+                _formatDate(DateTime.now().subtract(const Duration(hours: 3))),
           },
+          {
+            'id': 4,
+            'booking_id': bookingId,
+            'datetime': startAt ??
+                _formatDate(DateTime.now().subtract(const Duration(hours: 1))),
+            'activity_type': 'update_booking_status',
+            'activity_message': 'Service started',
+            'created_at': startAt ??
+                _formatDate(DateTime.now().subtract(const Duration(hours: 1))),
+          },
+        ]);
+        break;
+      case 'in_progress':
+        activities.addAll([
           {
             'id': 2,
-            'rating': 4,
-            'review': 'Good job overall. Very punctual and efficient.',
-            'service_id': 1,
-            'booking_id': bookingId - 2,
+            'booking_id': bookingId,
+            'datetime':
+                _formatDate(DateTime.now().subtract(const Duration(hours: 4))),
+            'activity_type': 'update_booking_status',
+            'activity_message': 'Booking accepted by provider',
             'created_at':
-                _formatDate(DateTime.now().subtract(const Duration(days: 14))),
-            'customer_name': 'Michael Brown',
-            'customer_profile_image': 'https://i.pravatar.cc/300?u=michael',
-            'service_name': 'Home Cleaning',
+                _formatDate(DateTime.now().subtract(const Duration(hours: 4))),
           },
+          {
+            'id': 3,
+            'booking_id': bookingId,
+            'datetime': startAt ??
+                _formatDate(DateTime.now().subtract(const Duration(hours: 2))),
+            'activity_type': 'update_booking_status',
+            'activity_message': 'Service in progress',
+            'created_at': startAt ??
+                _formatDate(DateTime.now().subtract(const Duration(hours: 2))),
+          },
+        ]);
+        break;
+      case 'hold':
+        activities.addAll([
+          {
+            'id': 2,
+            'booking_id': bookingId,
+            'datetime':
+                _formatDate(DateTime.now().subtract(const Duration(hours: 4))),
+            'activity_type': 'update_booking_status',
+            'activity_message': 'Booking accepted by provider',
+            'created_at':
+                _formatDate(DateTime.now().subtract(const Duration(hours: 4))),
+          },
+          {
+            'id': 3,
+            'booking_id': bookingId,
+            'datetime': startAt ??
+                _formatDate(DateTime.now().subtract(const Duration(hours: 2))),
+            'activity_type': 'update_booking_status',
+            'activity_message': 'Service started',
+            'created_at': startAt ??
+                _formatDate(DateTime.now().subtract(const Duration(hours: 2))),
+          },
+          {
+            'id': 4,
+            'booking_id': bookingId,
+            'datetime':
+                _formatDate(DateTime.now().subtract(const Duration(hours: 1))),
+            'activity_type': 'update_booking_status',
+            'activity_message':
+                'Service put on hold${reason != null ? ": $reason" : ""}',
+            'created_at':
+                _formatDate(DateTime.now().subtract(const Duration(hours: 1))),
+          },
+        ]);
+        break;
+      case 'completed':
+      case 'paid':
+        activities.addAll([
+          {
+            'id': 2,
+            'booking_id': bookingId,
+            'datetime':
+                _formatDate(DateTime.now().subtract(const Duration(days: 2))),
+            'activity_type': 'update_booking_status',
+            'activity_message': 'Booking accepted by provider',
+            'created_at':
+                _formatDate(DateTime.now().subtract(const Duration(days: 2))),
+          },
+          {
+            'id': 3,
+            'booking_id': bookingId,
+            'datetime': startAt ??
+                _formatDate(
+                    DateTime.now().subtract(const Duration(days: 1, hours: 2))),
+            'activity_type': 'update_booking_status',
+            'activity_message': 'Service started',
+            'created_at': startAt ??
+                _formatDate(
+                    DateTime.now().subtract(const Duration(days: 1, hours: 2))),
+          },
+          {
+            'id': 4,
+            'booking_id': bookingId,
+            'datetime': endAt ??
+                _formatDate(DateTime.now().subtract(const Duration(days: 1))),
+            'activity_type': 'update_booking_status',
+            'activity_message': 'Service completed successfully',
+            'created_at': endAt ??
+                _formatDate(DateTime.now().subtract(const Duration(days: 1))),
+          },
+        ]);
+        if (status == 'paid') {
+          activities.add({
+            'id': 5,
+            'booking_id': bookingId,
+            'datetime':
+                _formatDate(DateTime.now().subtract(const Duration(hours: 12))),
+            'activity_type': 'payment_message_status',
+            'activity_message': 'Payment received',
+            'created_at':
+                _formatDate(DateTime.now().subtract(const Duration(hours: 12))),
+          });
+        }
+        break;
+      case 'cancelled':
+        activities.add({
+          'id': 2,
+          'booking_id': bookingId,
+          'datetime':
+              _formatDate(DateTime.now().subtract(const Duration(hours: 2))),
+          'activity_type': 'update_booking_status',
+          'activity_message':
+              'Booking cancelled${reason != null ? ": $reason" : ""}',
+          'created_at':
+              _formatDate(DateTime.now().subtract(const Duration(hours: 2))),
+        });
+        break;
+      case 'rejected':
+        activities.add({
+          'id': 2,
+          'booking_id': bookingId,
+          'datetime':
+              _formatDate(DateTime.now().subtract(const Duration(hours: 3))),
+          'activity_type': 'update_booking_status',
+          'activity_message':
+              'Booking rejected by provider${reason != null ? ": $reason" : ""}',
+          'created_at':
+              _formatDate(DateTime.now().subtract(const Duration(hours: 3))),
+        });
+        break;
+      case 'failed':
+        activities.addAll([
+          {
+            'id': 2,
+            'booking_id': bookingId,
+            'datetime':
+                _formatDate(DateTime.now().subtract(const Duration(days: 1))),
+            'activity_type': 'update_booking_status',
+            'activity_message': 'Booking accepted by provider',
+            'created_at':
+                _formatDate(DateTime.now().subtract(const Duration(days: 1))),
+          },
+          {
+            'id': 3,
+            'booking_id': bookingId,
+            'datetime': startAt ??
+                _formatDate(DateTime.now().subtract(const Duration(hours: 4))),
+            'activity_type': 'update_booking_status',
+            'activity_message': 'Service started',
+            'created_at': startAt ??
+                _formatDate(DateTime.now().subtract(const Duration(hours: 4))),
+          },
+          {
+            'id': 4,
+            'booking_id': bookingId,
+            'datetime':
+                _formatDate(DateTime.now().subtract(const Duration(hours: 2))),
+            'activity_type': 'update_booking_status',
+            'activity_message':
+                'Service failed${reason != null ? ": $reason" : ""}',
+            'created_at':
+                _formatDate(DateTime.now().subtract(const Duration(hours: 2))),
+          },
+        ]);
+        break;
+      case 'pending_approval':
+        activities.addAll([
+          {
+            'id': 2,
+            'booking_id': bookingId,
+            'datetime':
+                _formatDate(DateTime.now().subtract(const Duration(hours: 3))),
+            'activity_type': 'update_booking_status',
+            'activity_message': 'Booking accepted by provider',
+            'created_at':
+                _formatDate(DateTime.now().subtract(const Duration(hours: 3))),
+          },
+          {
+            'id': 3,
+            'booking_id': bookingId,
+            'datetime': startAt ??
+                _formatDate(DateTime.now().subtract(const Duration(hours: 2))),
+            'activity_type': 'update_booking_status',
+            'activity_message': 'Service completed, pending customer approval',
+            'created_at': startAt ??
+                _formatDate(DateTime.now().subtract(const Duration(hours: 2))),
+          },
+        ]);
+        break;
+      case 'waiting':
+        activities.add({
+          'id': 2,
+          'booking_id': bookingId,
+          'datetime':
+              _formatDate(DateTime.now().subtract(const Duration(hours: 2))),
+          'activity_type': 'update_booking_status',
+          'activity_message': 'Waiting for advance payment from customer',
+          'created_at':
+              _formatDate(DateTime.now().subtract(const Duration(hours: 2))),
+        });
+        break;
+    }
+
+    return activities;
+  }
+
+  /// Get demo booking detail JSON for a specific booking ID
+  static Map<String, dynamic> getBookingDetailJson(int bookingId) {
+    // Find the booking from demoBookings
+    final booking = demoBookings.firstWhere(
+      (b) => b.id == bookingId,
+      orElse: () => demoBookings.first,
+    );
+
+    // Get handyman data if available
+    Map<String, dynamic>? handymanData;
+    if (booking.handyman != null && booking.handyman!.isNotEmpty) {
+      final h = booking.handyman!.first.handyman;
+      if (h != null) {
+        handymanData = {
+          'id': h.id,
+          'first_name': h.firstName ?? 'Mike',
+          'last_name': h.lastName ?? 'Johnson',
+          'display_name': h.displayName ?? 'Mike Johnson',
+          'email': h.email ?? 'handyman@demo.com',
+          'contact_number': h.contactNumber ?? '+1 (555) 987-6543',
+          'address': '1520 Oak Street, Apt 3B, Los Angeles, CA 90015',
+          'profile_image':
+              h.profileImage ?? 'https://i.pravatar.cc/300?u=handyman',
+          'user_type': 'handyman',
+          'status': 1,
+          'is_verified_handyman': h.isVerifiedHandyman ?? 1,
+          'designation': h.designation ?? 'Senior Technician',
+          'handyman_rating': h.handymanRating ?? 4.8,
+        };
+      }
+    }
+
+    return {
+      'booking_detail': {
+        'id': booking.id,
+        'customer_id': booking.customerId,
+        'service_id': booking.serviceId,
+        'provider_id': booking.providerId,
+        'quantity': booking.quantity ?? 1,
+        'price': booking.amount ?? 100.00,
+        'type': booking.type ?? 'fixed',
+        'discount': booking.discount ?? 0,
+        'status': booking.status,
+        'status_label': booking.statusLabel ??
+            booking.status?.replaceAll('_', ' ').toUpperCase(),
+        'description':
+            booking.description ?? 'Professional service as requested.',
+        'provider_name': booking.providerName ?? 'John Provider',
+        'customer_name': booking.customerName ?? 'Customer',
+        'service_name': booking.serviceName ?? 'Service',
+        'payment_status': booking.paymentStatus ?? 'pending',
+        'payment_method': booking.paymentMethod ?? 'cash',
+        'total_amount': booking.totalAmount ?? 100.00,
+        'amount': booking.amount ?? 100.00,
+        'date': booking.date ??
+            _formatDate(DateTime.now().add(const Duration(days: 1))),
+        'booking_slot': '10:00:00',
+        'duration_diff': booking.durationDiff ?? '60',
+        'address': booking.address ?? '123 Demo Street, City, ST 12345',
+        'booking_address_id': booking.bookingAddressId ?? 1,
+        'taxes': [],
+        'start_at': booking.startAt,
+        'end_at': booking.endAt,
+        'reason': booking.reason,
+        'is_cancelled': booking.isCancelled ?? 0,
+        'created_at':
+            _formatDate(DateTime.now().subtract(const Duration(hours: 5))),
+        'updated_at': _formatDate(DateTime.now()),
+        'service_attchments': booking.imageAttachments ??
+            [
+              'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400'
+            ],
+        'total_review': booking.totalReview ?? 0,
+        'total_rating': booking.totalRating ?? 0,
+        'is_service_hourly': booking.type == 'hourly',
+        'is_package_booking': false,
+        'booking_type': 'customer_location',
+        'visit_type': booking.visitType ?? 'customer_location',
+      },
+      'service': {
+        'id': booking.serviceId ?? 1,
+        'name': booking.serviceName ?? 'Service',
+        'description': 'Professional service provided by our experienced team.',
+        'category_id': 1,
+        'category_name': 'General',
+        'subcategory_id': null,
+        'provider_id': booking.providerId ?? 1,
+        'price': booking.amount ?? 100.00,
+        'price_format': '\$${booking.amount ?? 100.00}',
+        'type': booking.type ?? 'fixed',
+        'discount': booking.discount ?? 0,
+        'duration': '2 Hours',
+        'status': 1,
+        'is_featured': 1,
+        'total_rating': booking.totalRating ?? 4.5,
+        'total_review': booking.totalReview ?? 10,
+        'attchments': booking.imageAttachments ??
+            [
+              'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400'
+            ],
+        'attchments_array': [
+          {
+            'id': 1,
+            'url': (booking.imageAttachments?.isNotEmpty == true)
+                ? booking.imageAttachments!.first
+                : 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400'
+          }
         ],
-        'service_proof': [],
-        'coupon_data': null,
-      };
+        'image_attchments': booking.imageAttachments ??
+            [
+              'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400'
+            ],
+      },
+      'customer': {
+        'id': booking.customerId ?? 101,
+        'first_name': booking.customerName?.split(' ').first ?? 'Customer',
+        'last_name': booking.customerName?.split(' ').length == 2
+            ? booking.customerName!.split(' ').last
+            : 'Demo',
+        'display_name': booking.customerName ?? 'Customer Demo',
+        'email':
+            '${(booking.customerName ?? "customer").toLowerCase().replaceAll(' ', '.')}@email.com',
+        'contact_number': '+1 (555) 234-5678',
+        'address': booking.address ?? '1520 Oak Street, Los Angeles, CA 90015',
+        'profile_image':
+            booking.customerImage ?? 'https://i.pravatar.cc/300?u=customer',
+        'user_type': 'user',
+        'status': 1,
+      },
+      'provider_data': {
+        'id': booking.providerId ?? 1,
+        'first_name': 'John',
+        'last_name': 'Provider',
+        'display_name': booking.providerName ?? 'John Provider',
+        'email': 'provider@servicepro.com',
+        'contact_number': '+1 (555) 123-4567',
+        'address': '2847 Sunset Boulevard, Suite 200, Los Angeles, CA 90028',
+        'profile_image': booking.providerImage ??
+            'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400',
+        'user_type': 'provider',
+        'status': 1,
+      },
+      'handyman_data': handymanData != null ? [handymanData] : [],
+      'booking_activity': _getBookingActivity(
+        booking.id ?? bookingId,
+        booking.status ?? 'pending',
+        booking.startAt,
+        booking.endAt,
+        booking.reason,
+      ),
+      'rating_data': (booking.status == 'completed' || booking.status == 'paid')
+          ? [
+              {
+                'id': 1,
+                'rating': booking.totalRating ?? 5,
+                'review': 'Great service! Very professional and on time.',
+                'service_id': booking.serviceId ?? 1,
+                'booking_id': booking.id,
+                'created_at': _formatDate(
+                    DateTime.now().subtract(const Duration(days: 1))),
+                'customer_name': booking.customerName ?? 'Customer',
+                'customer_profile_image': booking.customerImage ??
+                    'https://i.pravatar.cc/300?u=customer',
+                'service_name': booking.serviceName ?? 'Service',
+              },
+            ]
+          : [],
+      'service_proof': [],
+      'coupon_data': null,
+    };
+  }
 }
 
 /// Demo Review Data
