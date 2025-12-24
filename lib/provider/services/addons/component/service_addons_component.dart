@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../../../components/cached_image_widget.dart';
@@ -61,8 +63,8 @@ class _AddonComponentState extends State<AddonComponent> {
                   margin: const EdgeInsets.only(bottom: 16),
                   decoration: boxDecorationWithRoundedCorners(
                     borderRadius: radius(),
-                    backgroundColor: context.cardColor,
-                    border: appStore.isDarkMode ? Border.all(color: context.dividerColor) : null,
+                    backgroundColor: context.cardSecondary,
+                    border: Border.all(color: context.cardSecondaryBorder),
                   ),
                   child: Row(
                     children: [
@@ -81,12 +83,13 @@ class _AddonComponentState extends State<AddonComponent> {
                             children: [
                               Marquee(
                                 directionMarguee: DirectionMarguee.oneDirection,
-                                child: Text(data.name.validate(), style: boldTextStyle()),
+                                child: Text(data.name.validate(),
+                                    style: context.boldTextStyle()),
                               ),
                               2.height,
                               PriceWidget(
                                 price: data.price.validate(),
-                                hourlyTextColor: Colors.white,
+                                hourlyTextColor: context.onPrimary,
                                 size: 12,
                               ),
                             ],

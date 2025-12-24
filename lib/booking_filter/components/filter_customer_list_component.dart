@@ -9,14 +9,17 @@ import '../../components/selected_item_widget.dart';
 import '../../main.dart';
 import '../../models/user_data.dart';
 import '../../networks/rest_apis.dart';
+import '../../utils/colors.dart';
 import '../../utils/constant.dart';
 
 class FilterCustomerListComponent extends StatefulWidget {
   @override
-  State<FilterCustomerListComponent> createState() => _FilterCustomerListComponentState();
+  State<FilterCustomerListComponent> createState() =>
+      _FilterCustomerListComponentState();
 }
 
-class _FilterCustomerListComponentState extends State<FilterCustomerListComponent> {
+class _FilterCustomerListComponentState
+    extends State<FilterCustomerListComponent> {
   Future<List<UserData>>? future;
 
   List<UserData> customerList = [];
@@ -91,7 +94,8 @@ class _FilterCustomerListComponentState extends State<FilterCustomerListComponen
               itemCount: list.length,
               listAnimationType: ListAnimationType.FadeIn,
               fadeInConfiguration: FadeInConfiguration(duration: 2.seconds),
-              padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 80),
+              padding: const EdgeInsets.only(
+                  left: 16, right: 16, top: 16, bottom: 80),
               emptyWidget: NoDataWidget(
                 title: languages.customerNotFound,
                 imageWidget: const EmptyStateWidget(),
@@ -115,12 +119,17 @@ class _FilterCustomerListComponentState extends State<FilterCustomerListComponen
                 UserData data = list[index];
 
                 return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   margin: const EdgeInsets.only(bottom: 16),
                   decoration: boxDecorationWithRoundedCorners(
                     borderRadius: radius(),
-                    backgroundColor: context.cardColor,
-                    border: appStore.isDarkMode ? Border.all(color: context.dividerColor) : null,
+                    backgroundColor: appStore.isDarkMode
+                        ? context.cardColor
+                        : lightPrimaryColor,
+                    border: appStore.isDarkMode
+                        ? Border.all(color: context.dividerColor)
+                        : null,
                   ),
                   child: Row(
                     children: [
@@ -129,7 +138,8 @@ class _FilterCustomerListComponentState extends State<FilterCustomerListComponen
                         height: 45,
                       ),
                       16.width,
-                      Text(data.displayName.validate(), style: boldTextStyle()).expand(),
+                      Text(data.displayName.validate(), style: boldTextStyle())
+                          .expand(),
                       4.width,
                       SelectedItemWidget(isSelected: data.isSelected),
                     ],
@@ -163,7 +173,8 @@ class _FilterCustomerListComponentState extends State<FilterCustomerListComponen
           },
         ),
         Observer(
-          builder: (_) => LoaderWidget().visible(appStore.isLoading && page != 1),
+          builder: (_) =>
+              LoaderWidget().visible(appStore.isLoading && page != 1),
         ),
       ],
     );

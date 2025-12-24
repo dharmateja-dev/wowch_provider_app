@@ -9,14 +9,17 @@ import '../../components/image_border_component.dart';
 import '../../components/selected_item_widget.dart';
 import '../../models/service_model.dart';
 import '../../networks/rest_apis.dart';
+import '../../utils/colors.dart';
 import '../../utils/constant.dart';
 
 class FilterServiceListComponent extends StatefulWidget {
   @override
-  State<FilterServiceListComponent> createState() => _FilterServiceListComponentState();
+  State<FilterServiceListComponent> createState() =>
+      _FilterServiceListComponentState();
 }
 
-class _FilterServiceListComponentState extends State<FilterServiceListComponent> {
+class _FilterServiceListComponentState
+    extends State<FilterServiceListComponent> {
   Future<List<ServiceData>>? future;
 
   List<ServiceData> servicesList = [];
@@ -34,7 +37,9 @@ class _FilterServiceListComponentState extends State<FilterServiceListComponent>
     future = getSearchList(
       status: SERVICE_APPROVE,
       page,
-      providerId: appStore.userType == USER_TYPE_HANDYMAN ? appStore.providerId : appStore.userId,
+      providerId: appStore.userType == USER_TYPE_HANDYMAN
+          ? appStore.providerId
+          : appStore.userId,
       services: servicesList,
       lastPageCallback: (b) {
         isLastPage = b;
@@ -92,7 +97,8 @@ class _FilterServiceListComponentState extends State<FilterServiceListComponent>
               itemCount: list.length,
               listAnimationType: ListAnimationType.FadeIn,
               fadeInConfiguration: FadeInConfiguration(duration: 2.seconds),
-              padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 80),
+              padding: const EdgeInsets.only(
+                  left: 16, right: 16, top: 16, bottom: 80),
               emptyWidget: NoDataWidget(
                 title: languages.noServiceFound,
                 subTitle: languages.noServiceSubTitle,
@@ -117,23 +123,32 @@ class _FilterServiceListComponentState extends State<FilterServiceListComponent>
                 ServiceData data = list[index];
 
                 return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   margin: const EdgeInsets.only(bottom: 16),
                   decoration: boxDecorationWithRoundedCorners(
                     borderRadius: radius(),
-                    backgroundColor: context.cardColor,
-                    border: appStore.isDarkMode ? Border.all(color: context.dividerColor) : null,
+                    backgroundColor: appStore.isDarkMode
+                        ? context.cardColor
+                        : lightPrimaryColor,
+                    border: appStore.isDarkMode
+                        ? Border.all(color: context.dividerColor)
+                        : null,
                   ),
                   child: Row(
                     children: [
                       ImageBorder(
-                        src: data.imageAttachments!.isNotEmpty ? data.imageAttachments!.first.validate() : "",
+                        src: data.imageAttachments!.isNotEmpty
+                            ? data.imageAttachments!.first.validate()
+                            : "",
                         height: 45,
                       ),
                       16.width,
-                      Text(data.name.validate(), style: boldTextStyle()).expand(),
+                      Text(data.name.validate(), style: boldTextStyle())
+                          .expand(),
                       4.width,
-                      SelectedItemWidget(isSelected: data.isSelected.validate()),
+                      SelectedItemWidget(
+                          isSelected: data.isSelected.validate()),
                     ],
                   ),
                 ).onTap(() {
@@ -147,17 +162,23 @@ class _FilterServiceListComponentState extends State<FilterServiceListComponent>
 
                   servicesList.forEach((element) {
                     if (element.isSelected.validate()) {
-                      filterStore.addToServiceList(serId: element.id.validate());
+                      filterStore.addToServiceList(
+                          serId: element.id.validate());
                     }
                   });
 
                   setState(() {});
-                }, hoverColor: Colors.transparent, highlightColor: Colors.transparent, splashColor: Colors.transparent);
+                },
+                    hoverColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    splashColor: Colors.transparent);
               },
             );
           },
         ),
-        Observer(builder: (_) => LoaderWidget().visible(appStore.isLoading && page != 1)),
+        Observer(
+            builder: (_) =>
+                LoaderWidget().visible(appStore.isLoading && page != 1)),
       ],
     );
   }

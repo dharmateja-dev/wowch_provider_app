@@ -2,6 +2,8 @@
 /// This file provides comprehensive dummy data for all screens in the app.
 /// Used for UI testing without backend.
 
+import 'dart:convert';
+
 import 'package:handyman_provider_flutter/models/booking_list_response.dart';
 import 'package:handyman_provider_flutter/models/dashboard_response.dart'
     as dashboard;
@@ -13,6 +15,10 @@ import 'package:handyman_provider_flutter/models/revenue_chart_data.dart';
 import 'package:handyman_provider_flutter/models/service_model.dart';
 import 'package:handyman_provider_flutter/models/user_data.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/main.dart';
+import 'package:handyman_provider_flutter/models/booking_detail_response.dart';
+import 'package:handyman_provider_flutter/models/provider_info_model.dart';
+import 'package:handyman_provider_flutter/utils/common.dart';
 
 /// Demo Dashboard Data for Provider
 class DemoDashboardData {
@@ -95,6 +101,54 @@ class DemoDashboardData {
         RevenueChartData(month: 'Nov', revenue: 23000),
         RevenueChartData(month: 'Dec', revenue: 25000),
       ];
+}
+
+/// Demo Handyman Data
+class DemoHandymanData {
+  /// Generate demo handyman info response
+  static HandymanInfoResponse get handymanInfoResponse => HandymanInfoResponse(
+        handymanData: UserData(
+          id: 1,
+          firstName: 'Michael',
+          lastName: 'Smith',
+          displayName: 'Michael Smith',
+          email: 'michael.handyman@demo.com',
+          contactNumber: '+1 555-0123',
+          profileImage: 'https://i.pravatar.cc/300?u=michael',
+          designation: 'Senior Electrician & Handyman',
+          description:
+              'Expert handyman with over 10 years of experience in residential electrical wiring, repair, and general home maintenance.',
+          address: '456 Handyman St, Tech City, NY',
+          createdAt:
+              DateTime.now().subtract(const Duration(days: 730)).toString(),
+          totalBooking: 456,
+          handymanRating: 4,
+          knownLanguages: jsonEncode(['English', 'Spanish', 'German']),
+          skills:
+              jsonEncode(['Electrical Wiring', 'Appliance Repair', 'Plumbing']),
+        ),
+        service: demoServices.take(2).toList(),
+        handymanRatingReview: [
+          RatingData(
+            id: 1,
+            rating: 5,
+            review:
+                'Professional and quick service. Michael even fixed a loose outlet for free!',
+            customerName: 'Alice Johnson',
+            customerProfileImage: 'https://i.pravatar.cc/300?u=alice',
+            createdAt: '2024-03-15 10:30:00',
+          ),
+          RatingData(
+            id: 2,
+            rating: 4,
+            review:
+                'Very knowledgeable. Arrived on time and solved the issue efficiently.',
+            customerName: 'Bob Williams',
+            customerProfileImage: 'https://i.pravatar.cc/300?u=bob',
+            createdAt: '2024-03-10 14:20:00',
+          ),
+        ],
+      );
 }
 
 /// Demo Services List
@@ -237,74 +291,155 @@ List<ServiceData> get demoServices => [
 List<UserData> get demoHandymen => [
       UserData(
         id: 2,
-        firstName: 'Mike',
-        lastName: 'Johnson',
-        username: 'mikej',
-        email: 'mike@handyman.com',
+        firstName: 'John',
+        lastName: 'Doe',
+        username: 'johnd',
+        email: 'john@handyman.com',
         userType: USER_TYPE_HANDYMAN,
         contactNumber: '91-9876543210',
         status: 1,
-        displayName: 'Mike Johnson',
-        profileImage: 'https://i.pravatar.cc/300?u=mike',
-        designation: 'Senior Handyman',
+        displayName: 'John Doe',
+        profileImage: 'https://i.pravatar.cc/300?u=john1',
         handymanRating: 4.8,
         isHandymanAvailable: true,
         isVerifiedHandyman: 1,
+        handymanType: 'Company',
+        handymanCommission: '60%',
         createdAt: '2023-06-15 10:30:00',
         emailVerifiedAt: '2023-06-15 11:00:00',
       ),
       UserData(
         id: 3,
-        firstName: 'David',
-        lastName: 'Williams',
-        username: 'davidw',
-        email: 'david@handyman.com',
+        firstName: 'John',
+        lastName: 'Doe',
+        username: 'johnd2',
+        email: 'john2@handyman.com',
         userType: USER_TYPE_HANDYMAN,
         contactNumber: '91-9876543211',
         status: 1,
-        displayName: 'David Williams',
-        profileImage: 'https://i.pravatar.cc/300?u=david',
-        designation: 'Electrician',
+        displayName: 'John Doe',
+        profileImage: 'https://i.pravatar.cc/300?u=john2',
         handymanRating: 4.6,
         isHandymanAvailable: true,
         isVerifiedHandyman: 1,
+        handymanType: 'Company',
+        handymanCommission: '60%',
         createdAt: '2023-07-20 09:15:00',
         emailVerifiedAt: '2023-07-20 09:45:00',
       ),
       UserData(
         id: 4,
-        firstName: 'Robert',
-        lastName: 'Brown',
-        username: 'robertb',
-        email: 'robert@handyman.com',
+        firstName: 'John',
+        lastName: 'Doe',
+        username: 'johnd3',
+        email: 'john3@handyman.com',
         userType: USER_TYPE_HANDYMAN,
         contactNumber: '91-9876543212',
         status: 1,
-        displayName: 'Robert Brown',
-        profileImage: 'https://i.pravatar.cc/300?u=robert',
-        designation: 'Plumber',
+        displayName: 'John Doe',
+        profileImage: 'https://i.pravatar.cc/300?u=john3',
         handymanRating: 4.5,
-        isHandymanAvailable: false,
+        isHandymanAvailable: true,
         isVerifiedHandyman: 1,
+        handymanType: 'Company',
+        handymanCommission: '60%',
         createdAt: '2023-08-10 14:20:00',
         emailVerifiedAt: '2023-08-10 15:00:00',
       ),
       UserData(
         id: 5,
-        firstName: 'James',
-        lastName: 'Davis',
-        username: 'jamesd',
-        email: 'james@handyman.com',
+        firstName: 'John',
+        lastName: 'Doe',
+        username: 'johnd4',
+        email: 'john4@handyman.com',
         userType: USER_TYPE_HANDYMAN,
         contactNumber: '91-9876543213',
         status: 1,
-        displayName: 'James Davis',
-        profileImage: 'https://i.pravatar.cc/300?u=james',
-        designation: 'Painter',
+        displayName: 'John Doe',
+        profileImage: 'https://i.pravatar.cc/300?u=john4',
         handymanRating: 4.7,
         isHandymanAvailable: true,
-        isVerifiedHandyman: 0,
+        isVerifiedHandyman: 1,
+        handymanType: 'Company',
+        handymanCommission: '60%',
         createdAt: '2023-09-05 11:45:00',
+        emailVerifiedAt: '2023-09-05 12:00:00',
+      ),
+      UserData(
+        id: 6,
+        firstName: 'John',
+        lastName: 'Doe',
+        username: 'johnd5',
+        email: 'john5@handyman.com',
+        userType: USER_TYPE_HANDYMAN,
+        contactNumber: '91-9876543214',
+        status: 1,
+        displayName: 'John Doe',
+        profileImage: 'https://i.pravatar.cc/300?u=john5',
+        handymanRating: 4.9,
+        isHandymanAvailable: true,
+        isVerifiedHandyman: 1,
+        handymanType: 'Company',
+        handymanCommission: '60%',
+        createdAt: '2023-10-01 08:00:00',
+        emailVerifiedAt: '2023-10-01 09:00:00',
+      ),
+      UserData(
+        id: 7,
+        firstName: 'John',
+        lastName: 'Doe',
+        username: 'johnd6',
+        email: 'john6@handyman.com',
+        userType: USER_TYPE_HANDYMAN,
+        contactNumber: '91-9876543215',
+        status: 1,
+        displayName: 'John Doe',
+        profileImage: 'https://i.pravatar.cc/300?u=john6',
+        handymanRating: 4.4,
+        isHandymanAvailable: true,
+        isVerifiedHandyman: 1,
+        handymanType: 'Company',
+        handymanCommission: '60%',
+        createdAt: '2023-11-15 10:30:00',
+        emailVerifiedAt: '2023-11-15 11:00:00',
+      ),
+      UserData(
+        id: 8,
+        firstName: 'John',
+        lastName: 'Doe',
+        username: 'johnd7',
+        email: 'john7@handyman.com',
+        userType: USER_TYPE_HANDYMAN,
+        contactNumber: '91-9876543216',
+        status: 1,
+        displayName: 'John Doe',
+        profileImage: 'https://i.pravatar.cc/300?u=john7',
+        handymanRating: 4.3,
+        isHandymanAvailable: true,
+        isVerifiedHandyman: 1,
+        handymanType: 'Company',
+        handymanCommission: '60%',
+        createdAt: '2023-12-01 14:00:00',
+        emailVerifiedAt: '2023-12-01 15:00:00',
+      ),
+      UserData(
+        id: 9,
+        firstName: 'John',
+        lastName: 'Doe',
+        username: 'johnd8',
+        email: 'john8@handyman.com',
+        userType: USER_TYPE_HANDYMAN,
+        contactNumber: '91-9876543217',
+        status: 1,
+        displayName: 'John Doe',
+        profileImage: 'https://i.pravatar.cc/300?u=john8',
+        handymanRating: 4.6,
+        isHandymanAvailable: true,
+        isVerifiedHandyman: 1,
+        handymanType: 'Company',
+        handymanCommission: '60%',
+        createdAt: '2023-12-15 09:00:00',
+        emailVerifiedAt: '2023-12-15 10:00:00',
       ),
     ];
 
@@ -312,65 +447,305 @@ List<UserData> get demoHandymen => [
 /// Status types: pending, accept, on_going, in_progress, hold, cancelled,
 /// rejected, failed, completed, pending_approval, waiting, paid
 List<BookingData> get demoBookings => [
-      // 1. PENDING - New booking awaiting acceptance
+      // 1. ACCEPTED - Booking ID #1 (matching screenshot with Call + Chat for handyman)
       BookingData(
-        id: 1001,
-        serviceName: 'Home Cleaning',
+        id: 1,
+        serviceName: 'Transmission Repair',
         serviceId: 1,
-        customerName: 'Alice Smith',
+        customerName: 'Pedro Norris',
         customerId: 101,
-        customerImage: 'https://i.pravatar.cc/300?u=alice',
+        customerImage: 'https://i.pravatar.cc/300?u=pedro',
         providerId: 1,
-        providerName: 'John Provider',
+        providerName: 'Pedro Norris',
         providerImage: 'https://i.pravatar.cc/300?u=provider',
-        status: BOOKING_STATUS_PENDING,
-        statusLabel: 'Pending',
-        date: '2024-01-20 10:00:00',
-        address: '123 Main Street, New York, NY 10001',
+        status: BOOKING_STATUS_ACCEPT,
+        statusLabel: 'Accepted',
+        date: '2025-12-12 08:25:00',
+        address: 'Vistar yojna, Lucknow, Uttar Pradesh, 226031, India',
         visitType: VISIT_OPTION_ON_SITE,
-        amount: 75.00,
-        totalAmount: 82.50,
-        discount: 10,
-        type: SERVICE_TYPE_FIXED,
+        amount: 42.00,
+        totalAmount: 30.25,
+        discount: 2,
+        type: SERVICE_TYPE_HOURLY,
         paymentStatus: PENDING,
         paymentMethod: PAYMENT_METHOD_COD,
         quantity: 1,
-        description: 'Deep cleaning of 3-bedroom apartment',
+        description: 'Transmission repair service',
         imageAttachments: [
           'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400',
         ],
-      ),
-
-      // 2. ACCEPT - Booking accepted, waiting to start
-      BookingData(
-        id: 1002,
-        serviceName: 'Electrical Repair',
-        serviceId: 2,
-        customerName: 'Bob Johnson',
-        customerId: 102,
-        customerImage: 'https://i.pravatar.cc/300?u=bob',
-        providerId: 1,
-        providerName: 'John Provider',
-        status: BOOKING_STATUS_ACCEPT,
-        statusLabel: 'Accepted',
-        date: '2024-01-21 14:30:00',
-        address: '456 Oak Avenue, Brooklyn, NY 11201',
-        visitType: VISIT_OPTION_ON_SITE,
-        amount: 100.00,
-        totalAmount: 100.00,
-        discount: 0,
-        type: SERVICE_TYPE_HOURLY,
-        paymentStatus: PENDING,
-        paymentMethod: PAYMENT_METHOD_STRIPE,
-        quantity: 2,
-        description: 'Fix electrical outlets in living room',
         handyman: [
           Handyman(
             id: 1,
-            bookingId: 1002,
+            bookingId: 1,
             handymanId: 2,
             handyman: demoHandymen[0],
           ),
+        ],
+      ),
+
+      // 2. ACCEPTED - Booking ID #2 (matching screenshot with Chat only for handyman)
+      BookingData(
+        id: 2,
+        serviceName: 'VIP Escort Protection',
+        serviceId: 2,
+        customerName: 'Pedro Norris',
+        customerId: 101,
+        customerImage: 'https://i.pravatar.cc/300?u=pedro',
+        providerId: 1,
+        providerName: 'Pedro Norris',
+        providerImage: 'https://i.pravatar.cc/300?u=provider',
+        status: BOOKING_STATUS_ACCEPT,
+        statusLabel: 'Accepted',
+        date: '2025-12-12 08:25:00',
+        address: 'Vistar yojna, Lucknow, Uttar Pradesh, 226031, India',
+        visitType: VISIT_OPTION_ON_SITE,
+        amount: 42.00,
+        totalAmount: 30.25,
+        discount: 2,
+        type: SERVICE_TYPE_HOURLY,
+        paymentStatus: PENDING,
+        paymentMethod: PAYMENT_METHOD_COD,
+        quantity: 1,
+        description: 'VIP escort protection service',
+        startAt: '2025-12-12 08:30:00',
+        endAt: '2025-12-12 10:30:00',
+        totalRating: 5,
+        totalReview: 1,
+        imageAttachments: [
+          'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400',
+        ],
+        handyman: [
+          Handyman(
+            id: 2,
+            bookingId: 2,
+            handymanId: 2,
+            handyman: demoHandymen[0],
+          ),
+        ],
+      ),
+
+      // 3. PENDING - Booking ID #3 (matching screenshot with Date & Time top section)
+      BookingData(
+        id: 3,
+        serviceName: 'VIP Escort Protection',
+        serviceId: 2,
+        customerName: 'Pedro Norris',
+        customerId: 101,
+        customerImage: 'https://i.pravatar.cc/300?u=pedro',
+        providerId: 1,
+        providerName: 'Pedro Norris',
+        providerImage: 'https://i.pravatar.cc/300?u=provider',
+        status: BOOKING_STATUS_PENDING,
+        statusLabel: 'Pending',
+        date: '2025-12-12 08:25:00',
+        address: 'Vistar yojna, Lucknow, Uttar Pradesh, 226031, India',
+        visitType: VISIT_OPTION_ON_SITE,
+        amount: 41.00,
+        totalAmount: 41.00,
+        discount: 0,
+        type: SERVICE_TYPE_HOURLY,
+        paymentStatus: PENDING,
+        paymentMethod: PAYMENT_METHOD_COD,
+        quantity: 1,
+        description: 'VIP escort protection service',
+        startAt: '2025-12-12 08:30:00',
+        endAt: '2025-12-12 10:30:00',
+        imageAttachments: [
+          'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400',
+        ],
+        // No handyman assigned for pending
+        handyman: [],
+      ),
+
+      // 4. CANCELLED - Booking ID #5 (matching screenshot with red banner and reviews)
+      BookingData(
+        id: 5,
+        serviceName: 'VIP Escort Protection',
+        serviceId: 1,
+        customerName: 'Pedro Norris',
+        customerId: 101,
+        customerImage: 'https://i.pravatar.cc/300?u=pedro',
+        providerId: 1,
+        providerName: 'Pedro Norris',
+        providerImage: 'https://i.pravatar.cc/300?u=provider',
+        status: BOOKING_STATUS_CANCELLED,
+        statusLabel: 'Cancelled',
+        date: '2025-12-12 08:25:00',
+        address: 'Vistar yojna, Lucknow, Uttar Pradesh, 226031, India',
+        visitType: VISIT_OPTION_ON_SITE,
+        amount: 42.00,
+        totalAmount: 30.25,
+        discount: 2,
+        type: SERVICE_TYPE_HOURLY,
+        paymentStatus: PENDING,
+        paymentMethod: PAYMENT_METHOD_COD,
+        quantity: 1,
+        reason: 'Customer requested cancellation',
+        description: 'VIP escort protection service',
+        totalRating: 5,
+        totalReview: 1,
+        imageAttachments: [
+          'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400',
+        ],
+        handyman: [
+          Handyman(
+            id: 3,
+            bookingId: 5,
+            handymanId: 2,
+            handyman: demoHandymen[0],
+          ),
+        ],
+      ),
+
+      // 4. COMPLETED - Booking ID #5 (matching screenshot with Payment Detail, History, Reviews)
+      BookingData(
+        id: 1005,
+        serviceName: 'VIP Escort Protection',
+        serviceId: 1,
+        customerName: 'Pedro Norris',
+        customerId: 101,
+        customerImage: 'https://i.pravatar.cc/300?u=pedro',
+        providerId: 1,
+        providerName: 'Pedro Norris',
+        providerImage: 'https://i.pravatar.cc/300?u=provider',
+        status: BOOKING_STATUS_COMPLETED,
+        statusLabel: 'Completed',
+        date: '2025-12-12 08:26:00',
+        address: 'Vistar yojna, Lucknow, Uttar Pradesh, 226031, India',
+        visitType: VISIT_OPTION_ON_SITE,
+        amount: 42.00,
+        totalAmount: 30.25,
+        discount: 2,
+        type: SERVICE_TYPE_HOURLY,
+        paymentStatus: PAID,
+        paymentMethod: PAYMENT_METHOD_COD,
+        quantity: 1,
+        description: 'VIP escort protection service',
+        startAt: '2025-12-12 08:30:00',
+        endAt: '2025-12-12 10:30:00',
+        totalRating: 5,
+        totalReview: 2,
+        imageAttachments: [
+          'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400',
+        ],
+        handyman: [
+          Handyman(
+            id: 4,
+            bookingId: 1005,
+            handymanId: 2,
+            handyman: demoHandymen[0],
+          ),
+        ],
+      ),
+
+      // 5. ON_GOING - Service in progress (Waiting for response)
+      BookingData(
+        id: 1006,
+        serviceName: 'VIP Escort Protection',
+        serviceId: 1,
+        customerName: 'Pedro Norris',
+        customerId: 101,
+        customerImage: 'https://i.pravatar.cc/300?u=pedro',
+        providerId: 1,
+        providerName: 'Pedro Norris',
+        providerImage: 'https://i.pravatar.cc/300?u=provider',
+        status: BOOKING_STATUS_ON_GOING,
+        statusLabel: 'On Going',
+        date: '2025-12-12 08:26:00',
+        address: 'Vistar yojna, Lucknow, Uttar Pradesh, 226031, India',
+        visitType: VISIT_OPTION_ON_SITE,
+        amount: 42.00,
+        totalAmount: 30.25,
+        discount: 2,
+        type: SERVICE_TYPE_HOURLY,
+        paymentStatus: PENDING,
+        paymentMethod: PAYMENT_METHOD_COD,
+        quantity: 1,
+        description: 'VIP escort protection service',
+        startAt: '2025-12-12 08:30:00',
+        totalRating: 5,
+        totalReview: 1,
+        imageAttachments: [
+          'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400',
+        ],
+        handyman: [
+          Handyman(
+            id: 5,
+            bookingId: 1006,
+            handymanId: 2,
+            handyman: demoHandymen[0],
+          ),
+        ],
+      ),
+
+      // 6. PENDING_APPROVAL - With Complete/Add Extra Changes buttons
+      BookingData(
+        id: 1007,
+        serviceName: 'VIP Escort Protection',
+        serviceId: 1,
+        customerName: 'Pedro Norris',
+        customerId: 101,
+        customerImage: 'https://i.pravatar.cc/300?u=pedro',
+        providerId: 1,
+        providerName: 'Pedro Norris',
+        providerImage: 'https://i.pravatar.cc/300?u=provider',
+        status: BOOKING_STATUS_PENDING_APPROVAL,
+        statusLabel: 'Pending Approval',
+        date: '2025-12-12 08:26:00',
+        address: 'Vistar yojna, Lucknow, Uttar Pradesh, 226031, India',
+        visitType: VISIT_OPTION_ON_SITE,
+        amount: 42.00,
+        totalAmount: 30.25,
+        discount: 2,
+        type: SERVICE_TYPE_HOURLY,
+        paymentStatus: PENDING,
+        paymentMethod: PAYMENT_METHOD_COD,
+        quantity: 1,
+        description: 'VIP escort protection service',
+        startAt: '2025-12-12 08:30:00',
+        endAt: '2025-12-12 10:30:00',
+        totalRating: 5,
+        totalReview: 1,
+        imageAttachments: [
+          'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400',
+        ],
+        handyman: [
+          Handyman(
+            id: 6,
+            bookingId: 1007,
+            handymanId: 2,
+            handyman: demoHandymen[0],
+          ),
+        ],
+      ),
+
+      // 7. PENDING - New booking with Decline/Accept buttons
+      BookingData(
+        id: 1008,
+        serviceName: 'Home Cleaning',
+        serviceId: 2,
+        customerName: 'Pedro Norris',
+        customerId: 101,
+        customerImage: 'https://i.pravatar.cc/300?u=pedro',
+        providerId: 1,
+        providerName: 'Pedro Norris',
+        providerImage: 'https://i.pravatar.cc/300?u=provider',
+        status: BOOKING_STATUS_PENDING,
+        statusLabel: 'Pending',
+        date: '2025-12-12 08:25:00',
+        address: 'Vistar yojna, Lucknow, Uttar Pradesh, 226031, India',
+        visitType: VISIT_OPTION_ON_SITE,
+        amount: 42.00,
+        totalAmount: 30.25,
+        discount: 2,
+        type: SERVICE_TYPE_HOURLY,
+        paymentStatus: PENDING,
+        paymentMethod: PAYMENT_METHOD_COD,
+        quantity: 1,
+        description: 'Deep cleaning of apartment',
+        imageAttachments: [
+          'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400',
         ],
       ),
 
@@ -426,20 +801,132 @@ List<BookingData> get demoBookings => [
         amount: 200.00,
         totalAmount: 200.00,
         discount: 0,
-        type: SERVICE_TYPE_HOURLY,
+        type: SERVICE_TYPE_FIXED,
         paymentStatus: PENDING,
         paymentMethod: PAYMENT_METHOD_COD,
-        quantity: 4,
-        description: 'Building custom shelves in living room',
+        quantity: 1,
+        description: 'Custom shelf installation',
         startAt: '2024-01-22 11:30:00',
         handyman: [
           Handyman(
-            id: 3,
+            id: 7,
             bookingId: 1006,
-            handymanId: 5,
-            handyman: demoHandymen[3],
+            handymanId: 3,
+            handyman: demoHandymen[1],
           ),
         ],
+      ),
+
+      // 8. HOLD - Booking on hold
+      BookingData(
+        id: 1010,
+        serviceName: 'Painting Service',
+        serviceId: 8,
+        customerName: 'Alice Green',
+        customerId: 110,
+        customerImage: 'https://i.pravatar.cc/300?u=alice',
+        providerId: 1,
+        providerName: 'John Provider',
+        status: BOOKING_STATUS_HOLD,
+        statusLabel: 'Hold',
+        date: '2024-01-25 10:00:00',
+        address: '456 Oak Avenue, Bronx, NY 10453',
+        visitType: VISIT_OPTION_ON_SITE,
+        amount: 150.00,
+        totalAmount: 150.00,
+        discount: 0,
+        type: SERVICE_TYPE_FIXED,
+        paymentStatus: PENDING,
+        paymentMethod: PAYMENT_METHOD_COD,
+        quantity: 1,
+        description: 'Living room painting - Awaiting paint selection',
+        reason: 'Customer evaluating color options',
+        startAt: '2024-01-25 10:15:00',
+        handyman: [
+          Handyman(
+            id: 8,
+            bookingId: 1010,
+            handymanId: 2,
+            handyman: demoHandymen[0],
+          ),
+        ],
+      ),
+
+      // 9. REJECTED - Booking rejected
+      BookingData(
+        id: 1011,
+        serviceName: 'Electrical Wiring',
+        serviceId: 9,
+        customerName: 'Bob Brown',
+        customerId: 111,
+        customerImage: 'https://i.pravatar.cc/300?u=bob',
+        providerId: 1,
+        providerName: 'John Provider',
+        status: BOOKING_STATUS_REJECTED,
+        statusLabel: 'Rejected',
+        date: '2024-01-26 14:00:00',
+        address: '789 Maple Drive, Brooklyn, NY 11201',
+        visitType: VISIT_OPTION_ON_SITE,
+        amount: 80.00,
+        totalAmount: 80.00,
+        discount: 0,
+        type: SERVICE_TYPE_HOURLY,
+        paymentStatus: PENDING,
+        paymentMethod: PAYMENT_METHOD_COD,
+        quantity: 1,
+        description: 'Rewiring old outlet',
+        reason: 'Service area out of range',
+      ),
+
+      // 10. FAILED - Booking failed
+      BookingData(
+        id: 1012,
+        serviceName: 'AC Repair',
+        serviceId: 10,
+        customerName: 'Charlie Black',
+        customerId: 112,
+        customerImage: 'https://i.pravatar.cc/300?u=charlie',
+        providerId: 1,
+        providerName: 'John Provider',
+        status: BOOKING_STATUS_FAILED,
+        statusLabel: 'Failed',
+        date: '2024-01-27 16:00:00',
+        address: '321 Elm Street, Manhattan, NY 10001',
+        visitType: VISIT_OPTION_ON_SITE,
+        amount: 60.00,
+        totalAmount: 60.00,
+        discount: 0,
+        type: SERVICE_TYPE_HOURLY,
+        paymentStatus: 'failed',
+        paymentMethod: PAYMENT_METHOD_STRIPE,
+        quantity: 1,
+        description: 'AC not cooling',
+        reason: 'Payment failed multiple times',
+      ),
+
+      // 11. WAITING - Booking waiting for provider
+      BookingData(
+        id: 1013,
+        serviceName: 'Gardening',
+        serviceId: 11,
+        customerName: 'David Blue',
+        customerId: 113,
+        customerImage: 'https://i.pravatar.cc/300?u=david',
+        providerId: 1,
+        providerName: 'John Provider',
+        status: BOOKING_STATUS_WAITING_ADVANCED_PAYMENT,
+        statusLabel: 'Waiting',
+        date: '2024-01-28 09:00:00',
+        address: '654 Birch Road, Queens, NY 11375',
+        visitType: VISIT_OPTION_ON_SITE,
+        amount: 50.00,
+        totalAmount: 50.00,
+        discount: 0,
+        type: SERVICE_TYPE_HOURLY,
+        paymentStatus: PENDING,
+        paymentMethod: PAYMENT_METHOD_COD,
+        quantity: 1,
+        description: 'Lawn mowing and trimming',
       ),
 
       // 5. HOLD - Service temporarily paused
@@ -2171,12 +2658,22 @@ class DemoBookingDetailData {
     );
 
     // Get handyman data if available
+    // For proper isMe detection, set handyman ID based on user type:
+    // - If Handyman user: use appStore.userId (they are the handyman)
+    // - If Provider user doing work themselves: use appStore.userId
+    // - If Provider managing another handyman: use a different ID
     Map<String, dynamic>? handymanData;
     if (booking.handyman != null && booking.handyman!.isNotEmpty) {
       final h = booking.handyman!.first.handyman;
       if (h != null) {
+        // Use current user's ID for handyman to ensure proper UI display
+        // This makes isMe == true for handyman users and Provider doing own work
+        final handymanId = isUserTypeHandyman
+            ? appStore.userId
+            : (isUserTypeProvider ? appStore.userId : h.id);
+
         handymanData = {
-          'id': h.id,
+          'id': handymanId,
           'first_name': h.firstName ?? 'Pedro',
           'last_name': h.lastName ?? 'Norris',
           'display_name': h.displayName ?? 'Pedro Norris',
@@ -2194,16 +2691,21 @@ class DemoBookingDetailData {
       }
     }
 
-    // Calculate pricing
+    // Calculate pricing to match screenshot:
+    // Price: $42.00
+    // Discount (2% Off): -$0.84
+    // Coupon (JER5T6P): -$4.00
+    // Sub Total: $25.00
+    // Tax (5%): $5.25 (based on sub total + some adjustments)
+    // Total Amount: $30.25
     final price = booking.amount ?? 42.00;
     final discountPercent = booking.discount ?? 2;
-    final discountAmount = (price * discountPercent / 100);
+    final discountAmount = 0.84; // Fixed to match screenshot
     final couponDiscount = 4.00;
-    final subTotal = price - discountAmount - couponDiscount;
+    final subTotal = 25.00; // Fixed to match screenshot
     final taxPercent = 5;
-    final taxAmount = (subTotal * taxPercent / 100);
-    final bookingFee = 4.86;
-    final totalAmount = subTotal + taxAmount;
+    final taxAmount = 5.25; // Fixed to match screenshot
+    final totalAmount = 30.25; // Fixed to match screenshot
 
     // Generate taxes array
     final taxes = [
@@ -2212,29 +2714,19 @@ class DemoBookingDetailData {
         'title': 'Service Tax ($taxPercent%)',
         'type': 'percent',
         'value': taxPercent,
-        'amount': taxAmount.toStringAsFixed(2),
-      },
-      {
-        'id': 2,
-        'title': 'Booking Fee',
-        'type': 'fixed',
-        'value': bookingFee,
-        'amount': bookingFee.toStringAsFixed(2),
+        'amount': taxAmount.toString(),
       },
     ];
 
-    // Generate coupon data if discount exists
-    Map<String, dynamic>? couponData;
-    if (discountPercent > 0) {
-      couponData = {
-        'id': 1,
-        'code': 'JER5T6P',
-        'discount': discountPercent,
-        'discount_type': 'percent',
-        'discount_amount': couponDiscount,
-        'status': 1,
-      };
-    }
+    // Generate coupon data
+    Map<String, dynamic>? couponData = {
+      'id': 1,
+      'code': 'JER5T6P',
+      'discount': discountPercent,
+      'discount_type': 'percent',
+      'discount_amount': couponDiscount,
+      'status': 1,
+    };
 
     // Generate payment history for completed/paid bookings
     List<Map<String, dynamic>> paymentHistory = [];
@@ -2262,12 +2754,14 @@ class DemoBookingDetailData {
     List<Map<String, dynamic>> ratingData = [];
     if (booking.status == 'completed' ||
         booking.status == 'paid' ||
-        booking.status == 'cancelled') {
+        booking.status == 'cancelled' ||
+        booking.status == 'on_going' ||
+        booking.status == 'pending_approval') {
       ratingData = [
         {
           'id': 1,
           'rating': 5.0,
-          'review': 'New booking received',
+          'review': 'Very Good',
           'service_id': booking.serviceId ?? 1,
           'booking_id': booking.id,
           'created_at':
@@ -2281,7 +2775,8 @@ class DemoBookingDetailData {
         },
       ];
 
-      if (booking.status == 'paid') {
+      // Add second review for completed bookings (matches screenshot showing Reviews (2))
+      if (booking.status == 'completed' || booking.status == 'paid') {
         ratingData.add({
           'id': 2,
           'rating': 5.0,
@@ -2290,9 +2785,12 @@ class DemoBookingDetailData {
           'booking_id': booking.id,
           'created_at':
               _formatDate(DateTime.now().subtract(const Duration(days: 1))),
-          'customer_name': 'Pedro Norris',
-          'customer_profile_image': 'https://i.pravatar.cc/300?u=pedro2',
+          'customer_name': booking.customerName ?? 'Pedro Norris',
+          'customer_profile_image':
+              booking.customerImage ?? 'https://i.pravatar.cc/300?u=pedro2',
           'service_name': booking.serviceName ?? 'Service',
+          'handyman_id': handymanData?['id'],
+          'handyman_name': handymanData?['display_name'],
         });
       }
     }
@@ -2317,6 +2815,14 @@ class DemoBookingDetailData {
         'service_name': booking.serviceName ?? 'VIP Escort Protection',
         'payment_status': booking.paymentStatus ?? 'pending',
         'payment_method': booking.paymentMethod ?? 'cash',
+        'payment_id': (booking.paymentStatus == PAID ||
+                booking.status == BOOKING_STATUS_COMPLETED)
+            ? 2
+            : null,
+        'txn_id': (booking.paymentStatus == PAID ||
+                booking.status == BOOKING_STATUS_COMPLETED)
+            ? '#11'
+            : null,
         'total_amount': totalAmount,
         'amount': price,
         'final_total_service_price': totalAmount,
@@ -2344,8 +2850,12 @@ class DemoBookingDetailData {
         'total_rating': booking.totalRating ?? 5.0,
         'is_service_hourly': booking.type == 'hourly',
         'is_package_booking': false,
-        'booking_type': 'customer_location',
+        'booking_type': 'service',
         'visit_type': booking.visitType ?? 'customer_location',
+        'final_discount_amount': discountAmount,
+        'final_coupon_discount_amount': couponDiscount,
+        'final_total_tax': taxAmount,
+        'final_sub_total': subTotal,
       },
       'service': {
         'id': booking.serviceId ?? 1,

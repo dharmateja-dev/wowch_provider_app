@@ -189,7 +189,9 @@ class _BookingFilterScreenState extends State<BookingFilterScreen> {
                               border: Border.all(
                                   color: index == selectedIndex
                                       ? primary
-                                      : Colors.transparent),
+                                      : appStore.isDarkMode
+                                          ? Colors.white54
+                                          : Colors.grey.withValues(alpha: 0.3)),
                               backgroundColor: index == selectedIndex
                                   ? lightPrimaryColor
                                   : context.cardColor,

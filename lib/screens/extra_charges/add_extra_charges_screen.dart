@@ -3,13 +3,15 @@ import 'package:handyman_provider_flutter/components/back_widget.dart';
 import 'package:handyman_provider_flutter/components/price_widget.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/screens/extra_charges/components/add_extra_charge_dialog.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../components/empty_error_state_widget.dart';
 import '../../models/extra_charges_model.dart';
-import '../../utils/configs.dart';
+
 import '../../utils/images.dart';
+import '../../utils/text_styles.dart';
 
 class AddExtraChargesScreen extends StatefulWidget {
   final bool isFromEditExtraCharge;
@@ -63,12 +65,12 @@ class _AddExtraChargesScreenState extends State<AddExtraChargesScreen> {
         languages.lblAddExtraCharges,
         backWidget: BackWidget(),
         showBack: true,
-        textColor: white,
-        color: context.primaryColor,
+        textColor: context.onPrimary,
+        color: context.primary,
         elevation: 0.0,
         actions: [
           IconButton(
-            icon: Icon(Icons.add, color: white),
+            icon: Icon(Icons.add, color: context.onPrimary),
             onPressed: () async {
               openDialog();
             },
@@ -93,7 +95,7 @@ class _AddExtraChargesScreenState extends State<AddExtraChargesScreen> {
 
               return Container(
                 decoration: boxDecorationRoundedWithShadow(16,
-                    backgroundColor: context.cardColor),
+                    backgroundColor: context.cardSecondary),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -126,10 +128,25 @@ class _AddExtraChargesScreenState extends State<AddExtraChargesScreen> {
                             onPressed: () async {
                               showConfirmDialogCustom(
                                 context,
+                                height: 80,
+                                width: 290,
+                                shape: appDialogShape(8),
                                 title: languages.confirmationRequestTxt,
-                                primaryColor: primary,
+                                titleColor: context.dialogTitleColor,
+                                backgroundColor: context.dialogBackgroundColor,
+                                primaryColor: context.error,
+                                customCenterWidget: Image.asset(
+                                  ic_warning,
+                                  color: context.dialogIconColor,
+                                  height: 70,
+                                  width: 70,
+                                  fit: BoxFit.cover,
+                                ),
                                 positiveText: languages.lblYes,
+                                positiveTextColor: context.onPrimary,
                                 negativeText: languages.lblNo,
+                                negativeTextColor: context.dialogCancelColor,
+                                dialogType: DialogType.DELETE,
                                 onAccept: (BuildContext context) {
                                   chargesList.removeAt(i);
                                   setState(() {});
@@ -147,8 +164,10 @@ class _AddExtraChargesScreenState extends State<AddExtraChargesScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(languages.lblChargeName,
-                                style: secondaryTextStyle()),
-                            Text(data.title.validate(), style: boldTextStyle()),
+                                style: context.primaryTextStyle(
+                                    size: 14, color: context.textGrey)),
+                            Text(data.title.validate(),
+                                style: context.boldTextStyle()),
                           ],
                         ),
                         8.height,
@@ -156,11 +175,12 @@ class _AddExtraChargesScreenState extends State<AddExtraChargesScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(languages.lblPrice,
-                                style: secondaryTextStyle()),
+                                style: context.primaryTextStyle(
+                                    size: 14, color: context.textGrey)),
                             PriceWidget(
                                 price: data.price.validate(),
                                 size: 14,
-                                color: textPrimaryColorGlobal,
+                                color: context.onSurface,
                                 isBoldText: true),
                           ],
                         ),
@@ -169,9 +189,10 @@ class _AddExtraChargesScreenState extends State<AddExtraChargesScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(languages.quantity,
-                                style: secondaryTextStyle()),
+                                style: context.primaryTextStyle(
+                                    size: 14, color: context.textGrey)),
                             Text(data.qty.toString().validate(),
-                                style: boldTextStyle()),
+                                style: context.boldTextStyle()),
                           ],
                         ),
                         8.height,
@@ -179,13 +200,14 @@ class _AddExtraChargesScreenState extends State<AddExtraChargesScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(languages.lblTotalCharges,
-                                style: secondaryTextStyle()),
+                                style: context.primaryTextStyle(
+                                    size: 14, color: context.textGrey)),
                             PriceWidget(
                                 price:
                                     '${data.price.validate() * data.qty.validate()}'
                                         .toDouble(),
                                 size: 16,
-                                color: textPrimaryColorGlobal,
+                                color: context.primary,
                                 isBoldText: true),
                           ],
                         ),
@@ -203,14 +225,29 @@ class _AddExtraChargesScreenState extends State<AddExtraChargesScreen> {
         padding: EdgeInsets.all(16),
         child: AppButton(
           text: languages.btnSave,
-          color: context.primaryColor,
+          color: context.primary,
           onTap: () {
             showConfirmDialogCustom(
               context,
+              height: 80,
+              width: 290,
+              shape: appDialogShape(8),
               title: languages.thisOrderWillBe,
-              primaryColor: primary,
+              titleColor: context.dialogTitleColor,
+              backgroundColor: context.dialogBackgroundColor,
+              primaryColor: context.primary,
+              customCenterWidget: Image.asset(
+                ic_warning,
+                color: context.dialogIconColor,
+                height: 70,
+                width: 70,
+                fit: BoxFit.cover,
+              ),
               positiveText: languages.lblYes,
+              positiveTextColor: context.onPrimary,
               negativeText: languages.lblNo,
+              negativeTextColor: context.dialogCancelColor,
+              dialogType: DialogType.CONFIRMATION,
               onAccept: (BuildContext context) {
                 // if (chargesList.isNotEmpty) {
                 if (chargesList.isEmpty) {

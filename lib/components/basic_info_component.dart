@@ -10,7 +10,9 @@ import 'package:handyman_provider_flutter/utils/colors.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -109,9 +111,8 @@ class BasicInfoComponentState extends State<BasicInfoComponent> {
       }).catchError((e) {
         log(e.toString());
       });
-      showContactWidgets = widget.bookingInfo != null &&
-          widget.bookingInfo!.providerData!.id.validate() !=
-              widget.handymanData!.id.validate();
+      showContactWidgets = widget.bookingDetail != null &&
+          widget.bookingDetail!.canCustomerContact;
       showVerifiedBadge =
           widget.handymanData!.isVerifiedAccount.validate().getBoolInt();
       showChat = widget.bookingDetail!.status != BookingStatusKeys.complete &&
@@ -160,10 +161,10 @@ class BasicInfoComponentState extends State<BasicInfoComponent> {
                     userData.handymanRating.validate().toDouble() > 0)
                   Row(
                     children: [
-                      const Icon(Icons.star, color: rattingColor, size: 16),
+                      Icon(Icons.star, color: context.starColor, size: 16),
                       2.width,
                       Text('${userData.handymanRating.validate().toDouble()}',
-                          style: secondaryTextStyle(weight: FontWeight.bold)),
+                          style: context.boldTextStyle()),
                     ],
                   ),
               ],
@@ -191,7 +192,10 @@ class BasicInfoComponentState extends State<BasicInfoComponent> {
             ]
           ],
         ),
-        if (widget.bookingDetail!.canCustomerContact && widget.flag == 0)
+        // Show email and address for customer when canCustomerContact is true OR for completed bookings
+        if (widget.flag == 0 &&
+            (widget.bookingDetail!.canCustomerContact ||
+                widget.bookingDetail!.status == BookingStatusKeys.complete))
           Column(
             children: [
               16.height,
@@ -202,21 +206,15 @@ class BasicInfoComponentState extends State<BasicInfoComponent> {
                     Text(
                       languages.email,
                       style: boldTextStyle(
-                          size: 12,
-                          color: appStore.isDarkMode
-                              ? textSecondaryColor
-                              : textPrimaryColor),
+                        size: 12,
+                      ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ).expand(),
                     8.width,
                     Text(
                       userData.email.validate(),
-                      style: boldTextStyle(
-                          size: 12,
-                          color:
-                              appStore.isDarkMode ? white : textSecondaryColor,
-                          weight: FontWeight.w400),
+                      style: context.boldTextStyle(size: 12),
                       textAlign: TextAlign.left,
                     ).expand(flex: 4),
                   ],
@@ -231,20 +229,12 @@ class BasicInfoComponentState extends State<BasicInfoComponent> {
                   children: [
                     Text(
                       '${languages.lblAddress}:',
-                      style: boldTextStyle(
-                          size: 12,
-                          color: appStore.isDarkMode
-                              ? textSecondaryColor
-                              : textPrimaryColor),
+                      style: context.boldTextStyle(size: 12),
                     ).expand(),
                     8.width,
                     Text(
                       widget.bookingDetail!.address.validate(),
-                      style: boldTextStyle(
-                          size: 12,
-                          color:
-                              appStore.isDarkMode ? white : textSecondaryColor,
-                          weight: FontWeight.w400),
+                      style: context.boldTextStyle(size: 12),
                       textAlign: TextAlign.left,
                     ).expand(flex: 4),
                   ],
@@ -268,14 +258,20 @@ class BasicInfoComponentState extends State<BasicInfoComponent> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Image.asset(calling, height: 18, width: 18),
+                      Image.asset(calling,
+                          height: 18, width: 18, color: context.primary),
                       16.width,
-                      Text(languages.lblCall, style: boldTextStyle()),
+                      Text(languages.lblCall,
+                          style: context.boldTextStyle(color: context.primary)),
                     ],
                   ),
                   width: context.width(),
-                  color: context.scaffoldBackgroundColor,
+                  color: context.cardSecondary,
                   elevation: 0,
+                  shapeBorder: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    side: BorderSide(color: context.primary),
+                  ),
                   onTap: () {
                     launchCall(contactNumber.validate());
                   },
@@ -288,7 +284,10 @@ class BasicInfoComponentState extends State<BasicInfoComponent> {
                       ? context.width()
                       : context.width() / 2,
                   elevation: 0,
-                  color: primary,
+                  color: context.primary,
+                  shapeBorder: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                   onTap: () async {
                     //ChatScreen(chatUser: ChatUserModel(id: userData.uid!, email: userData.email!, name: userData.firstName!)).launch(context);
                     toast(languages.pleaseWaitWhileWeLoadChatDetails);
@@ -316,10 +315,10 @@ class BasicInfoComponentState extends State<BasicInfoComponent> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Image.asset(chat,
-                          color: Colors.white, height: 18, width: 18),
+                          color: context.onPrimary, height: 18, width: 18),
                       16.width,
                       Text(languages.lblChat,
-                          style: boldTextStyle(color: Colors.white)),
+                          style: boldTextStyle(color: context.onPrimary)),
                     ],
                   ),
                 ).expand(),

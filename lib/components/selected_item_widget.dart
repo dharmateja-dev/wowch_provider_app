@@ -22,9 +22,7 @@ class SelectedItemWidget extends StatelessWidget {
         activeColor: context.primary,
         checkColor: context.onPrimary,
         side: BorderSide(color: context.primary, width: 1.5),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4),
-        ),
+        shape: const CircleBorder(),
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
       ),

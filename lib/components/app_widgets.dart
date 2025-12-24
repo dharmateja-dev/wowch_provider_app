@@ -4,6 +4,8 @@ import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/models/booking_list_response.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -45,29 +47,27 @@ Widget aboutCustomerWidget(
   return Row(
     children: [
       Text(languages.lblAboutCustomer,
-              style: boldTextStyle(size: LABEL_TEXT_SIZE))
+              style: context?.boldTextStyle(size: LABEL_TEXT_SIZE))
           .expand(),
       if (bookingDetail!.canCustomerContact &&
-          bookingDetail.status != BookingStatusKeys.complete &&
-          bookingDetail.status != BookingStatusKeys.cancelled)
-        Align(
-          alignment: Alignment.topRight,
-          child: TextButton(
-            child: Text(languages.lblGetDirection,
-                style: boldTextStyle(color: primary, size: 12)),
-            onPressed: () async {
-              String address = (bookingDetail.shopInfo != null &&
-                      bookingDetail.shopInfo!.address.validate().isNotEmpty)
-                  ? bookingDetail.shopInfo!.address.validate()
-                  : bookingDetail.address.validate();
+          bookingDetail.status != BookingStatusKeys.complete)
+        GestureDetector(
+          onTap: () async {
+            String address = (bookingDetail.shopInfo != null &&
+                    bookingDetail.shopInfo!.address.validate().isNotEmpty)
+                ? bookingDetail.shopInfo!.address.validate()
+                : bookingDetail.address.validate();
 
-              if (isAndroid) {
-                launchMap(address);
-              } else {
-                commonLaunchUrl('$GOOGLE_MAP_PREFIX${Uri.encodeFull(address)}',
-                    launchMode: LaunchMode.externalApplication);
-              }
-            },
+            if (isAndroid) {
+              launchMap(address);
+            } else {
+              commonLaunchUrl('$GOOGLE_MAP_PREFIX${Uri.encodeFull(address)}',
+                  launchMode: LaunchMode.externalApplication);
+            }
+          },
+          child: Text(
+            languages.lblGetDirection,
+            style: context?.boldTextStyle(color: context.primary, size: 12),
           ),
         ),
     ],

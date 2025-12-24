@@ -6,6 +6,7 @@ import '../../components/date_component/custom_date_range_picker.dart';
 import '../../main.dart';
 import '../../utils/common.dart';
 import '../../utils/configs.dart';
+import '../../utils/colors.dart';
 import '../../utils/constant.dart';
 
 class FilterDateRangeComponent extends StatefulWidget {
@@ -75,7 +76,8 @@ class _FilterDateRangeComponentState extends State<FilterDateRangeComponent> {
             decoration: inputDecoration(
               context,
               hintText: languages.selectStartDateEndDate,
-              fillColor: context.cardColor,
+              fillColor:
+                  appStore.isDarkMode ? context.cardColor : lightPrimaryColor,
             ),
             suffix: IconButton(
               onPressed: () {

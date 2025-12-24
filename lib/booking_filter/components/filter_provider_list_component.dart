@@ -9,14 +9,17 @@ import '../../components/selected_item_widget.dart';
 import '../../main.dart';
 import '../../models/user_data.dart';
 import '../../networks/rest_apis.dart';
+import '../../utils/colors.dart';
 import '../../utils/constant.dart';
 
 class FilterProviderListComponent extends StatefulWidget {
   @override
-  State<FilterProviderListComponent> createState() => _FilterProviderListComponentState();
+  State<FilterProviderListComponent> createState() =>
+      _FilterProviderListComponentState();
 }
 
-class _FilterProviderListComponentState extends State<FilterProviderListComponent> {
+class _FilterProviderListComponentState
+    extends State<FilterProviderListComponent> {
   Future<List<UserData>>? future;
 
   List<UserData> providerList = [];
@@ -91,7 +94,8 @@ class _FilterProviderListComponentState extends State<FilterProviderListComponen
               itemCount: list.length,
               listAnimationType: ListAnimationType.FadeIn,
               fadeInConfiguration: FadeInConfiguration(duration: 2.seconds),
-              padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 80),
+              padding: const EdgeInsets.only(
+                  left: 16, right: 16, top: 16, bottom: 80),
               emptyWidget: NoDataWidget(
                 title: languages.providerNotFound,
                 imageWidget: const EmptyStateWidget(),
@@ -115,12 +119,17 @@ class _FilterProviderListComponentState extends State<FilterProviderListComponen
                 UserData data = list[index];
 
                 return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   margin: const EdgeInsets.only(bottom: 16),
                   decoration: boxDecorationWithRoundedCorners(
                     borderRadius: radius(),
-                    backgroundColor: context.cardColor,
-                    border: appStore.isDarkMode ? Border.all(color: context.dividerColor) : null,
+                    backgroundColor: appStore.isDarkMode
+                        ? context.cardColor
+                        : lightPrimaryColor,
+                    border: appStore.isDarkMode
+                        ? Border.all(color: context.dividerColor)
+                        : null,
                   ),
                   child: Row(
                     children: [
@@ -129,7 +138,8 @@ class _FilterProviderListComponentState extends State<FilterProviderListComponen
                         height: 45,
                       ),
                       16.width,
-                      Text(data.displayName.validate(), style: boldTextStyle()).expand(),
+                      Text(data.displayName.validate(), style: boldTextStyle())
+                          .expand(),
                       4.width,
                       SelectedItemWidget(isSelected: data.isSelected),
                     ],
@@ -145,17 +155,23 @@ class _FilterProviderListComponentState extends State<FilterProviderListComponen
 
                   providerList.forEach((element) {
                     if (element.isSelected) {
-                      filterStore.addToProviderList(prodId: element.id.validate());
+                      filterStore.addToProviderList(
+                          prodId: element.id.validate());
                     }
                   });
 
                   setState(() {});
-                }, hoverColor: Colors.transparent, highlightColor: Colors.transparent, splashColor: Colors.transparent);
+                },
+                    hoverColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    splashColor: Colors.transparent);
               },
             );
           },
         ),
-        Observer(builder: (_) => LoaderWidget().visible(appStore.isLoading && page != 1)),
+        Observer(
+            builder: (_) =>
+                LoaderWidget().visible(appStore.isLoading && page != 1)),
       ],
     );
   }

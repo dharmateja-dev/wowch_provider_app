@@ -31,6 +31,9 @@ abstract class _AppStore with Store {
   bool isTester = false;
 
   @observable
+  bool isDemoMode = false;
+
+  @observable
   int userId = getIntAsync(USER_ID);
 
   @observable
@@ -205,6 +208,11 @@ abstract class _AppStore with Store {
     if (selectedIndex == val.id) {
       selectedServiceData = ServiceData();
     }
+  }
+
+  @action
+  Future<void> setDemoMode(bool val) async {
+    isDemoMode = val;
   }
 
   @action

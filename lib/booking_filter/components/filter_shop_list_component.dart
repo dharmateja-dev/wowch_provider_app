@@ -12,6 +12,7 @@ import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:nb_utils/nb_utils.dart';
+import '../../utils/colors.dart';
 
 class FilterShopListComponent extends StatefulWidget {
   const FilterShopListComponent({Key? key}) : super(key: key);
@@ -112,7 +113,9 @@ class _FilterShopListComponentState extends State<FilterShopListComponent> {
                   margin: EdgeInsets.only(bottom: 16),
                   decoration: boxDecorationWithRoundedCorners(
                     borderRadius: radius(),
-                    backgroundColor: context.cardColor,
+                    backgroundColor: appStore.isDarkMode
+                        ? context.cardColor
+                        : lightPrimaryColor,
                     border: appStore.isDarkMode
                         ? Border.all(color: context.dividerColor)
                         : null,

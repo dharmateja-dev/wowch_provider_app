@@ -3,6 +3,8 @@ import 'package:handyman_provider_flutter/components/booking_history_list_widget
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/models/booking_detail_response.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../utils/constant.dart';
@@ -17,7 +19,7 @@ class BookingHistoryBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: boxDecorationDefault(
-        color: context.scaffoldBackgroundColor,
+        color: context.scaffoldSecondary,
         borderRadius:
             radiusOnly(topLeft: defaultRadius, topRight: defaultRadius),
       ),
@@ -32,7 +34,7 @@ class BookingHistoryBottomSheet extends StatelessWidget {
           Row(
             children: [
               Text(languages.bookingStatus,
-                      style: boldTextStyle(size: LABEL_TEXT_SIZE))
+                      style: context.boldTextStyle(size: LABEL_TEXT_SIZE))
                   .expand(),
               GestureDetector(
                 onTap: () {
@@ -40,9 +42,9 @@ class BookingHistoryBottomSheet extends StatelessWidget {
                 },
                 child: Container(
                   decoration: boxDecorationDefault(
-                    color: context.cardColor,
+                    color: context.scaffoldSecondary,
                     borderRadius: radius(4),
-                    border: Border.all(color: context.iconColor),
+                    border: Border.all(color: context.dividerColor),
                   ),
                   child: const Icon(Icons.close_rounded, size: 16),
                 ),
@@ -54,18 +56,22 @@ class BookingHistoryBottomSheet extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text('${languages.lblBookingID}:',
-                  style: secondaryTextStyle(size: 14)),
+                  style: context.primaryTextStyle(size: 14)),
               Text(
                 ' #' + data[0].bookingId.toString().validate(),
-                style: boldTextStyle(color: primary),
+                style: context.boldTextStyle(color: context.primary),
               ),
             ],
           ),
           16.height,
           if (data.isNotEmpty)
             Container(
-              padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
-              decoration: boxDecorationDefault(color: context.cardColor),
+              padding: const EdgeInsets.only(
+                  left: 12, right: 12, top: 12, bottom: 12),
+              decoration: boxDecorationDefault(
+                color: context.cardSecondary,
+                border: Border.all(color: context.cardSecondaryBorder),
+              ),
               child: AnimatedWrap(
                 listAnimationType: ListAnimationType.FadeIn,
                 itemCount: data.length,

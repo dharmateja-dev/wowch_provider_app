@@ -8,12 +8,17 @@ import 'package:handyman_provider_flutter/models/user_data.dart';
 import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/model_keys.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../components/base_scaffold_widget.dart';
 import '../../components/empty_error_state_widget.dart';
 import '../../components/handyman_add_update_screen.dart';
+import '../../utils/common.dart';
 import '../../utils/constant.dart';
+import '../../utils/context_extensions.dart';
+import '../../utils/demo_data.dart';
+import '../../utils/images.dart';
 
 class AssignHandymanScreen extends StatefulWidget {
   final int? bookingId;
@@ -56,7 +61,13 @@ class _AssignHandymanScreenState extends State<AssignHandymanScreen> {
       lastPageCallback: (b) {
         isLastPage = b;
       },
-    );
+    ).catchError((e) {
+      // Use demo data when API fails
+      handymanList.clear();
+      handymanList.addAll(demoHandymen);
+      isLastPage = true;
+      return demoHandymen;
+    });
   }
 
   Future<void> _handleAssignHandyman() async {
@@ -64,11 +75,26 @@ class _AssignHandymanScreenState extends State<AssignHandymanScreen> {
 
     showConfirmDialogCustom(
       context,
+      height: 80,
+      width: 290,
+      shape: appDialogShape(8),
       title:
           '${languages.lblAreYouSureYouWantToAssignThisServiceTo(userListData!.firstName.validate())}',
+      titleColor: context.dialogTitleColor,
+      backgroundColor: context.dialogBackgroundColor,
+      primaryColor: context.primary,
+      customCenterWidget: Image.asset(
+        ic_warning,
+        color: context.dialogIconColor,
+        height: 70,
+        width: 70,
+        fit: BoxFit.cover,
+      ),
       positiveText: languages.lblYes,
+      positiveTextColor: context.onPrimary,
       negativeText: languages.lblNo,
-      primaryColor: context.primaryColor,
+      negativeTextColor: context.dialogCancelColor,
+      dialogType: DialogType.CONFIRMATION,
       onAccept: (c) async {
         var request = {
           CommonKeys.id: widget.bookingId,
@@ -99,10 +125,25 @@ class _AssignHandymanScreenState extends State<AssignHandymanScreen> {
 
     showConfirmDialogCustom(
       context,
+      height: 80,
+      width: 290,
+      shape: appDialogShape(8),
       title: languages.lblAreYouSureYouWantToAssignToYourself,
-      primaryColor: context.primaryColor,
+      titleColor: context.dialogTitleColor,
+      backgroundColor: context.dialogBackgroundColor,
+      primaryColor: context.primary,
+      customCenterWidget: Image.asset(
+        ic_warning,
+        color: context.dialogIconColor,
+        height: 70,
+        width: 70,
+        fit: BoxFit.cover,
+      ),
       positiveText: languages.lblYes,
+      positiveTextColor: context.onPrimary,
       negativeText: languages.lblCancel,
+      negativeTextColor: context.dialogCancelColor,
+      dialogType: DialogType.CONFIRMATION,
       onAccept: (c) async {
         var request = {
           CommonKeys.id: widget.bookingId,
@@ -159,14 +200,14 @@ class _AssignHandymanScreenState extends State<AssignHandymanScreen> {
                 children: [
                   Text(
                     "${userData.handymanType.validate()}",
-                    style: secondaryTextStyle(),
+                    style: context.primaryTextStyle(size: 12),
                     overflow: TextOverflow.ellipsis,
                   ),
                   4.width,
                   Flexible(
                     child: Text(
                       "(${userData.handymanCommission.validate()} ${languages.commission})",
-                      style: secondaryTextStyle(),
+                      style: context.primaryTextStyle(size: 12),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -176,13 +217,13 @@ class _AssignHandymanScreenState extends State<AssignHandymanScreen> {
             if (userData.designation.validate().isNotEmpty)
               Text(
                 "${userData.designation.validate()}",
-                style: secondaryTextStyle(),
+                style: context.primaryTextStyle(size: 12),
                 overflow: TextOverflow.ellipsis,
               )
             else
               Text(
                 "${languages.lblMemberSince} ${DateTime.parse(userData.createdAt.validate()).year}",
-                style: secondaryTextStyle(),
+                style: context.primaryTextStyle(size: 12),
                 overflow: TextOverflow.ellipsis,
               ),
           ],
@@ -218,7 +259,7 @@ class _AssignHandymanScreenState extends State<AssignHandymanScreen> {
         controlAffinity: ListTileControlAffinity.trailing,
         title: buildHandymanItem(userData: userData),
         toggleable: false,
-        activeColor: primary,
+        activeColor: context.primary,
         selected: true,
       ),
     );
@@ -240,6 +281,7 @@ class _AssignHandymanScreenState extends State<AssignHandymanScreen> {
     return SafeArea(
       top: false,
       child: AppScaffold(
+        scaffoldBackgroundColor: context.scaffoldSecondary,
         appBarTitle: languages.lblAssignHandyman,
         body: Stack(
           fit: StackFit.expand,
@@ -289,7 +331,8 @@ class _AssignHandymanScreenState extends State<AssignHandymanScreen> {
                             endIndent: 16.0,
                             indent: 16.0,
                             height: 0,
-                            color: context.dividerColor),
+                            thickness: 0.5,
+                            color: context.mainBorderColor),
                       ],
                     );
                   },
@@ -332,10 +375,10 @@ class _AssignHandymanScreenState extends State<AssignHandymanScreen> {
                     width: context.width(),
                     shapeBorder: RoundedRectangleBorder(
                         borderRadius: radius(),
-                        side: BorderSide(color: context.primaryColor)),
-                    color: context.scaffoldBackgroundColor,
+                        side: BorderSide(color: context.primary)),
+                    color: context.cardSecondary,
                     elevation: 0,
-                    textColor: context.primaryColor,
+                    textColor: context.primary,
                     text: languages.lblAssignToMyself,
                   ).expand(),
                   if (userListData != null) 16.width,
@@ -348,7 +391,7 @@ class _AssignHandymanScreenState extends State<AssignHandymanScreen> {
                           toast(languages.lblSelectHandyman);
                         }
                       },
-                      color: primary,
+                      color: context.primary,
                       width: context.width(),
                       text: languages.lblAssign,
                     ).expand(),
