@@ -53,12 +53,11 @@ class _PaymentStatusFilterState extends State<PaymentStatusFilter> {
                     Container(
                       padding: const EdgeInsets.all(2),
                       margin: const EdgeInsets.only(right: 1),
-                      child: Icon(Icons.done,
-                          size: 16, color: context.primaryColor),
+                      child: Icon(Icons.done, size: 16, color: context.primary),
                     ),
                   Text(
                     getPaymentStatusFilterText(res.status.validate()),
-                    style: context.primaryTextStyle(
+                    style: context.boldTextStyle(
                       color: context.primary,
                       size: 12,
                     ),

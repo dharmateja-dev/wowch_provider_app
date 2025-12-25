@@ -8,6 +8,8 @@ import 'package:handyman_provider_flutter/models/package_response.dart';
 import 'package:handyman_provider_flutter/models/service_model.dart';
 import 'package:handyman_provider_flutter/screens/gallery_List_Screen.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../components/empty_error_state_widget.dart';
@@ -52,7 +54,7 @@ class _PackageDetailScreenState extends State<PackageDetailScreen> {
             top: context.statusBarHeight + 8,
             left: 8,
             child: Container(
-              child: BackWidget(color: context.iconColor).paddingLeft(8),
+              child: BackWidget(color: context.icon).paddingLeft(8),
               decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: context.cardColor.withValues(alpha: 0.7)),
@@ -76,7 +78,8 @@ class _PackageDetailScreenState extends State<PackageDetailScreen> {
                             .length,
                         (i) => Container(
                           decoration: BoxDecoration(
-                              border: Border.all(color: white, width: 2),
+                              border:
+                                  Border.all(color: context.textGrey, width: 2),
                               borderRadius: radius()),
                           child: GalleryComponent(
                             images: widget.packageData!.attchments
@@ -100,12 +103,14 @@ class _PackageDetailScreenState extends State<PackageDetailScreen> {
                           width: 60,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
-                              border: Border.all(color: white, width: 2),
+                              border:
+                                  Border.all(color: context.textGrey, width: 2),
                               borderRadius: radius()),
                           child: Text(
                               '+'
                               '${widget.packageData!.attchments.validate().length - 2}',
-                              style: boldTextStyle(color: white)),
+                              style: context.boldTextStyle(
+                                  color: context.onPrimary)),
                         ),
                       ).onTap(
                         () {
@@ -132,8 +137,8 @@ class _PackageDetailScreenState extends State<PackageDetailScreen> {
                   width: context.width(),
                   padding: const EdgeInsets.all(16),
                   decoration: boxDecorationDefault(
-                    color: context.scaffoldBackgroundColor,
-                    border: Border.all(color: context.dividerColor),
+                    color: context.cardSecondary,
+                    border: Border.all(color: context.cardSecondaryBorder),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -141,7 +146,7 @@ class _PackageDetailScreenState extends State<PackageDetailScreen> {
                       8.height,
                       Marquee(
                         child: Text(widget.packageData!.name.validate(),
-                            style: boldTextStyle(size: 20)),
+                            style: context.boldTextStyle(size: 20)),
                         directionMarguee: DirectionMarguee.oneDirection,
                       ),
                       8.height,
@@ -152,32 +157,32 @@ class _PackageDetailScreenState extends State<PackageDetailScreen> {
                           child: Row(
                             children: [
                               Text(widget.packageData!.categoryName.validate(),
-                                  style: boldTextStyle(
-                                      size: 14,
-                                      color: textSecondaryColorGlobal)),
+                                  style: context.boldTextStyle(
+                                    size: 14,
+                                  )),
                               Text('  >  ',
-                                  style: boldTextStyle(
-                                      size: 14,
-                                      color: textSecondaryColorGlobal)),
+                                  style: context.boldTextStyle(
+                                    size: 14,
+                                  )),
                               Text(
                                   widget.packageData!.subCategoryName
                                       .validate(),
-                                  style: boldTextStyle(
-                                      size: 14, color: context.primaryColor)),
+                                  style: context.boldTextStyle(
+                                      size: 14, color: context.primary)),
                             ],
                           ),
                         )
                       else if (widget.packageData!.categoryName != null)
                         Text(widget.packageData!.categoryName.validate(),
-                            style: boldTextStyle(
-                                size: 14, color: context.primaryColor))
+                            style: context.boldTextStyle(
+                                size: 14, color: context.primary))
                       else
                         const Offstage(),
                       8.height,
                       PriceWidget(
                         price: widget.packageData!.price.validate(),
                         size: 18,
-                        hourlyTextColor: textSecondaryColorGlobal,
+                        hourlyTextColor: context.textGrey,
                       ),
                     ],
                   ),
@@ -198,6 +203,7 @@ class _PackageDetailScreenState extends State<PackageDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: context.scaffoldSecondary,
       body: AnimatedScrollView(
         padding: const EdgeInsets.only(bottom: 90),
         listAnimationType: ListAnimationType.FadeIn,
@@ -215,16 +221,16 @@ class _PackageDetailScreenState extends State<PackageDetailScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(languages.hintDescription,
-                          style: boldTextStyle(size: LABEL_TEXT_SIZE)),
+                          style: context.boldTextStyle(size: LABEL_TEXT_SIZE)),
                       8.height,
                       widget.packageData!.description.validate().isNotEmpty
                           ? ReadMoreText(
                               widget.packageData!.description.validate(),
-                              style: secondaryTextStyle(),
+                              style: context.primaryTextStyle(),
                               colorClickableText: context.primaryColor,
                             )
                           : Text(languages.lblNoDescriptionAvailable,
-                              style: secondaryTextStyle()),
+                              style: context.primaryTextStyle()),
                     ],
                   ),
                   16.height,
@@ -249,10 +255,9 @@ class _PackageDetailScreenState extends State<PackageDetailScreen> {
                           margin: const EdgeInsets.symmetric(vertical: 8),
                           decoration: boxDecorationWithRoundedCorners(
                             borderRadius: radius(),
-                            backgroundColor: context.cardColor,
-                            border: appStore.isDarkMode
-                                ? Border.all(color: context.dividerColor)
-                                : null,
+                            backgroundColor: context.cardSecondary,
+                            border:
+                                Border.all(color: context.cardSecondaryBorder),
                           ),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -272,7 +277,7 @@ class _PackageDetailScreenState extends State<PackageDetailScreen> {
                                 children: [
                                   Marquee(
                                       child: Text(data.name.validate(),
-                                          style: boldTextStyle(
+                                          style: context.boldTextStyle(
                                               size: LABEL_TEXT_SIZE))),
                                   4.height,
                                   if (data.subCategoryName
@@ -282,31 +287,31 @@ class _PackageDetailScreenState extends State<PackageDetailScreen> {
                                       child: Row(
                                         children: [
                                           Text('${data.categoryName}',
-                                              style: boldTextStyle(
-                                                  size: 14,
-                                                  color:
-                                                      textSecondaryColorGlobal)),
+                                              style: context.boldTextStyle(
+                                                size: 14,
+                                              )),
                                           Text('  >  ',
-                                              style: boldTextStyle(
-                                                  size: 14,
-                                                  color:
-                                                      textSecondaryColorGlobal)),
+                                              style: context.boldTextStyle(
+                                                size: 14,
+                                              )),
                                           Text('${data.subCategoryName}',
-                                              style: boldTextStyle(
-                                                  size: 14,
-                                                  color: context.primaryColor)),
+                                              style: context.boldTextStyle(
+                                                color: context.primary,
+                                                size: 14,
+                                              )),
                                         ],
                                       ),
                                     )
                                   else
                                     Text('${data.categoryName}',
-                                        style: boldTextStyle(
-                                            size: 14,
-                                            color: context.primaryColor)),
+                                        style: context.boldTextStyle(
+                                          color: context.primary,
+                                          size: 14,
+                                        )),
                                   4.height,
                                   PriceWidget(
                                     price: data.price.validate(),
-                                    hourlyTextColor: Colors.white,
+                                    hourlyTextColor: context.textGrey,
                                     size: 14,
                                   ),
                                 ],

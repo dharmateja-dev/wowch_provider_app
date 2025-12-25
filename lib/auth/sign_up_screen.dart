@@ -474,17 +474,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               splashColor: Colors.transparent,
                               highlightColor: Colors.transparent,
                               hoverColor: Colors.transparent,
-                              unselectedWidgetColor: appStore.isDarkMode
-                                  ? context.dividerColor
-                                  : context.icon,
+                              unselectedWidgetColor: context.dividerColor,
                             ),
                             child: CheckboxListTile(
                               checkboxShape: RoundedRectangleBorder(
                                   borderRadius: radius(4)),
-                              activeColor: context.primaryColor,
-                              checkColor: appStore.isDarkMode
-                                  ? context.icon
-                                  : context.cardColor,
+                              activeColor: context.primary,
+                              checkColor: context.onPrimary,
                               contentPadding:
                                   const EdgeInsets.symmetric(horizontal: 16),
                               title: Text(zone.name.validate(),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/color_extension.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -6,7 +7,6 @@ import 'package:nb_utils/nb_utils.dart';
 import '../../../main.dart';
 import '../../../utils/common.dart';
 import '../../../utils/constant.dart';
-import '../../utils/configs.dart';
 import '../help_desk_detail_screen.dart';
 import '../model/help_desk_response.dart';
 
@@ -46,10 +46,8 @@ class _HelpDeskItemComponentState extends State<HelpDeskItemComponent> {
         margin: const EdgeInsets.only(bottom: 16),
         decoration: boxDecorationWithRoundedCorners(
           borderRadius: radius(),
-          backgroundColor: context.cardColor,
-          border: appStore.isDarkMode
-              ? Border.all(color: context.dividerColor)
-              : null,
+          backgroundColor: context.card,
+          border: Border.all(color: context.dividerColor),
         ),
         child: Stack(
           children: [
@@ -57,7 +55,7 @@ class _HelpDeskItemComponentState extends State<HelpDeskItemComponent> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('#${widget.helpDeskData.id}',
-                    style: boldTextStyle(color: primary)),
+                    style: boldTextStyle(color: context.primary)),
                 8.height,
                 Text(
                   formatBookingDate(widget.helpDeskData.createdAt.validate(),
@@ -112,7 +110,7 @@ class _HelpDeskItemComponentState extends State<HelpDeskItemComponent> {
                           EdgeInsets.symmetric(vertical: 2, horizontal: 0))),
                   child: Text(
                     languages.viewDetail,
-                    style: boldTextStyle(color: primary, size: 12),
+                    style: boldTextStyle(color: context.primary, size: 12),
                   ),
                 ).withHeight(25),
               ],

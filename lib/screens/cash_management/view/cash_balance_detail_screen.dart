@@ -11,9 +11,10 @@ import 'package:handyman_provider_flutter/screens/cash_management/component/stat
 import 'package:handyman_provider_flutter/screens/cash_management/model/cash_filter_model.dart';
 import 'package:handyman_provider_flutter/screens/cash_management/model/payment_history_model.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
-import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/demo_data.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class CashBalanceDetailScreen extends StatefulWidget {
@@ -97,7 +98,7 @@ class _CashBalanceDetailScreenState extends State<CashBalanceDetailScreen> {
       {required num todayCash, required num totalCashInHand}) {
     return Container(
       height: 120,
-      color: context.primaryColor,
+      color: context.primary,
       width: context.width(),
       child: Stack(
         clipBehavior: Clip.none,
@@ -108,10 +109,10 @@ class _CashBalanceDetailScreenState extends State<CashBalanceDetailScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(languages.totalCash,
-                  style: primaryTextStyle(color: Colors.white)),
+                  style: context.primaryTextStyle(color: context.onPrimary)),
               2.height,
               PriceWidget(
-                  price: totalCashInHand, size: 18, color: Colors.white),
+                  price: totalCashInHand, size: 18, color: context.onPrimary),
               16.height,
             ],
           ),
@@ -121,12 +122,12 @@ class _CashBalanceDetailScreenState extends State<CashBalanceDetailScreen> {
               padding: const EdgeInsets.all(16),
               width: context.width() * 0.86,
               decoration: boxDecorationDefault(
-                  color: context.cardColor, borderRadius: radius()),
+                  color: context.cardSecondary, borderRadius: radius()),
               child: Column(
                 children: [
                   Text(
                     "${getDateInString(dateTime: filterDate!, format: DATE_FORMAT_2)} ${languages.transactions}",
-                    style: secondaryTextStyle(),
+                    style: context.primaryTextStyle(),
                     textAlign: TextAlign.center,
                   ),
                   4.height,
@@ -149,7 +150,7 @@ class _CashBalanceDetailScreenState extends State<CashBalanceDetailScreen> {
           Row(
             children: [
               Text(languages.cashList,
-                      style: boldTextStyle(size: LABEL_TEXT_SIZE))
+                      style: context.boldTextStyle(size: LABEL_TEXT_SIZE))
                   .paddingSymmetric(horizontal: 16)
                   .expand(),
               InkWell(
@@ -166,7 +167,7 @@ class _CashBalanceDetailScreenState extends State<CashBalanceDetailScreen> {
                 },
                 child: Text(
                     '${cashFilterList.firstWhere((element) => element.type == selectedSortingType).name}',
-                    style: secondaryTextStyle()),
+                    style: context.primaryTextStyle()),
               ),
               IconButton(
                 onPressed: () {
@@ -174,8 +175,7 @@ class _CashBalanceDetailScreenState extends State<CashBalanceDetailScreen> {
                     context: context,
                     builder: (context) {
                       return Container(
-                        decoration:
-                            boxDecorationDefault(color: context.cardColor),
+                        decoration: boxDecorationDefault(color: context.cardSecondary),
                         width: context.width(),
                         height: context.height() * 0.8,
                         child: SingleChildScrollView(
@@ -185,7 +185,7 @@ class _CashBalanceDetailScreenState extends State<CashBalanceDetailScreen> {
                             children: [
                               16.height,
                               Text(languages.filterBy,
-                                      style: boldTextStyle(size: 18))
+                                      style: context.boldTextStyle(size: 18))
                                   .paddingSymmetric(horizontal: 16),
                               16.height,
                               ...List.generate(
@@ -254,7 +254,7 @@ class _CashBalanceDetailScreenState extends State<CashBalanceDetailScreen> {
                                           cashFilterList[index].type.validate(),
                                       title: Text(
                                           cashFilterList[index].name.validate(),
-                                          style: primaryTextStyle()),
+                                          style: context.primaryTextStyle()),
                                     ),
                                   );
                                 },
@@ -303,16 +303,13 @@ class _CashBalanceDetailScreenState extends State<CashBalanceDetailScreen> {
       lastDate: DateTime.now(),
       builder: (context, child) {
         return Theme(
-          data: appStore.isDarkMode
-              ? ThemeData.dark(useMaterial3: true)
-              : ThemeData(
-                  primaryColor: primary,
-                  textTheme: const TextTheme(
-                      bodyMedium: TextStyle(color: Colors.black)),
-                  useMaterial3: true,
-                  colorScheme: ColorScheme.fromSwatch()
-                      .copyWith(primary: primary, onSurface: Colors.black),
-                ),
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: context.primary,
+              brightness:
+                  context.isDarkMode ? Brightness.dark : Brightness.light,
+            ),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -376,7 +373,7 @@ class _CashBalanceDetailScreenState extends State<CashBalanceDetailScreen> {
               },
             );
           },
-          icon: const Icon(Icons.info_outline, color: Colors.white),
+          icon: Icon(Icons.info_outline, color: context.onPrimary),
         ).paddingRight(16),
       ],
       body: SnapHelperWidget<(num, num, List<PaymentHistoryData>)>(

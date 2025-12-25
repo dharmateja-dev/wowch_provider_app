@@ -15,6 +15,7 @@ import 'package:handyman_provider_flutter/provider/shop/components/shop_componen
 import 'package:handyman_provider_flutter/screens/rating_view_all_screen.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/demo_mode.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -421,11 +422,10 @@ class ServiceDetailScreenState extends State<ServiceDetailScreen> {
                     color: Theme.of(context).scaffoldBackgroundColor,
                     shape: BoxShape.circle,
                   ),
-                  child: BackWidget(color: context.iconColor)),
+                  child: BackWidget(color: context.icon)),
               scrolledUnderElevation: 0,
               systemOverlayStyle: SystemUiOverlayStyle(
-                statusBarIconBrightness:
-                    appStore.isDarkMode ? Brightness.light : Brightness.dark,
+                statusBarIconBrightness: context.statusBarBrightness,
                 statusBarColor: context.scaffoldBackgroundColor,
               ),
             ),

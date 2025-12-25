@@ -4,6 +4,7 @@ import 'package:handyman_provider_flutter/components/price_widget.dart';
 import 'package:handyman_provider_flutter/components/view_all_label_component.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/models/package_response.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -64,10 +65,8 @@ class _PackageComponentState extends State<PackageComponent> {
               padding: const EdgeInsets.all(16),
               decoration: boxDecorationWithRoundedCorners(
                 borderRadius: radius(),
-                backgroundColor: context.cardColor,
-                border: appStore.isDarkMode
-                    ? Border.all(color: context.dividerColor)
-                    : null,
+                backgroundColor: context.card,
+                border: Border.all(color: context.dividerColor),
               ),
               child: Row(
                 children: [

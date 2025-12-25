@@ -15,6 +15,7 @@ import 'package:handyman_provider_flutter/screens/cash_management/model/cash_fil
 import 'package:handyman_provider_flutter/screens/cash_management/model/payment_history_model.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -68,7 +69,7 @@ class _PayToScreenState extends State<PayToScreen> {
         Container(
           padding: const EdgeInsets.all(16),
           margin: const EdgeInsets.symmetric(horizontal: 16),
-          decoration: boxDecorationDefault(color: context.cardColor),
+          decoration: boxDecorationDefault(color: context.card),
           child: Row(
             children: [
               PriceWidget(
@@ -110,8 +111,7 @@ class _PayToScreenState extends State<PayToScreen> {
                 },
                 child: RadioListTile<CashFilterModel>(
                   value: data,
-                  tileColor:
-                      data == selectedPaymentList ? context.cardColor : null,
+                  tileColor: data == selectedPaymentList ? context.card : null,
                   controlAffinity: ListTileControlAffinity.trailing,
                   title: Text(data.name.validate(), style: primaryTextStyle()),
                 ),
@@ -188,8 +188,7 @@ class _PayToScreenState extends State<PayToScreen> {
                           padding: const EdgeInsets.all(16),
                           margin: const EdgeInsets.symmetric(
                               horizontal: 0, vertical: 8),
-                          decoration:
-                              boxDecorationDefault(color: context.cardColor),
+                          decoration: boxDecorationDefault(color: context.card),
                           child: Column(
                             children: [
                               Row(
@@ -345,7 +344,7 @@ class _PayToScreenState extends State<PayToScreen> {
                   text: (isUserTypeProvider
                       ? languages.sendToAdmin
                       : languages.sendToProvider),
-                  color: context.primaryColor,
+                  color: context.primary,
                 ),
               ).visible(!appStore.isLoading),
             ],
@@ -396,10 +395,7 @@ class CashProviderWidget extends StatelessWidget {
                       launchMail("${data.email.validate()}");
                     },
                     prefix: Image.asset(ic_message,
-                        width: 12,
-                        height: 12,
-                        color:
-                            appStore.isDarkMode ? Colors.white : Colors.black),
+                        width: 12, height: 12, color: context.onSurface),
                     text: data.email.validate(),
                     textStyle: secondaryTextStyle(),
                     expandedText: true,
@@ -411,10 +407,7 @@ class CashProviderWidget extends StatelessWidget {
                       launchCall(data.contactNumber.validate());
                     },
                     prefix: Image.asset(calling,
-                        width: 12,
-                        height: 12,
-                        color:
-                            appStore.isDarkMode ? Colors.white : Colors.black),
+                        width: 12, height: 12, color: context.onSurface),
                     text: '${data.contactNumber.validate()}',
                     textStyle: secondaryTextStyle(),
                     expandedText: true,

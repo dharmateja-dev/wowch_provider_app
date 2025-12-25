@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/color_extension.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -17,7 +18,10 @@ class PromotionalBannerItemComponent extends StatelessWidget {
   final String selectedStatus;
   final VoidCallback? onCallBack;
 
-  PromotionalBannerItemComponent({required this.promotionalBannerData, required this.selectedStatus, this.onCallBack});
+  PromotionalBannerItemComponent(
+      {required this.promotionalBannerData,
+      required this.selectedStatus,
+      this.onCallBack});
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +37,8 @@ class PromotionalBannerItemComponent extends StatelessWidget {
         width: context.width(),
         decoration: boxDecorationWithRoundedCorners(
           borderRadius: radius(),
-          backgroundColor: context.cardColor,
-          border: appStore.isDarkMode ? Border.all(color: context.dividerColor) : null,
+          backgroundColor: context.card,
+          border: Border.all(color: context.dividerColor),
         ),
         child: Column(
           children: [
@@ -54,13 +58,18 @@ class PromotionalBannerItemComponent extends StatelessWidget {
                     top: 8,
                     right: 8,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 4),
                       decoration: boxDecorationWithRoundedCorners(
                         borderRadius: radius(8),
-                        backgroundColor: promotionalBannerData.status.validate().getPromBannerStatusBackgroundColor,
+                        backgroundColor: promotionalBannerData.status
+                            .validate()
+                            .getPromBannerStatusBackgroundColor,
                       ),
                       child: Text(
-                        promotionalBannerData.status.validate().toPromotionalBannerStatus(),
+                        promotionalBannerData.status
+                            .validate()
+                            .toPromotionalBannerStatus(),
                         style: boldTextStyle(color: Colors.white, size: 12),
                       ),
                     ),
@@ -74,7 +83,14 @@ class PromotionalBannerItemComponent extends StatelessWidget {
                   promotionalBannerData.description.validate(),
                   style: boldTextStyle(),
                 ),
-              ).paddingOnly(left: 16, top: 8, right: 16, bottom: promotionalBannerData.status.validate() == PROMOTIONAL_BANNER_ACCEPTED ? 8 : 0),
+              ).paddingOnly(
+                  left: 16,
+                  top: 8,
+                  right: 16,
+                  bottom: promotionalBannerData.status.validate() ==
+                          PROMOTIONAL_BANNER_ACCEPTED
+                      ? 8
+                      : 0),
             Align(
               alignment: Alignment.topLeft,
               child: RichText(
@@ -88,13 +104,20 @@ class PromotionalBannerItemComponent extends StatelessWidget {
                       ),
                     ),
                     TextSpan(
-                        text: promotionalBannerData.paymentStatus.validate().toPaymentStatus(),
-                        style: boldTextStyle(size: 12, color: promotionalBannerData.paymentStatus == 'paid' ? greenColor : redColor)),
+                        text: promotionalBannerData.paymentStatus
+                            .validate()
+                            .toPaymentStatus(),
+                        style: boldTextStyle(
+                            size: 12,
+                            color: promotionalBannerData.paymentStatus == 'paid'
+                                ? greenColor
+                                : redColor)),
                   ],
                 ),
               ).paddingOnly(left: 16, right: 16, top: 8, bottom: 16),
             ),
-            if (promotionalBannerData.status.validate() == PROMOTIONAL_BANNER_PENDING)
+            if (promotionalBannerData.status.validate() ==
+                PROMOTIONAL_BANNER_PENDING)
               Align(
                 alignment: Alignment.topLeft,
                 child: RichText(
@@ -105,12 +128,15 @@ class PromotionalBannerItemComponent extends StatelessWidget {
                         text: languages.note,
                         style: boldTextStyle(size: 12, color: redColor),
                       ),
-                      TextSpan(text: languages.thisBannerIsCurrently, style: secondaryTextStyle()),
+                      TextSpan(
+                          text: languages.thisBannerIsCurrently,
+                          style: secondaryTextStyle()),
                     ],
                   ),
                 ).paddingOnly(left: 16, right: 16, top: 8, bottom: 16),
               ),
-            if (promotionalBannerData.status.validate() == PROMOTIONAL_BANNER_REJECT) ...[
+            if (promotionalBannerData.status.validate() ==
+                PROMOTIONAL_BANNER_REJECT) ...[
               if (promotionalBannerData.reason.validate().isNotEmpty)
                 Align(
                   alignment: Alignment.topLeft,
@@ -124,7 +150,9 @@ class PromotionalBannerItemComponent extends StatelessWidget {
                           text: '${languages.reason} ',
                           style: boldTextStyle(size: 12, color: redColor),
                         ),
-                        TextSpan(text: promotionalBannerData.reason.validate(), style: secondaryTextStyle()),
+                        TextSpan(
+                            text: promotionalBannerData.reason.validate(),
+                            style: secondaryTextStyle()),
                       ],
                     ),
                   ),
@@ -134,7 +162,8 @@ class PromotionalBannerItemComponent extends StatelessWidget {
                 color: cancelled.withValues(alpha: 0.1),
                 textStyle: boldTextStyle(color: cancelled),
                 width: context.width(),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 onTap: () {
                   showConfirmDialogCustom(
                     context,
@@ -146,7 +175,9 @@ class PromotionalBannerItemComponent extends StatelessWidget {
                       /// Promotional Banner Delete API
                       ifNotTester(context, () {
                         appStore.setLoading(true);
-                        deleteBanner(bannerId: promotionalBannerData.id.validate()).then((value) {
+                        deleteBanner(
+                                bannerId: promotionalBannerData.id.validate())
+                            .then((value) {
                           toast(value.message.toString());
                           onCallBack?.call();
                         }).catchError((e) {

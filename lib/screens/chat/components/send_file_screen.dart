@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:handyman_provider_flutter/main.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -41,15 +42,16 @@ class _SendFilePreviewScreenState extends State<SendFilePreviewScreen> {
     return Scaffold(
       appBar: appBarWidget(
         "",
-        backWidget: BackWidget(color: white),
-        color: context.primaryColor,
+        backWidget: BackWidget(color: context.onPrimary),
+        color: context.primary,
         systemUiOverlayStyle: SystemUiOverlayStyle(
-            statusBarColor: context.primaryColor,
+            statusBarColor: context.primary,
             statusBarBrightness: Brightness.dark,
             statusBarIconBrightness: Brightness.light),
         titleWidget: Text(
           languages.sendMessage,
-          style: boldTextStyle(color: white, size: APP_BAR_TEXT_SIZE),
+          style:
+              boldTextStyle(color: context.onPrimary, size: APP_BAR_TEXT_SIZE),
         ),
       ),
       body: SizedBox(
@@ -78,7 +80,7 @@ class _SendFilePreviewScreenState extends State<SendFilePreviewScreen> {
                             padding: EdgeInsets.all(4),
                             decoration: boxDecorationRoundedWithShadow(
                                 defaultRadius.toInt(),
-                                backgroundColor: lightPrimaryColor),
+                                backgroundColor: context.primaryContainer),
                             child: CommonPdfPlaceHolder(
                               text: "${files[index].path.getChatFileName}",
                               fileExt: files[index].path.getFileExtension,
@@ -92,12 +94,12 @@ class _SendFilePreviewScreenState extends State<SendFilePreviewScreen> {
                         width: 40,
                         child: Container(
                           decoration: boxDecorationRoundedWithShadow(100,
-                              backgroundColor: context.cardColor),
+                              backgroundColor: context.card),
                           child: ic_delete
                               .iconImage(
                                   context: context,
                                   size: 16,
-                                  color: Colors.redAccent)
+                                  color: context.error)
                               .paddingAll(8)
                               .onTap(() {
                             showConfirmDialogCustom(
@@ -133,9 +135,9 @@ class _SendFilePreviewScreenState extends State<SendFilePreviewScreen> {
             Row(
               children: [
                 AppButton(
-                  textColor: Colors.white,
+                  textColor: context.onPrimary,
                   text: languages.lblSubmit,
-                  color: context.primaryColor,
+                  color: context.primary,
                   onTap: () {
                     finish(context, {
                       MessageType.TEXT.name: messageCont.text,
@@ -165,7 +167,7 @@ class _SendFilePreviewScreenState extends State<SendFilePreviewScreen> {
           focus: messageFocus,
           cursorHeight: 20,
           maxLines: 5,
-          cursorColor: appStore.isDarkMode ? Colors.white : Colors.black,
+          cursorColor: context.onSurface,
           textCapitalization: TextCapitalization.sentences,
           keyboardType: TextInputType.multiline,
           decoration: inputDecoration(context).copyWith(

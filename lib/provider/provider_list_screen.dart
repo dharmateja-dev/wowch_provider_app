@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/components/base_scaffold_widget.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../components/app_widgets.dart';
@@ -66,14 +68,13 @@ class _ProviderListScreenState extends State<ProviderListScreen> {
   Widget build(BuildContext context) {
     return AppScaffold(
       appBarTitle: languages.providerList,
-      scaffoldBackgroundColor:
-          appStore.isDarkMode ? blackColor : context.cardColor,
+      scaffoldBackgroundColor: context.scaffoldSecondary,
       body: Column(
         children: [
           AppTextField(
             suffix: searchCont.text.isNotEmpty
                 ? CloseButton(
-                    color: primary,
+                    color: context.primary,
                     onPressed: () {
                       searchCont.clear();
                       hideKeyboard(context);
@@ -107,16 +108,15 @@ class _ProviderListScreenState extends State<ProviderListScreen> {
             },
             decoration: InputDecoration(
               hintText: languages.lblSearchHere,
-              prefixIcon:
-                  Icon(Icons.search, color: context.iconColor, size: 20),
-              hintStyle: secondaryTextStyle(),
+              prefixIcon: Icon(Icons.search, color: context.icon, size: 20),
+              hintStyle: context.primaryTextStyle(),
               border: OutlineInputBorder(
                 borderRadius: radius(8),
                 borderSide: const BorderSide(width: 0, style: BorderStyle.none),
               ),
               filled: true,
               contentPadding: const EdgeInsets.all(16),
-              fillColor: appStore.isDarkMode ? cardDarkColor : Colors.white,
+              fillColor: context.searchFillColor,
             ),
           ).paddingOnly(left: 16, right: 16, top: 24, bottom: 8),
           SnapHelperWidget(
@@ -165,7 +165,7 @@ class _ProviderListScreenState extends State<ProviderListScreen> {
 
                       return SettingItemWidget(
                         title: selectedProviderData.displayName.validate(),
-                        titleTextStyle: primaryTextStyle(),
+                        titleTextStyle: context.primaryTextStyle(),
                         padding: const EdgeInsets.symmetric(vertical: 6),
                         leading: CachedImageWidget(
                           url: selectedProviderData.profileImage.validate(),

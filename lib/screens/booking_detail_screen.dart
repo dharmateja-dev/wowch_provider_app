@@ -42,7 +42,6 @@ import 'package:handyman_provider_flutter/screens/rating_view_all_screen.dart';
 import 'package:handyman_provider_flutter/screens/track_location.dart';
 import 'package:handyman_provider_flutter/utils/colors.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
-import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
 import 'package:handyman_provider_flutter/utils/extensions/color_extension.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
@@ -528,9 +527,15 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
         showConfirmDialogCustom(
           context,
           title: languages.youHavePermanentlyDenied,
-          primaryColor: primary,
+          shape: appDialogShape(8),
+          titleColor: context.dialogTitleColor,
+          backgroundColor: context.dialogBackgroundColor,
+          primaryColor: context.primary,
           positiveText: languages.lblYes,
+          positiveTextColor: context.onPrimary,
           negativeText: languages.lblNo,
+          negativeTextColor: context.dialogCancelColor,
+          dialogType: DialogType.CONFIRMATION,
           onAccept: (context) async {
             openAppSettings();
           },

@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:handyman_provider_flutter/app_theme.dart';
 import 'package:handyman_provider_flutter/components/app_widgets.dart';
 import 'package:handyman_provider_flutter/components/custom_image_picker.dart';
 import 'package:handyman_provider_flutter/main.dart';
@@ -181,7 +180,13 @@ class _AddPackageScreenState extends State<AddPackageScreen> {
       locale: Locale(appStore.selectedLanguageCode),
       builder: (_, child) {
         return Theme(
-          data: appStore.isDarkMode ? ThemeData.dark() : AppTheme.lightTheme(),
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: context.primary,
+              brightness:
+                  context.isDarkMode ? Brightness.dark : Brightness.light,
+            ),
+          ),
           child: child!,
         );
       },

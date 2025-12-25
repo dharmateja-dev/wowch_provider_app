@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:handyman_provider_flutter/components/base_scaffold_widget.dart';
 import 'package:handyman_provider_flutter/provider/promotional_banner/shimmer/promotional_banner_list_shimmer.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../components/app_widgets.dart';
 import '../../components/empty_error_state_widget.dart';
 import '../../main.dart';
-import '../../utils/colors.dart';
-import '../../utils/configs.dart';
 import '../../utils/constant.dart';
 import '../../utils/images.dart';
 import 'add_promotional_banner_screen.dart';
@@ -118,7 +117,7 @@ class _PromotionalBannerListScreenState
                             borderRadius: radius(defaultRadius),
                             side: BorderSide(
                                 color: selectedTab.status == filterStatus.status
-                                    ? primary
+                                    ? context.primary
                                     : Colors.transparent),
                           ),
                           padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -127,16 +126,14 @@ class _PromotionalBannerListScreenState
                             style: boldTextStyle(
                               size: 12,
                               color: selectedTab.status == filterStatus.status
-                                  ? primary
-                                  : appStore.isDarkMode
-                                      ? Colors.white
-                                      : appTextPrimaryColor,
+                                  ? context.primary
+                                  : context.onSurface,
                             ),
                           ),
                           backgroundColor:
                               selectedTab.status == filterStatus.status
-                                  ? lightPrimaryColor
-                                  : context.cardColor,
+                                  ? context.primaryContainer
+                                  : context.card,
                           onSelected: (bool selected) {
                             selectedTab = filterStatus;
                             page = 1;
@@ -186,10 +183,7 @@ class _PromotionalBannerListScreenState
                                     ? ic_outline_banner.iconImage(
                                         context: context,
                                         size: 60,
-                                        color: appStore.isDarkMode
-                                            ? white.withValues(alpha: 0.9)
-                                            : appTextSecondaryColor.withValues(
-                                                alpha: 0.8),
+                                        color: context.secondaryTextColor,
                                       )
                                     : const EmptyStateWidget(),
                             retryText:

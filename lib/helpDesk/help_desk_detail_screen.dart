@@ -2,19 +2,19 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../main.dart';
 import '../../utils/common.dart';
 import '../../utils/constant.dart';
+import '../../utils/context_extensions.dart';
 import '../../utils/model_keys.dart';
 import '../components/app_widgets.dart';
 import '../components/base_scaffold_widget.dart';
 import '../components/chat_gpt_loder.dart';
 import '../components/custom_image_picker.dart';
 import '../components/empty_error_state_widget.dart';
-import '../utils/colors.dart';
-import '../utils/configs.dart';
 import 'components/help_desk_activity_component.dart';
 import 'help_desk_repository.dart';
 import 'model/help_desk_detail_response.dart';
@@ -139,20 +139,20 @@ class _HelpDeskDetailScreenState extends State<HelpDeskDetailScreen> {
             },
             children: [
               Text('#${widget.helpDeskData.id}',
-                  style: boldTextStyle(color: primary)),
+                  style: context.boldTextStyle(color: context.primary)),
               8.height,
               Text(
                 formatBookingDate(widget.helpDeskData.createdAt.validate(),
                     format: DATE_FORMAT_11),
-                style: secondaryTextStyle(),
+                style: context.primaryTextStyle(),
               ),
               16.height,
               Text(widget.helpDeskData.subject.validate(),
-                  style: boldTextStyle()),
+                  style: context.boldTextStyle()),
               8.height,
               Text(
                 widget.helpDeskData.description.validate(),
-                style: secondaryTextStyle(),
+                style: context.primaryTextStyle(),
               ),
               16.height,
               SnapHelperWidget<List<HelpDeskActivityData>>(
@@ -177,7 +177,7 @@ class _HelpDeskDetailScreenState extends State<HelpDeskDetailScreen> {
                     padding: const EdgeInsets.all(16),
                     decoration: boxDecorationWithRoundedCorners(
                       borderRadius: radius(),
-                      backgroundColor: context.cardColor,
+                      backgroundColor: context.cardSecondary,
                     ),
                     child: Column(
                       children: [
@@ -190,7 +190,7 @@ class _HelpDeskDetailScreenState extends State<HelpDeskDetailScreen> {
                               FadeInConfiguration(duration: 2.seconds),
                           emptyWidget: NoDataWidget(
                             title: languages.noActivityYet,
-                            titleTextStyle: boldTextStyle(),
+                            titleTextStyle: context.boldTextStyle(),
                             subTitle: languages.noRecordsFound,
                             imageWidget: const EmptyStateWidget(),
                           ),
@@ -233,16 +233,14 @@ class _HelpDeskDetailScreenState extends State<HelpDeskDetailScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(languages.reply,
-                                        style: boldTextStyle(size: 12)),
+                                        style: context.boldTextStyle(size: 12)),
                                     8.height,
                                     Container(
                                       padding: const EdgeInsets.all(16),
                                       decoration:
                                           boxDecorationWithRoundedCorners(
                                         borderRadius: radius(),
-                                        backgroundColor: appStore.isDarkMode
-                                            ? appButtonColorDark
-                                            : Colors.white,
+                                        backgroundColor: context.cardSecondary,
                                       ),
                                       child: Column(
                                         crossAxisAlignment:
@@ -279,7 +277,8 @@ class _HelpDeskDetailScreenState extends State<HelpDeskDetailScreen> {
                                           ),
                                           4.height,
                                           Text(languages.hintDescription,
-                                              style: boldTextStyle(size: 12)),
+                                              style: context.boldTextStyle(
+                                                  size: 12)),
                                           4.height,
                                           AppTextField(
                                             textFieldType:
@@ -294,10 +293,10 @@ class _HelpDeskDetailScreenState extends State<HelpDeskDetailScreen> {
                                                 inputDecoration(context)
                                                     .copyWith(
                                               hintText: languages.writeHere,
-                                              fillColor: context
-                                                  .scaffoldBackgroundColor,
+                                              fillColor: context.inputFillColor,
                                               filled: true,
-                                              hintStyle: primaryTextStyle(),
+                                              hintStyle:
+                                                  context.primaryTextStyle(),
                                             ),
                                             testWithoutKeyChatGPT:
                                                 appConfigurationStore
@@ -320,7 +319,7 @@ class _HelpDeskDetailScreenState extends State<HelpDeskDetailScreen> {
                                                     const EdgeInsets.symmetric(
                                                         horizontal: 16,
                                                         vertical: 12),
-                                                color: context.cardColor,
+                                                color: context.cardSecondary,
                                                 onTap: () {
                                                   isReplyBtnClick = false;
                                                   imageFiles.clear();
@@ -338,11 +337,13 @@ class _HelpDeskDetailScreenState extends State<HelpDeskDetailScreen> {
                                                         horizontal: 16,
                                                         vertical: 12),
                                                 color: appStore.isLoading
-                                                    ? primary.withValues(
-                                                        alpha: 0.5)
-                                                    : primary,
+                                                    ? context.primary
+                                                        .withValues(alpha: 0.5)
+                                                    : context.primary,
                                                 textStyle:
-                                                    boldTextStyle(color: white),
+                                                    context.boldTextStyle(
+                                                        color:
+                                                            context.onPrimary),
                                                 onTap: appStore.isLoading
                                                     ? () {}
                                                     : () {
@@ -372,7 +373,7 @@ class _HelpDeskDetailScreenState extends State<HelpDeskDetailScreen> {
                                             .capitalizeFirstLetter(),
                                         negativeText: languages.lblNo,
                                         dialogType: DialogType.CONFIRMATION,
-                                        primaryColor: primary,
+                                        primaryColor: context.primary,
                                         onAccept: (p0) async {
                                           appStore.setLoading(true);
                                           helpDeskClosed(
@@ -392,9 +393,10 @@ class _HelpDeskDetailScreenState extends State<HelpDeskDetailScreen> {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 16, vertical: 12),
                                     color: appStore.isLoading
-                                        ? primary.withValues(alpha: 0.5)
-                                        : primary,
-                                    textStyle: boldTextStyle(color: white),
+                                        ? context.primary.withValues(alpha: 0.5)
+                                        : context.primary,
+                                    textStyle:
+                                        boldTextStyle(color: context.onPrimary),
                                     onTap: () {
                                       isReplyBtnClick = true;
                                       imageFiles.clear();
@@ -415,8 +417,8 @@ class _HelpDeskDetailScreenState extends State<HelpDeskDetailScreen> {
                   widget.helpDeskData.status != CLOSED)
                 Text(
                   '*${languages.youCanMarkThis}',
-                  style:
-                      secondaryTextStyle(size: 12, fontStyle: FontStyle.italic),
+                  style: context.secondaryTextStyle(
+                      size: 12, fontStyle: FontStyle.italic),
                 ).paddingTop(20),
             ],
           ),

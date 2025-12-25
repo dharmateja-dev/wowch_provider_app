@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:crop_image/crop_image.dart';
 import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/components/base_scaffold_widget.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:path_provider/path_provider.dart';
 
 class CropImageScreen extends StatefulWidget {
@@ -51,16 +52,18 @@ class _CropImageScreenState extends State<CropImageScreen> {
       appBarTitle: 'Crop Image',
       actions: [
         IconButton(
-          icon: const Icon(Icons.check, color: Colors.white),
+          icon: Icon(Icons.check, color: context.onPrimary),
           onPressed: () async {
             await _controller.croppedBitmap().then(
               (value) async {
                 final croppedImage = value;
-                final byteData = await croppedImage.toByteData(format: ImageByteFormat.png);
+                final byteData =
+                    await croppedImage.toByteData(format: ImageByteFormat.png);
                 if (byteData != null) {
                   final imageBytes = byteData.buffer.asUint8List();
                   final directory = await getTemporaryDirectory();
-                  final path = '${directory.path}/${_currentImage.path.split('/').last}_cropped_image.png';
+                  final path =
+                      '${directory.path}/${_currentImage.path.split('/').last}_cropped_image.png';
                   final File croppedFile = File(path);
                   await croppedFile.writeAsBytes(imageBytes);
 

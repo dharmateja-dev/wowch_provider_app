@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:handyman_provider_flutter/helpDesk/shimmer/help_desk_list_shimmer.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../main.dart';
-import '../../utils/colors.dart';
 import '../../utils/constant.dart';
 import '../components/app_widgets.dart';
 import '../components/base_scaffold_widget.dart';
 import '../components/empty_error_state_widget.dart';
-import '../utils/configs.dart';
 import '../utils/images.dart';
 import 'add_help_desk_screen.dart';
 import 'components/help_desk_item_component.dart';
@@ -125,7 +124,7 @@ class _HelpDeskListScreenState extends State<HelpDeskListScreen> {
                               side: BorderSide(
                                   color:
                                       selectedTab.status == filterStatus.status
-                                          ? primary
+                                          ? context.primary
                                           : Colors.transparent),
                             ),
                             padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -134,16 +133,14 @@ class _HelpDeskListScreenState extends State<HelpDeskListScreen> {
                               style: boldTextStyle(
                                 size: 12,
                                 color: selectedTab.status == filterStatus.status
-                                    ? primary
-                                    : appStore.isDarkMode
-                                        ? Colors.white
-                                        : appTextPrimaryColor,
+                                    ? context.primary
+                                    : context.onSurface,
                               ),
                             ),
                             backgroundColor:
                                 selectedTab.status == filterStatus.status
-                                    ? lightPrimaryColor
-                                    : context.cardColor,
+                                    ? context.primaryContainer
+                                    : context.card,
                             onSelected: (bool selected) {
                               selectedTab = helpDeskStatus[index];
                               page = 1;

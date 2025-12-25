@@ -9,8 +9,9 @@ import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/provider/services/add_services.dart';
 import 'package:handyman_provider_flutter/screens/gallery_List_Screen.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
-import 'package:handyman_provider_flutter/utils/configs.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class ServiceDetailHeaderComponent extends StatefulWidget {
@@ -53,9 +54,15 @@ class _ServiceDetailHeaderComponentState
     showConfirmDialogCustom(
       context,
       title: languages.confirmationRequestTxt,
-      primaryColor: primary,
+      shape: appDialogShape(8),
+      titleColor: context.dialogTitleColor,
+      backgroundColor: context.dialogBackgroundColor,
+      primaryColor: context.primary,
       positiveText: languages.lblYes,
+      positiveTextColor: context.onPrimary,
       negativeText: languages.lblNo,
+      negativeTextColor: context.dialogCancelColor,
+      dialogType: DialogType.CONFIRMATION,
       onAccept: (context) async {
         ifNotTester(context, () {
           appStore.setLoading(true);
@@ -93,7 +100,7 @@ class _ServiceDetailHeaderComponentState
               decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: context.cardColor.withValues(alpha: 0.7)),
-              child: BackWidget(color: context.iconColor).paddingLeft(8),
+              child: BackWidget(color: context.icon).paddingLeft(8),
             ),
           ),
           Positioned(
@@ -108,8 +115,8 @@ class _ServiceDetailHeaderComponentState
                         shape: BoxShape.circle,
                         color: context.cardColor.withValues(alpha: 0.7)),
                     child: PopupMenuButton(
-                      icon: Icon(Icons.more_horiz,
-                          size: 24, color: context.iconColor),
+                      icon:
+                          Icon(Icons.more_horiz, size: 24, color: context.icon),
                       padding: const EdgeInsets.all(8),
                       onSelected: (selection) {
                         if (selection == 1) {
@@ -159,7 +166,8 @@ class _ServiceDetailHeaderComponentState
                             .length,
                         (i) => Container(
                           decoration: BoxDecoration(
-                              border: Border.all(color: white, width: 2),
+                              border: Border.all(
+                                  color: context.mainBorderColor, width: 2),
                               borderRadius: radius()),
                           child: GalleryComponent(
                             images: widget
@@ -186,12 +194,14 @@ class _ServiceDetailHeaderComponentState
                           width: 60,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
-                              border: Border.all(color: white, width: 2),
+                              border: Border.all(
+                                  color: context.mainBorderColor, width: 2),
                               borderRadius: radius()),
                           child: Text(
                               '+'
                               '${widget.serviceDetail.serviceDetail!.attchments!.length - 2}',
-                              style: boldTextStyle(color: white)),
+                              style: context.boldTextStyle(
+                                  color: context.onPrimary)),
                         ),
                       ).onTap(
                         () {
@@ -221,8 +231,8 @@ class _ServiceDetailHeaderComponentState
                   width: context.width(),
                   padding: const EdgeInsets.all(16),
                   decoration: boxDecorationDefault(
-                    color: context.scaffoldBackgroundColor,
-                    border: Border.all(color: context.dividerColor),
+                    color: context.cardSecondary,
+                    border: Border.all(color: context.cardSecondaryBorder),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -235,32 +245,29 @@ class _ServiceDetailHeaderComponentState
                             children: [
                               Text(
                                   '${widget.serviceDetail.serviceDetail!.categoryName}',
-                                  style: boldTextStyle(
-                                      color: textSecondaryColorGlobal,
-                                      size: 12)),
+                                  style: context.boldTextStyle(size: 12)),
                               Text('  >  ',
-                                  style: boldTextStyle(
-                                      size: 14,
-                                      color: textSecondaryColorGlobal)),
+                                  style: context.boldTextStyle(size: 14)),
                               Text(
                                   widget.serviceDetail.serviceDetail!
                                       .subCategoryName
                                       .capitalizeFirstLetter(),
-                                  style: boldTextStyle(
-                                      color: context.primaryColor, size: 12)),
+                                  style: context.boldTextStyle(
+                                      color: context.primary, size: 12)),
                             ],
                           ),
                         )
                       else
                         Text(
                             '${widget.serviceDetail.serviceDetail!.categoryName}',
-                            style: boldTextStyle(color: context.primaryColor)),
+                            style:
+                                context.boldTextStyle(color: context.primary)),
                       8.height,
                       Marquee(
                         directionMarguee: DirectionMarguee.oneDirection,
                         child: Text(
                             widget.serviceDetail.serviceDetail!.name.validate(),
-                            style: boldTextStyle(size: 18)),
+                            style: context.boldTextStyle(size: 18)),
                       ),
                       8.height,
                       Row(
@@ -281,7 +288,7 @@ class _ServiceDetailHeaderComponentState
                               0)
                             Text(
                               '(${widget.serviceDetail.serviceDetail!.discount.validate()}% ${languages.lblOff})',
-                              style: boldTextStyle(color: Colors.green),
+                              style: context.boldTextStyle(color: Colors.green),
                             ),
                         ],
                       ),
@@ -290,18 +297,18 @@ class _ServiceDetailHeaderComponentState
                         edgeInsets: const EdgeInsets.symmetric(
                             horizontal: 0, vertical: 8),
                         text: languages.hintDuration,
-                        textStyle: secondaryTextStyle(size: 14),
+                        textStyle: context.primaryTextStyle(size: 14),
                         expandedText: true,
                         suffix: Text(
                           convertToHourMinute(widget
                               .serviceDetail.serviceDetail!.duration
                               .validate()),
-                          style: boldTextStyle(color: primary),
+                          style: context.boldTextStyle(color: context.primary),
                         ),
                       ),
                       TextIcon(
                         text: languages.lblRating,
-                        textStyle: secondaryTextStyle(size: 14),
+                        textStyle: context.primaryTextStyle(size: 14),
                         edgeInsets: const EdgeInsets.symmetric(vertical: 4),
                         expandedText: true,
                         suffix: Row(
@@ -319,7 +326,7 @@ class _ServiceDetailHeaderComponentState
                                 widget.serviceDetail.serviceDetail!.totalRating
                                     .validate()
                                     .toStringAsFixed(1),
-                                style: boldTextStyle()),
+                                style: context.boldTextStyle()),
                           ],
                         ),
                       ),

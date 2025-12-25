@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/models/shop_model.dart';
 import 'package:handyman_provider_flutter/networks/rest_apis.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class ServiceShopComponent extends StatefulWidget {
@@ -71,7 +72,7 @@ class _ServiceShopComponentState extends State<ServiceShopComponent> {
           child: Theme(
             data: ThemeData(dividerColor: Colors.transparent),
             child: ExpansionTile(
-              iconColor: context.iconColor,
+              iconColor: context.icon,
               tilePadding: const EdgeInsets.symmetric(horizontal: 16),
               childrenPadding: const EdgeInsets.symmetric(horizontal: 16),
               initiallyExpanded: widget.selectedList.validate().isNotEmpty,
@@ -105,26 +106,21 @@ class _ServiceShopComponentState extends State<ServiceShopComponent> {
                         margin: const EdgeInsets.only(bottom: 8.0),
                         child: Theme(
                           data: ThemeData(
-                            unselectedWidgetColor: appStore.isDarkMode
-                                ? context.dividerColor
-                                : context.iconColor,
+                            unselectedWidgetColor: context.dividerColor,
                           ),
                           child: CheckboxListTile(
                             checkboxShape:
                                 RoundedRectangleBorder(borderRadius: radius(4)),
                             autofocus: false,
-                            activeColor: context.primaryColor,
-                            checkColor: appStore.isDarkMode
-                                ? context.iconColor
-                                : context.cardColor,
+                            activeColor: context.primary,
+                            checkColor: context.onPrimary,
                             dense: true,
                             visualDensity: VisualDensity.compact,
                             contentPadding:
                                 const EdgeInsets.symmetric(horizontal: 16),
                             title: Text(
                               data.name.validate(),
-                              style:
-                                  secondaryTextStyle(color: context.iconColor),
+                              style: secondaryTextStyle(color: context.icon),
                             ),
                             value: data.isSelected,
                             onChanged: (bool? val) {

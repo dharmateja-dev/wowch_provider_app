@@ -1044,17 +1044,14 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                                       splashColor: Colors.transparent,
                                       highlightColor: Colors.transparent,
                                       hoverColor: Colors.transparent,
-                                      unselectedWidgetColor: appStore.isDarkMode
-                                          ? context.dividerColor
-                                          : context.icon,
+                                      unselectedWidgetColor:
+                                          context.dividerColor,
                                     ),
                                     child: CheckboxListTile(
                                       checkboxShape: RoundedRectangleBorder(
                                           borderRadius: radius(4)),
                                       activeColor: context.primary,
-                                      checkColor: appStore.isDarkMode
-                                          ? context.icon
-                                          : context.cardColor,
+                                      checkColor: context.onPrimary,
                                       contentPadding:
                                           const EdgeInsets.symmetric(
                                               horizontal: 16),

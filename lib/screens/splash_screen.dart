@@ -7,8 +7,10 @@ import 'package:handyman_provider_flutter/provider/provider_dashboard_screen.dar
 import 'package:handyman_provider_flutter/screens/maintenance_mode_screen.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/demo_mode.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../components/app_widgets.dart';
@@ -332,6 +334,7 @@ class SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: context.scaffoldSecondary,
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -348,9 +351,8 @@ class SplashScreenState extends State<SplashScreen> {
               Image.asset(appLogo, height: 120, width: 120),
               32.height,
               Text(APP_NAME,
-                  style: boldTextStyle(
-                      size: 26,
-                      color: appStore.isDarkMode ? Colors.white : Colors.black),
+                  style:
+                      context.boldTextStyle(size: 26, color: context.onSurface),
                   textAlign: TextAlign.center),
               16.height,
               if (appNotSynced)
@@ -358,7 +360,8 @@ class SplashScreenState extends State<SplashScreen> {
                   builder: (_) => appStore.isLoading
                       ? LoaderWidget().center()
                       : TextButton(
-                          child: Text(languages.reload, style: boldTextStyle()),
+                          child: Text(languages.reload,
+                              style: context.boldTextStyle()),
                           onPressed: () {
                             appStore.setLoading(true);
                             init();
