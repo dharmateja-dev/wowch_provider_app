@@ -185,7 +185,7 @@ class HandymanInfoScreenState extends State<HandymanInfoScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(languages.knownLanguages,
-                                      style: boldTextStyle()),
+                                      style: context.boldTextStyle()),
                                   8.height,
                                   Wrap(
                                     children: snap
@@ -195,19 +195,14 @@ class HandymanInfoScreenState extends State<HandymanInfoScreen> {
                                         decoration:
                                             boxDecorationWithRoundedCorners(
                                           borderRadius: radius(8),
-                                          backgroundColor: appStore.isDarkMode
-                                              ? cardDarkColor
-                                              : lightPrimaryColor,
+                                          backgroundColor:
+                                              context.cardSecondary,
                                         ),
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 12, vertical: 6),
                                         margin: const EdgeInsets.all(4),
                                         child: Text(e,
-                                            style: secondaryTextStyle(
-                                                weight: FontWeight.bold,
-                                                color: appStore.isDarkMode
-                                                    ? white
-                                                    : context.primary)),
+                                            style: context.boldTextStyle()),
                                       );
                                     }).toList(),
                                   ),
@@ -219,7 +214,7 @@ class HandymanInfoScreenState extends State<HandymanInfoScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(languages.essentialSkills,
-                                      style: boldTextStyle()),
+                                      style: context.boldTextStyle()),
                                   8.height,
                                   Wrap(
                                     children: snap
@@ -229,19 +224,14 @@ class HandymanInfoScreenState extends State<HandymanInfoScreen> {
                                         decoration:
                                             boxDecorationWithRoundedCorners(
                                           borderRadius: radius(8),
-                                          backgroundColor: appStore.isDarkMode
-                                              ? cardDarkColor
-                                              : lightPrimaryColor,
+                                          backgroundColor:
+                                              context.cardSecondary,
                                         ),
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 12, vertical: 6),
                                         margin: const EdgeInsets.all(4),
                                         child: Text(e,
-                                            style: secondaryTextStyle(
-                                                weight: FontWeight.bold,
-                                                color: appStore.isDarkMode
-                                                    ? white
-                                                    : context.primaryColor)),
+                                            style: context.boldTextStyle()),
                                       );
                                     }).toList(),
                                   ),
@@ -251,17 +241,17 @@ class HandymanInfoScreenState extends State<HandymanInfoScreen> {
                             Container(
                               padding: const EdgeInsets.all(16),
                               decoration: boxDecorationDefault(
-                                color: appStore.isDarkMode
-                                    ? cardDarkColor
-                                    : lightPrimaryColor.withValues(alpha: 0.5),
+                                color: context.cardSecondary,
                                 borderRadius: radius(12),
+                                border: Border.all(
+                                    color: context.cardSecondaryBorder),
                                 boxShadow: [],
                               ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(languages.personalInfo,
-                                      style: boldTextStyle()),
+                                      style: context.boldTextStyle()),
                                   12.height,
                                   TextIcon(
                                     spacing: 12,
@@ -272,11 +262,12 @@ class HandymanInfoScreenState extends State<HandymanInfoScreen> {
                                     prefix: Image.asset(ic_message,
                                         width: 18,
                                         height: 18,
-                                        color: context.primaryColor),
+                                        color: context.primary),
                                     text: snap.data!.handymanData!.email
                                         .validate(),
-                                    textStyle: secondaryTextStyle(
-                                        size: 14, weight: FontWeight.w600),
+                                    textStyle: context.primaryTextStyle(
+                                      size: 14,
+                                    ),
                                     expandedText: true,
                                   ),
                                   8.height,
@@ -290,11 +281,12 @@ class HandymanInfoScreenState extends State<HandymanInfoScreen> {
                                     prefix: Image.asset(calling,
                                         width: 18,
                                         height: 18,
-                                        color: context.primaryColor),
+                                        color: context.primary),
                                     text: snap.data!.handymanData!.contactNumber
                                         .validate(),
-                                    textStyle: secondaryTextStyle(
-                                        size: 14, weight: FontWeight.w600),
+                                    textStyle: context.primaryTextStyle(
+                                      size: 14,
+                                    ),
                                     expandedText: true,
                                   ),
                                 ],
@@ -308,12 +300,12 @@ class HandymanInfoScreenState extends State<HandymanInfoScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(languages.lblServices,
-                                      style: boldTextStyle())
-                                  .paddingSymmetric(horizontal: 16),
+                                      style: context.boldTextStyle())
+                                  .paddingSymmetric(horizontal: 8),
                               8.height,
                               HorizontalList(
                                 padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
+                                    const EdgeInsets.symmetric(horizontal: 8),
                                 itemCount: snap.data!.service.validate().length,
                                 itemBuilder: (context, index) {
                                   ServiceData service =
@@ -321,8 +313,10 @@ class HandymanInfoScreenState extends State<HandymanInfoScreen> {
                                   return Container(
                                     width: 250,
                                     decoration: boxDecorationDefault(
-                                      color: context.cardColor,
-                                      borderRadius: radius(12),
+                                      color: context.cardSecondary,
+                                      borderRadius: radius(8),
+                                      border: Border.all(
+                                          color: context.cardSecondaryBorder),
                                     ),
                                     child: Column(
                                       crossAxisAlignment:
@@ -338,18 +332,18 @@ class HandymanInfoScreenState extends State<HandymanInfoScreen> {
                                           width: 250,
                                           fit: BoxFit.cover,
                                         ).cornerRadiusWithClipRRectOnly(
-                                            topLeft: 12, topRight: 12),
+                                            topLeft: 8, topRight: 8),
                                         10.height,
                                         Text(service.name.validate(),
-                                                style: boldTextStyle(size: 14),
+                                                style: context.boldTextStyle(),
                                                 maxLines: 1,
                                                 overflow: TextOverflow.ellipsis)
                                             .paddingSymmetric(horizontal: 10),
                                         5.height,
                                         PriceWidget(
                                                 price: service.price.validate(),
-                                                size: 14,
-                                                color: context.primaryColor)
+                                                size: 12,
+                                                color: context.primary)
                                             .paddingSymmetric(horizontal: 10),
                                         10.height,
                                       ],
@@ -378,7 +372,7 @@ class HandymanInfoScreenState extends State<HandymanInfoScreen> {
                                 isCustomer: true,
                               )
                             : Text(languages.lblNoReviewYet,
-                                    style: secondaryTextStyle())
+                                    style: context.primaryTextStyle())
                                 .center()
                                 .paddingOnly(top: 16),
                       ],
