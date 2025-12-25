@@ -2,15 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:handyman_provider_flutter/components/app_widgets.dart';
 import 'package:handyman_provider_flutter/main.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../components/empty_error_state_widget.dart';
+import '../../components/cached_image_widget.dart';
 import '../../components/image_border_component.dart';
 import '../../components/selected_item_widget.dart';
 import '../../models/service_model.dart';
 import '../../networks/rest_apis.dart';
 import '../../utils/colors.dart';
 import '../../utils/constant.dart';
+import '../../utils/demo_data.dart';
+import '../../utils/demo_mode.dart';
 
 class FilterServiceListComponent extends StatefulWidget {
   @override
@@ -34,6 +39,21 @@ class _FilterServiceListComponentState
   }
 
   Future<void> init() async {
+    // Demo Mode: Use demo service data
+    if (DEMO_MODE_ENABLED) {
+      servicesList = List<ServiceData>.from(demoServices);
+
+      // Restore selection state from filterStore
+      for (var service in servicesList) {
+        service.isSelected = filterStore.serviceId.contains(service.id);
+      }
+
+      future = Future.value(servicesList);
+      isLastPage = true;
+      setState(() {});
+      return;
+    }
+
     future = getSearchList(
       status: SERVICE_APPROVE,
       page,
@@ -124,27 +144,47 @@ class _FilterServiceListComponentState
 
                 return Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                   margin: const EdgeInsets.only(bottom: 16),
                   decoration: boxDecorationWithRoundedCorners(
                     borderRadius: radius(),
-                    backgroundColor: appStore.isDarkMode
-                        ? context.cardColor
-                        : lightPrimaryColor,
-                    border: appStore.isDarkMode
-                        ? Border.all(color: context.dividerColor)
-                        : null,
+                    backgroundColor: context.secondaryContainer,
                   ),
                   child: Row(
                     children: [
-                      ImageBorder(
-                        src: data.imageAttachments!.isNotEmpty
-                            ? data.imageAttachments!.first.validate()
-                            : "",
+                      Container(
+                        width: 45,
                         height: 45,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: context.primary.withValues(alpha: 0.3),
+                            width: 2,
+                          ),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(6),
+                          child: data.imageAttachments != null &&
+                                  data.imageAttachments!.isNotEmpty
+                              ? CachedImageWidget(
+                                  url: data.imageAttachments!.first.validate(),
+                                  fit: BoxFit.cover,
+                                  width: 50,
+                                  height: 50,
+                                  usePlaceholderIfUrlEmpty: true,
+                                )
+                              : Container(
+                                  color: context.primary.withValues(alpha: 0.1),
+                                  child: Icon(
+                                    Icons.home_repair_service_outlined,
+                                    size: 20,
+                                    color: context.primary,
+                                  ),
+                                ),
+                        ),
                       ),
                       16.width,
-                      Text(data.name.validate(), style: boldTextStyle())
+                      Text(data.name.validate(), style: context.boldTextStyle())
                           .expand(),
                       4.width,
                       SelectedItemWidget(

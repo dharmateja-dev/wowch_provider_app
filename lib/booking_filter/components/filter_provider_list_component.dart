@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:handyman_provider_flutter/components/app_widgets.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../components/empty_error_state_widget.dart';
@@ -120,16 +122,11 @@ class _FilterProviderListComponentState
 
                 return Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                   margin: const EdgeInsets.only(bottom: 16),
                   decoration: boxDecorationWithRoundedCorners(
                     borderRadius: radius(),
-                    backgroundColor: appStore.isDarkMode
-                        ? context.cardColor
-                        : lightPrimaryColor,
-                    border: appStore.isDarkMode
-                        ? Border.all(color: context.dividerColor)
-                        : null,
+                    backgroundColor: context.secondaryContainer,
                   ),
                   child: Row(
                     children: [
@@ -138,7 +135,8 @@ class _FilterProviderListComponentState
                         height: 45,
                       ),
                       16.width,
-                      Text(data.displayName.validate(), style: boldTextStyle())
+                      Text(data.displayName.validate(),
+                              style: context.boldTextStyle())
                           .expand(),
                       4.width,
                       SelectedItemWidget(isSelected: data.isSelected),

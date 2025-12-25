@@ -8,9 +8,13 @@ import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/models/shop_model.dart';
 import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/provider/shop/shimmer/shop_list_shimmer.dart';
+import 'package:handyman_provider_flutter/utils/demo_data.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/demo_mode.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 import '../../utils/colors.dart';
 
@@ -37,6 +41,21 @@ class _FilterShopListComponentState extends State<FilterShopListComponent> {
   }
 
   Future<void> init({bool showLoader = true}) async {
+    // Demo Mode: Use demo shop data
+    if (DEMO_MODE_ENABLED) {
+      shopList = List<ShopModel>.from(demoShops);
+
+      // Restore selection state from filterStore
+      for (var shop in shopList) {
+        shop.isSelected = filterStore.shopIds.contains(shop.id);
+      }
+
+      future = Future.value(shopList);
+      isLastPage = true;
+      setState(() {});
+      return;
+    }
+
     appStore.setLoading(showLoader);
     future = getShopList(
       page,
@@ -113,12 +132,7 @@ class _FilterShopListComponentState extends State<FilterShopListComponent> {
                   margin: EdgeInsets.only(bottom: 16),
                   decoration: boxDecorationWithRoundedCorners(
                     borderRadius: radius(),
-                    backgroundColor: appStore.isDarkMode
-                        ? context.cardColor
-                        : lightPrimaryColor,
-                    border: appStore.isDarkMode
-                        ? Border.all(color: context.dividerColor)
-                        : null,
+                    backgroundColor: context.secondaryContainer,
                   ),
                   child: Row(
                     children: [
@@ -128,7 +142,7 @@ class _FilterShopListComponentState extends State<FilterShopListComponent> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
-                            color: primary.withValues(alpha: 0.3),
+                            color: context.primary.withValues(alpha: 0.3),
                             width: 2,
                           ),
                         ),
@@ -148,13 +162,13 @@ class _FilterShopListComponentState extends State<FilterShopListComponent> {
                                     Assets.iconsIcDefaultShop,
                                     height: 16,
                                     width: 16,
-                                    color: primary,
+                                    color: context.primary,
                                   ),
                                 ),
                         ),
                       ),
                       16.width,
-                      Text(data.name.validate(), style: boldTextStyle())
+                      Text(data.name.validate(), style: context.boldTextStyle())
                           .expand(),
                       4.width,
                       SelectedItemWidget(

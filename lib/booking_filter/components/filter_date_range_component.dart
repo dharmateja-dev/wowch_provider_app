@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../components/date_component/custom_date_range_picker.dart';
 import '../../main.dart';
 import '../../utils/common.dart';
-import '../../utils/configs.dart';
-import '../../utils/colors.dart';
 import '../../utils/constant.dart';
 
 class FilterDateRangeComponent extends StatefulWidget {
@@ -68,7 +68,7 @@ class _FilterDateRangeComponentState extends State<FilterDateRangeComponent> {
           16.height,
           AppTextField(
             title: languages.dateRange,
-            textStyle: primaryTextStyle(size: 12),
+            textStyle: context.primaryTextStyle(size: 12),
             controller: dateRangeCont,
             textFieldType: TextFieldType.NAME,
             readOnly: true,
@@ -76,8 +76,8 @@ class _FilterDateRangeComponentState extends State<FilterDateRangeComponent> {
             decoration: inputDecoration(
               context,
               hintText: languages.selectStartDateEndDate,
-              fillColor:
-                  appStore.isDarkMode ? context.cardColor : lightPrimaryColor,
+              fillColor: context.secondaryContainer,
+              showBorder: false,
             ),
             suffix: IconButton(
               onPressed: () {
@@ -91,19 +91,19 @@ class _FilterDateRangeComponentState extends State<FilterDateRangeComponent> {
 
                 setState(() {});
               },
-              icon: const Icon(Icons.close),
+              icon: Icon(Icons.close, color: context.icon),
             ).visible(startDate != null),
             onTap: () {
               showCustomDateRangePicker(
-                disabledDateColor: Colors.grey.withValues(alpha: 0.5),
+                disabledDateColor: context.textGrey,
                 context,
                 dismissible: true,
                 minimumDate: DateTime.now().subtract(const Duration(days: 30)),
                 maximumDate: DateTime.now().add(const Duration(days: 30)),
                 startDate: startDate,
                 endDate: endDate,
-                backgroundColor: context.cardColor,
-                primary: primary,
+                backgroundColor: context.cardSecondary,
+                primary: context.primary,
                 onApplyClick: (start, end) {
                   startDate = start;
                   endDate = end;

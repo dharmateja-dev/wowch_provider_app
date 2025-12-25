@@ -141,6 +141,14 @@ class BookingFragmentState extends State<BookingFragment>
         }).toList();
       }
 
+      // Apply shop ID filter
+      if (filterStore.shopIds.isNotEmpty) {
+        filteredBookings = filteredBookings.where((b) {
+          if (b.shopInfo == null) return false;
+          return filterStore.shopIds.contains(b.shopInfo!.id);
+        }).toList();
+      }
+
       // Apply date range filter
       if (filterStore.startDate.isNotEmpty && filterStore.endDate.isNotEmpty) {
         try {

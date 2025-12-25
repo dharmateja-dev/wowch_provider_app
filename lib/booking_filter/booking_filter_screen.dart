@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:handyman_provider_flutter/booking_filter/components/filter_shop_list_component.dart';
-import 'package:handyman_provider_flutter/utils/colors.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 import '../components/base_scaffold_widget.dart';
 import '../main.dart';
 import '../models/booking_status_response.dart';
 import '../networks/rest_apis.dart';
 import '../utils/app_configuration.dart';
-import '../utils/configs.dart';
 import '../utils/constant.dart';
 import 'components/filter_booking_status_component.dart';
 import 'components/filter_customer_list_component.dart';
@@ -138,7 +138,7 @@ class _BookingFilterScreenState extends State<BookingFilterScreen> {
       top: false,
       child: AppScaffold(
         appBarTitle: languages.filterBy,
-        scaffoldBackgroundColor: context.scaffoldBackgroundColor,
+        scaffoldBackgroundColor: context.scaffoldSecondary,
         showLoader: false,
         actions: [
           Observer(
@@ -148,7 +148,7 @@ class _BookingFilterScreenState extends State<BookingFilterScreen> {
                   clearFilter();
                 },
                 child: Text(languages.reset,
-                    style: boldTextStyle(color: Colors.white)),
+                    style: context.boldTextStyle(color: context.onPrimary)),
               ).visible(filterStore.isAnyFilterApplied);
             },
           ),
@@ -188,22 +188,18 @@ class _BookingFilterScreenState extends State<BookingFilterScreen> {
                               borderRadius: radius(18),
                               border: Border.all(
                                   color: index == selectedIndex
-                                      ? primary
-                                      : appStore.isDarkMode
-                                          ? Colors.white54
-                                          : Colors.grey.withValues(alpha: 0.3)),
+                                      ? context.primary
+                                      : context.mainBorderColor),
                               backgroundColor: index == selectedIndex
-                                  ? lightPrimaryColor
-                                  : context.cardColor,
+                                  ? context.secondaryContainer
+                                  : context.cardSecondary,
                             ),
                             child: Text(
                               e.toBookingFilterSectionType(),
-                              style: boldTextStyle(
+                              style: context.boldTextStyle(
                                 color: index == selectedIndex
-                                    ? primary
-                                    : appStore.isDarkMode
-                                        ? Colors.white
-                                        : appTextPrimaryColor,
+                                    ? context.primary
+                                    : context.onSurface,
                               ),
                             ).center(),
                           ),
@@ -250,14 +246,14 @@ class _BookingFilterScreenState extends State<BookingFilterScreen> {
               right: 0,
               child: Observer(
                 builder: (_) => Container(
-                  decoration: boxDecorationDefault(
-                      color: context.scaffoldBackgroundColor),
+                  decoration:
+                      boxDecorationDefault(color: context.scaffoldSecondary),
                   width: context.width(),
-                  padding: EdgeInsets.all(16),
+                  padding: EdgeInsets.all(12),
                   child: AppButton(
                     text: languages.apply,
-                    textColor: Colors.white,
-                    color: context.primaryColor,
+                    textColor: context.onPrimary,
+                    color: context.primary,
                     onTap: () {
                       filterStore.bookingStatus = [];
 

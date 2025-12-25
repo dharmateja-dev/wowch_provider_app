@@ -13,6 +13,7 @@ import 'package:handyman_provider_flutter/models/notification_list_response.dart
 import 'package:handyman_provider_flutter/models/payment_list_reasponse.dart';
 import 'package:handyman_provider_flutter/models/revenue_chart_data.dart';
 import 'package:handyman_provider_flutter/models/service_model.dart';
+import 'package:handyman_provider_flutter/models/shop_model.dart';
 import 'package:handyman_provider_flutter/models/user_data.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
 import 'package:handyman_provider_flutter/main.dart';
@@ -150,6 +151,52 @@ class DemoHandymanData {
         ],
       );
 }
+
+/// Demo Shops List for testing shop filters
+List<ShopModel> get demoShops => [
+      ShopModel(
+        id: 1,
+        name: 'Ayush Home Services',
+        address: '65A, Indrapuri, Bhopal, M.P.',
+        shopStartTime: '9:00 AM',
+        shopEndTime: '6:00 PM',
+        cityName: 'Bhopal',
+        stateName: 'Madhya Pradesh',
+        countryName: 'India',
+        shopImage: [],
+        providerId: 1,
+        providerName: 'John Williams',
+        services: [],
+      ),
+      ShopModel(
+        id: 2,
+        name: 'Prime Home Services',
+        address: '123 Main Street, Downtown',
+        shopStartTime: '8:00 AM',
+        shopEndTime: '8:00 PM',
+        cityName: 'Mumbai',
+        stateName: 'Maharashtra',
+        countryName: 'India',
+        shopImage: [],
+        providerId: 1,
+        providerName: 'John Williams',
+        services: [],
+      ),
+      ShopModel(
+        id: 3,
+        name: 'Quick Fix Station',
+        address: '456 Oak Avenue, Residency',
+        shopStartTime: '10:00 AM',
+        shopEndTime: '7:00 PM',
+        cityName: 'Delhi',
+        stateName: 'Delhi',
+        countryName: 'India',
+        shopImage: [],
+        providerId: 1,
+        providerName: 'John Williams',
+        services: [],
+      ),
+    ];
 
 /// Demo Services List
 List<ServiceData> get demoServices => [
@@ -482,6 +529,7 @@ List<BookingData> get demoBookings => [
             handyman: demoHandymen[0],
           ),
         ],
+        shopInfo: demoShops[0], // Ayush Home Services
       ),
 
       // 2. ACCEPTED - Booking ID #2 (matching screenshot with Chat only for handyman)
@@ -523,6 +571,7 @@ List<BookingData> get demoBookings => [
             handyman: demoHandymen[0],
           ),
         ],
+        shopInfo: demoShops[1], // Prime Home Services
       ),
 
       // 3. PENDING - Booking ID #3 (matching screenshot with Date & Time top section)
@@ -556,6 +605,7 @@ List<BookingData> get demoBookings => [
         ],
         // No handyman assigned for pending
         handyman: [],
+        shopInfo: demoShops[2], // Quick Fix Station
       ),
 
       // 4. CANCELLED - Booking ID #5 (matching screenshot with red banner and reviews)
@@ -596,6 +646,7 @@ List<BookingData> get demoBookings => [
             handyman: demoHandymen[0],
           ),
         ],
+        shopInfo: demoShops[0], // Ayush Home Services
       ),
 
       // 4. COMPLETED - Booking ID #5 (matching screenshot with Payment Detail, History, Reviews)
@@ -637,6 +688,7 @@ List<BookingData> get demoBookings => [
             handyman: demoHandymen[0],
           ),
         ],
+        shopInfo: demoShops[1], // Prime Home Services
       ),
 
       // 5. ON_GOING - Service in progress (Waiting for response)

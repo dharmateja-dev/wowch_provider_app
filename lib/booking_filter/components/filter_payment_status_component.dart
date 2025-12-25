@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../main.dart';
@@ -37,15 +39,12 @@ class _PaymentStatusFilterState extends State<PaymentStatusFilter> {
               width: context.width(),
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: boxDecorationDefault(
-                color: appStore.isDarkMode
-                    ? res.isSelected
-                        ? lightPrimaryColor
-                        : context.cardColor
-                    : res.isSelected
-                        ? lightPrimaryColor
-                        : context.cardColor,
+                color: context.secondaryContainer,
                 borderRadius: radius(8),
-                border: Border.all(color: appStore.isDarkMode ? Colors.white54 : lightPrimaryColor),
+                border: Border.all(
+                    color:
+                        res.isSelected ? context.primary : Colors.transparent,
+                    width: 1),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -54,18 +53,13 @@ class _PaymentStatusFilterState extends State<PaymentStatusFilter> {
                     Container(
                       padding: const EdgeInsets.all(2),
                       margin: const EdgeInsets.only(right: 1),
-                      child: Icon(Icons.done, size: 16, color: context.primaryColor),
+                      child: Icon(Icons.done,
+                          size: 16, color: context.primaryColor),
                     ),
                   Text(
                     getPaymentStatusFilterText(res.status.validate()),
-                    style: primaryTextStyle(
-                      color: appStore.isDarkMode
-                          ? res.isSelected
-                              ? context.primaryColor
-                              : Colors.white54
-                          : res.isSelected
-                              ? context.primaryColor
-                              : Colors.black,
+                    style: context.primaryTextStyle(
+                      color: context.primary,
                       size: 12,
                     ),
                   ),
@@ -75,9 +69,11 @@ class _PaymentStatusFilterState extends State<PaymentStatusFilter> {
               setState(() {
                 res.isSelected = !res.isSelected;
                 if (res.isSelected) {
-                  filterStore.addToPaymentStatusList(paymentStatusList: res.status.validate());
+                  filterStore.addToPaymentStatusList(
+                      paymentStatusList: res.status.validate());
                 } else {
-                  filterStore.removeFromPaymentStatusList(paymentStatusList: res.status.validate());
+                  filterStore.removeFromPaymentStatusList(
+                      paymentStatusList: res.status.validate());
                 }
               });
             });

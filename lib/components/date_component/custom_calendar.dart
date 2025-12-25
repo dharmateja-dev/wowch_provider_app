@@ -1,34 +1,15 @@
 import 'package:flutter/material.dart';
-
-/// user for DateTime formatting
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:intl/intl.dart';
 
-/// `const CustomCalendar({
-///   Key? key,
-///   this.initialStartDate,
-///   this.initialEndDate,
-///   this.startEndDateChange,
-///   this.minimumDate,
-///   this.maximumDate,
-///   required this.primary,
-/// })`
 class CustomCalendar extends StatefulWidget {
-  /// The minimum date that can be selected on the calendar
   final DateTime? minimumDate;
-
-  /// The maximum date that can be selected on the calendar
   final DateTime? maximumDate;
-
-  /// The initial start date to be shown on the calendar
   final DateTime? initialStartDate;
-
-  /// The initial end date to be shown on the calendar
   final DateTime? initialEndDate;
-
-  /// The primary color to be used in the calendar's color scheme
   final Color primaryColor;
-
-  /// A function to be called when the selected date range changes
+  final Color disabledDateColor;
   final Function(DateTime, DateTime)? startEndDateChange;
 
   const CustomCalendar({
@@ -39,7 +20,7 @@ class CustomCalendar extends StatefulWidget {
     this.minimumDate,
     this.maximumDate,
     required this.primaryColor,
-    required Color disabledDateColor,
+    required this.disabledDateColor,
   }) : super(key: key);
 
   @override
@@ -48,13 +29,9 @@ class CustomCalendar extends StatefulWidget {
 
 class CustomCalendarState extends State<CustomCalendar> {
   List<DateTime> dateList = <DateTime>[];
-
   DateTime currentMonthDate = DateTime.now();
-
   DateTime? startDate;
-
   DateTime? endDate;
-
   DateTime? selectedDate;
 
   @override
@@ -89,35 +66,48 @@ class CustomCalendarState extends State<CustomCalendar> {
     }
   }
 
+  bool _isDateDisabled(DateTime date) {
+    if (widget.minimumDate != null && widget.maximumDate != null) {
+      return date.isBefore(widget.minimumDate!) ||
+          date.isAfter(widget.maximumDate!);
+    } else if (widget.minimumDate != null) {
+      return date.isBefore(widget.minimumDate!);
+    } else if (widget.maximumDate != null) {
+      return date.isAfter(widget.maximumDate!);
+    }
+    return false;
+  }
+
+  bool _isCurrentMonth(DateTime date) {
+    return date.month == currentMonthDate.month;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(
-            left: 8.0,
-            right: 8.0,
-            top: 4,
-            bottom: 4,
-          ),
-          child: Row(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  height: 38,
-                  width: 38,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      child: Column(
+        children: <Widget>[
+          // Month navigation header
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: Row(
+              children: <Widget>[
+                // Previous month button
+                Container(
+                  height: 36,
+                  width: 36,
                   decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(24.0)),
+                    borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                      color: Colors.grey.shade300,
+                      color: context.mainBorderColor,
+                      width: 1,
                     ),
                   ),
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(24.0)),
+                      borderRadius: BorderRadius.circular(8),
                       onTap: () {
                         setState(() {
                           currentMonthDate = DateTime(
@@ -127,42 +117,38 @@ class CustomCalendarState extends State<CustomCalendar> {
                           setListOfDate(currentMonthDate);
                         });
                       },
-                      child: const Icon(
-                        Icons.keyboard_arrow_left,
-                        color: Colors.grey,
+                      child: Icon(
+                        Icons.chevron_left,
+                        color: context.icon,
+                        size: 20,
                       ),
                     ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: Center(
-                  child: Text(
-                    DateFormat('MMMM, yyyy').format(currentMonthDate),
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 20,
-                      color: Colors.grey.shade700,
+                // Month and year text
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      DateFormat('MMMM yyyy').format(currentMonthDate),
+                      style: context.boldTextStyle(),
                     ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  height: 38,
-                  width: 38,
+                // Next month button
+                Container(
+                  height: 36,
+                  width: 36,
                   decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(24.0)),
+                    borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                      color: Colors.grey.shade300,
+                      color: context.mainBorderColor,
+                      width: 1,
                     ),
                   ),
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(24.0)),
+                      borderRadius: BorderRadius.circular(8),
                       onTap: () {
                         setState(() {
                           currentMonthDate = DateTime(
@@ -173,213 +159,145 @@ class CustomCalendarState extends State<CustomCalendar> {
                           setListOfDate(currentMonthDate);
                         });
                       },
-                      child: const Icon(
-                        Icons.keyboard_arrow_right,
-                        color: Colors.grey,
+                      child: Icon(
+                        Icons.chevron_right,
+                        color: context.icon,
+                        size: 20,
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(right: 8, left: 8, bottom: 8),
-          child: Row(
-            children: getDaysNameUI(),
+          // Day names row
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Row(
+              children: getDaysNameUI(),
+            ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(right: 8, left: 8),
-          child: Column(
+          // Calendar grid
+          Column(
             children: getDaysNoUI(),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
   List<Widget> getDaysNameUI() {
-    final List<Widget> listUI = <Widget>[];
-    for (int i = 0; i < 7; i++) {
-      listUI.add(
-        Expanded(
-          child: Center(
-            child: Text(
-              DateFormat('EEE').format(dateList[i]),
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: widget.primaryColor,
-              ),
-            ),
+    final List<String> dayNames = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+    return dayNames.map((day) {
+      return Expanded(
+        child: Center(
+          child: Text(
+            day,
+            style: context.primaryTextStyle(color: context.textGrey),
           ),
         ),
       );
-    }
-    return listUI;
+    }).toList();
   }
 
   List<Widget> getDaysNoUI() {
     final List<Widget> noList = <Widget>[];
     int count = 0;
+
     for (int i = 0; i < dateList.length / 7; i++) {
       final List<Widget> listUI = <Widget>[];
-      for (int i = 0; i < 7; i++) {
+      for (int j = 0; j < 7; j++) {
         final DateTime date = dateList[count];
+        final bool isDisabled = _isDateDisabled(date);
+        final bool isCurrentMonth = _isCurrentMonth(date);
+        final bool isStartDate = _isStartDate(date);
+        final bool isEndDate = _isEndDate(date);
+        final bool isInRange = getIsInRange(date);
+        final bool isStartOrEnd = isStartDate || isEndDate;
+
         listUI.add(
           Expanded(
             child: AspectRatio(
               aspectRatio: 1.0,
               child: Stack(
                 children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(top: 3, bottom: 3),
-                    child: Material(
-                      color: Colors.transparent,
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                          top: 2,
-                          bottom: 2,
-                          left: isStartDateRadius(date) ? 4 : 0,
-                          right: isEndDateRadius(date) ? 4 : 0,
+                  // Range highlight background
+                  if (startDate != null && endDate != null && isCurrentMonth)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Container(
+                        margin: EdgeInsets.only(
+                          left: isStartDate ? 4 : 0,
+                          right: isEndDate ? 4 : 0,
                         ),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: startDate != null && endDate != null
-                                ? getIsItStartAndEndDate(date) ||
-                                        getIsInRange(date)
-                                    ? widget.primaryColor.withValues(alpha: 0.4)
-                                    : Colors.transparent
-                                : Colors.transparent,
-                            borderRadius: BorderRadius.only(
-                              bottomLeft: isStartDateRadius(date)
-                                  ? const Radius.circular(24.0)
-                                  : Radius.zero,
-                              topLeft: isStartDateRadius(date)
-                                  ? const Radius.circular(24.0)
-                                  : Radius.zero,
-                              topRight: isEndDateRadius(date)
-                                  ? const Radius.circular(24.0)
-                                  : Radius.zero,
-                              bottomRight: isEndDateRadius(date)
-                                  ? const Radius.circular(24.0)
-                                  : Radius.zero,
-                            ),
+                        decoration: BoxDecoration(
+                          color: (isStartOrEnd || isInRange)
+                              ? context.secondaryContainer
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.only(
+                            topLeft:
+                                isStartDate ? Radius.circular(8) : Radius.zero,
+                            bottomLeft:
+                                isStartDate ? Radius.circular(8) : Radius.zero,
+                            topRight:
+                                isEndDate ? Radius.circular(8) : Radius.zero,
+                            bottomRight:
+                                isEndDate ? Radius.circular(8) : Radius.zero,
                           ),
                         ),
                       ),
                     ),
-                  ),
+                  // Date cell
                   Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(32.0)),
-                      onTap: () {
-                        if (widget.minimumDate != null &&
-                            widget.maximumDate != null) {
-                          final DateTime newMinimumDate = widget.minimumDate!
-                              .subtract(const Duration(days: 1));
-                          final DateTime newMaximumDate =
-                              widget.maximumDate!.add(const Duration(days: 1));
-                          if (date.isAfter(newMinimumDate) &&
-                              date.isBefore(newMaximumDate)) {
-                            onDateClick(date);
-                          }
-                        } else if (widget.minimumDate != null) {
-                          final DateTime newMinimumDate = widget.minimumDate!
-                              .subtract(const Duration(days: 1));
-                          if (date.isAfter(newMinimumDate)) {
-                            onDateClick(date);
-                          }
-                        } else if (widget.maximumDate != null) {
-                          final DateTime newMaximumDate =
-                              widget.maximumDate!.add(const Duration(days: 1));
-                          if (date.isBefore(newMaximumDate)) {
-                            onDateClick(date);
-                          }
-                        } else {
-                          // No limit, allow any future or past date selection
-                          onDateClick(date);
-                        }
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(2),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: getIsItStartAndEndDate(date)
-                                ? widget.primaryColor
-                                : Colors
-                                    .transparent, // Highlight start & end date
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(32.0)),
-                            border: Border.all(
-                              color: getIsItStartAndEndDate(date)
-                                  ? Colors.white
-                                  : Colors.transparent,
-                              width: 2,
-                            ),
-                            boxShadow: getIsItStartAndEndDate(date)
-                                ? <BoxShadow>[
-                                    BoxShadow(
-                                      color: Colors.grey.withValues(alpha: 0.6),
-                                      blurRadius: 4,
-                                      offset: const Offset(0, 0),
-                                    ),
-                                  ]
-                                : null,
-                          ),
-                          child: Center(
-                            child: Text(
-                              '${date.day}',
-                              style: TextStyle(
-                                color: getIsItStartAndEndDate(date)
-                                    ? Colors
-                                        .white // White text for selected start/end
-                                    : date.isBefore(DateTime.now()
-                                            .subtract(const Duration(days: 1)))
-                                        ? Colors.grey // Past dates in grey
-                                        : (date == selectedDate)
-                                            ? Colors
-                                                .white // Selected date in white
-                                            : widget
-                                                .primaryColor, // Future & normal dates
-                                fontSize:
-                                    MediaQuery.of(context).size.width > 360
-                                        ? 18
-                                        : 16,
-                                fontWeight: date == selectedDate ||
-                                        getIsItStartAndEndDate(date)
-                                    ? FontWeight.bold
-                                    : FontWeight.normal, // Bold for selected
+                      borderRadius: BorderRadius.circular(8),
+                      onTap: isDisabled ? null : () => onDateClick(date),
+                      child: Container(
+                        margin: const EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          color: isStartOrEnd && isCurrentMonth
+                              ? widget.primaryColor
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Center(
+                          child: Text(
+                            '${date.day}',
+                            style: TextStyle(
+                              color: _getTextColor(
+                                date,
+                                isDisabled,
+                                isCurrentMonth,
+                                isStartOrEnd,
                               ),
+                              fontSize: 14,
+                              fontWeight: isStartOrEnd
+                                  ? FontWeight.w600
+                                  : FontWeight.normal,
                             ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                  Positioned(
-                    bottom: 9,
-                    right: 0,
-                    left: 0,
-                    child: Container(
-                      height: 6,
-                      width: 6,
-                      decoration: BoxDecoration(
-                        color: DateTime.now().day == date.day &&
-                                DateTime.now().month == date.month &&
-                                DateTime.now().year == date.year
-                            ? getIsInRange(date)
-                                ? Colors.white
-                                : widget.primaryColor
-                            : Colors.transparent,
-                        shape: BoxShape.circle,
+                  // Today indicator
+                  if (_isToday(date) && isCurrentMonth && !isStartOrEnd)
+                    Positioned(
+                      bottom: 6,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: Container(
+                          height: 4,
+                          width: 4,
+                          decoration: BoxDecoration(
+                            color: widget.primaryColor,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
                 ],
               ),
             ),
@@ -399,56 +317,64 @@ class CustomCalendarState extends State<CustomCalendar> {
     return noList;
   }
 
+  Color _getTextColor(
+    DateTime date,
+    bool isDisabled,
+    bool isCurrentMonth,
+    bool isStartOrEnd,
+  ) {
+    if (!isCurrentMonth) {
+      return widget.disabledDateColor.withValues(alpha: 0.4);
+    }
+    if (isStartOrEnd) {
+      return Colors.white;
+    }
+    if (isDisabled) {
+      return widget.disabledDateColor;
+    }
+    return Colors.grey.shade800;
+  }
+
+  bool _isToday(DateTime date) {
+    final now = DateTime.now();
+    return date.day == now.day &&
+        date.month == now.month &&
+        date.year == now.year;
+  }
+
+  bool _isStartDate(DateTime date) {
+    if (startDate == null) return false;
+    return startDate!.day == date.day &&
+        startDate!.month == date.month &&
+        startDate!.year == date.year;
+  }
+
+  bool _isEndDate(DateTime date) {
+    if (endDate == null) return false;
+    return endDate!.day == date.day &&
+        endDate!.month == date.month &&
+        endDate!.year == date.year;
+  }
+
   bool getIsInRange(DateTime date) {
     if (startDate != null && endDate != null) {
-      if (date.isAfter(startDate!) && date.isBefore(endDate!)) {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      return false;
+      return date.isAfter(startDate!) && date.isBefore(endDate!);
     }
+    return false;
   }
 
   bool getIsItStartAndEndDate(DateTime date) {
-    if (startDate != null &&
-        startDate!.day == date.day &&
-        startDate!.month == date.month &&
-        startDate!.year == date.year) {
-      return true;
-    } else if (endDate != null &&
-        endDate!.day == date.day &&
-        endDate!.month == date.month &&
-        endDate!.year == date.year) {
-      return true;
-    } else {
-      return false;
-    }
+    return _isStartDate(date) || _isEndDate(date);
   }
 
   bool isStartDateRadius(DateTime date) {
-    if (startDate != null &&
-        startDate!.day == date.day &&
-        startDate!.month == date.month) {
-      return true;
-    } else if (date.weekday == 1) {
-      return true;
-    } else {
-      return false;
-    }
+    if (_isStartDate(date)) return true;
+    return date.weekday == DateTime.sunday;
   }
 
   bool isEndDateRadius(DateTime date) {
-    if (endDate != null &&
-        endDate!.day == date.day &&
-        endDate!.month == date.month) {
-      return true;
-    } else if (date.weekday == 7) {
-      return true;
-    } else {
-      return false;
-    }
+    if (_isEndDate(date)) return true;
+    return date.weekday == DateTime.saturday;
   }
 
   void onDateClick(DateTime date) {
@@ -456,20 +382,22 @@ class CustomCalendarState extends State<CustomCalendar> {
       startDate = date;
     } else if (startDate != date && endDate == null) {
       endDate = date;
-    } else if (startDate!.day == date.day && startDate!.month == date.month) {
+    } else if (_isStartDate(date)) {
       startDate = null;
-    } else if (endDate!.day == date.day && endDate!.month == date.month) {
+    } else if (_isEndDate(date)) {
       endDate = null;
     }
+
     if (startDate == null && endDate != null) {
       startDate = endDate;
       endDate = null;
     }
+
     if (startDate != null && endDate != null) {
       if (!endDate!.isAfter(startDate!)) {
-        final DateTime d = startDate!;
+        final DateTime temp = startDate!;
         startDate = endDate;
-        endDate = d;
+        endDate = temp;
       }
       if (date.isBefore(startDate!)) {
         startDate = date;
@@ -478,6 +406,7 @@ class CustomCalendarState extends State<CustomCalendar> {
         endDate = date;
       }
     }
+
     setState(() {
       try {
         widget.startEndDateChange!(startDate!, endDate!);
