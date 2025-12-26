@@ -7,7 +7,9 @@ import 'package:handyman_provider_flutter/models/service_address_response.dart';
 import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/model_keys.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class AddServiceComponent extends StatefulWidget {
@@ -129,14 +131,14 @@ class _AddServiceComponentState extends State<AddServiceComponent> {
                   widget.addressData == null
                       ? languages.lblAddServiceAddress
                       : languages.editAddress,
-                  style: boldTextStyle(color: white),
+                  style: context.boldTextStyle(color: context.onPrimary),
                   textAlign: TextAlign.justify),
               IconButton(
                 onPressed: () {
                   finish(context);
                   appStore.setLoading(false);
                 },
-                icon: const Icon(Icons.close, size: 22, color: white),
+                icon: Icon(Icons.close, size: 22, color: context.onPrimary),
               ),
             ],
           ),
@@ -165,7 +167,7 @@ class _AddServiceComponentState extends State<AddServiceComponent> {
                       enabled: isUpdate ? isTextChangedFromPrevious : true,
                       disabledColor:
                           context.primaryColor.withValues(alpha: 0.5),
-                      textStyle: boldTextStyle(color: white),
+                      textStyle: context.boldTextStyle(color: white),
                       width: context.width() - context.navigationBarHeight,
                       onTap: () async {
                         ifNotTester(context, () {

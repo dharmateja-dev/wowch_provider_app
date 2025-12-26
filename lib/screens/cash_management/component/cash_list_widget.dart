@@ -10,6 +10,7 @@ import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
 import 'package:handyman_provider_flutter/utils/extensions/color_extension.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class CashListWidget extends StatefulWidget {
@@ -123,7 +124,8 @@ class _CashListWidgetState extends State<CashListWidget> {
                         child: Marquee(
                           child: Text(
                             handleBankText(status: widget.data.type.validate()),
-                            style: boldTextStyle(color: primary, size: 12),
+                            style:
+                                context.boldTextStyle(color: primary, size: 12),
                           ),
                         ),
                       ),
@@ -142,7 +144,7 @@ class _CashListWidgetState extends State<CashListWidget> {
                         child: Text(
                           handleStatusText(
                               status: widget.data.status.validate()),
-                          style: boldTextStyle(
+                          style: context.boldTextStyle(
                               color: widget.data.status
                                   .validate()
                                   .getCashPaymentStatusBackgroundColor,
@@ -158,11 +160,11 @@ class _CashListWidgetState extends State<CashListWidget> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text('${languages.lblBookingID}',
-                        style: secondaryTextStyle()),
+                        style: context.secondaryTextStyle()),
                     8.width,
                     Text(
                       widget.data.bookingId.toString().suffixText(value: "#"),
-                      style: boldTextStyle(size: 12),
+                      style: context.boldTextStyle(size: 12),
                       maxLines: 2,
                       textAlign: TextAlign.right,
                     ).expand(),
@@ -174,11 +176,11 @@ class _CashListWidgetState extends State<CashListWidget> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text('${languages.lblDate} ${languages.ofTransfer}',
-                        style: secondaryTextStyle()),
+                        style: context.secondaryTextStyle()),
                     8.width,
                     Text(
                       "${formatDate(widget.data.datetime.toString(), format: DATE_FORMAT_9)}",
-                      style: boldTextStyle(size: 12),
+                      style: context.boldTextStyle(size: 12),
                       maxLines: 2,
                       textAlign: TextAlign.right,
                     ).expand(),
@@ -187,7 +189,7 @@ class _CashListWidgetState extends State<CashListWidget> {
                 Divider(color: context.dividerColor),
                 Text(
                   "${widget.data.text.validate()}",
-                  style: secondaryTextStyle(size: 12),
+                  style: context.secondaryTextStyle(size: 12),
                   maxLines: 2,
                 ).paddingAll(8),
                 if (widget.data.isTypeBank)
@@ -199,11 +201,11 @@ class _CashListWidgetState extends State<CashListWidget> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text('${languages.refNumber}: ',
-                              style: secondaryTextStyle()),
+                              style: context.secondaryTextStyle()),
                           8.width,
                           Text(
                             "${widget.data.txnId.validate()}",
-                            style: boldTextStyle(size: 12),
+                            style: context.boldTextStyle(size: 12),
                             maxLines: 2,
                             textAlign: TextAlign.right,
                           ).expand(),

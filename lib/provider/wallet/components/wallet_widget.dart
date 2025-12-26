@@ -4,6 +4,7 @@ import 'package:handyman_provider_flutter/models/wallet_history_list_response.da
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 ///Remove unused widget
@@ -51,12 +52,12 @@ class WalletWidgetState extends State<WalletWidget> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(widget.data.activityData!.title.validate(),
-                  style: boldTextStyle()),
+                  style: context.boldTextStyle()),
               8.height,
               Text(
                   formatDate(widget.data.datetime.validate(),
                       format: DATE_FORMAT_2),
-                  style: secondaryTextStyle()),
+                  style: context.secondaryTextStyle()),
             ],
           ),
           PriceWidget(

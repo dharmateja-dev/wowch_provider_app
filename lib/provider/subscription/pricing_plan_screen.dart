@@ -11,6 +11,7 @@ import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
 import 'package:handyman_provider_flutter/utils/extensions/num_extenstions.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:purchases_flutter/object_wrappers.dart';
 
@@ -192,12 +193,13 @@ class _PricingPlanScreenState extends State<PricingPlanScreen> {
                 physics: const AlwaysScrollableScrollPhysics(),
                 children: [
                   42.height,
-                  Text(languages.lblSelectPlan, style: boldTextStyle(size: 16))
+                  Text(languages.lblSelectPlan,
+                          style: context.boldTextStyle(size: 16))
                       .center(),
                   8.height,
                   Text(
                     languages.selectPlanSubTitle,
-                    style: secondaryTextStyle(),
+                    style: context.secondaryTextStyle(),
                   ).center(),
                   24.height,
                   AnimatedListView(
@@ -286,12 +288,12 @@ class _PricingPlanScreenState extends State<PricingPlanScreen> {
                                             if (revenueCatProduct != null)
                                               Text(
                                                 '${revenueCatProduct.title}',
-                                                style: boldTextStyle(),
+                                                style: context.boldTextStyle(),
                                               ).flexible()
                                             else
                                               Text(
                                                 '${data.identifier.capitalizeFirstLetter()}',
-                                                style: boldTextStyle(),
+                                                style: context.boldTextStyle(),
                                               ).flexible(),
                                             if (revenueCatProduct == null) ...[
                                               if (data.trialPeriod.validate() !=
@@ -301,18 +303,20 @@ class _PricingPlanScreenState extends State<PricingPlanScreen> {
                                                   text: TextSpan(
                                                     text:
                                                         ' (${languages.lblTrialFor} ',
-                                                    style: secondaryTextStyle(),
+                                                    style: context
+                                                        .secondaryTextStyle(),
                                                     children: <TextSpan>[
                                                       TextSpan(
                                                         text:
                                                             ' ${data.trialPeriod.validate()} ',
-                                                        style: boldTextStyle(),
+                                                        style: context
+                                                            .boldTextStyle(),
                                                       ),
                                                       TextSpan(
                                                         text:
                                                             '${languages.lblDays})',
-                                                        style:
-                                                            secondaryTextStyle(),
+                                                        style: context
+                                                            .secondaryTextStyle(),
                                                       ),
                                                     ],
                                                   ),
@@ -320,7 +324,8 @@ class _PricingPlanScreenState extends State<PricingPlanScreen> {
                                               else
                                                 Text(
                                                   ' (${data.type.validate().capitalizeFirstLetter()})',
-                                                  style: secondaryTextStyle(),
+                                                  style: context
+                                                      .secondaryTextStyle(),
                                                 ),
                                             ],
                                           ],
@@ -330,7 +335,7 @@ class _PricingPlanScreenState extends State<PricingPlanScreen> {
                                           data.title
                                               .validate()
                                               .capitalizeFirstLetter(),
-                                          style: secondaryTextStyle(),
+                                          style: context.secondaryTextStyle(),
                                         ),
                                       ],
                                     ).expand(),
@@ -348,7 +353,7 @@ class _PricingPlanScreenState extends State<PricingPlanScreen> {
                                   child: revenueCatProduct != null
                                       ? Text(
                                           '${revenueCatProduct.priceString}',
-                                          style: boldTextStyle(
+                                          style: context.boldTextStyle(
                                             color: white,
                                             size: 12,
                                           ),
@@ -359,7 +364,7 @@ class _PricingPlanScreenState extends State<PricingPlanScreen> {
                                               : data.amount
                                                   .validate()
                                                   .toPriceFormat(),
-                                          style: boldTextStyle(
+                                          style: context.boldTextStyle(
                                             color: white,
                                             size: 12,
                                           ),
@@ -494,7 +499,7 @@ class _PricingPlanScreenState extends State<PricingPlanScreen> {
                   selectedPricingPlan!.identifier == FREE
                       ? languages.lblProceed
                       : languages.lblMakePayment,
-                  style: boldTextStyle(color: white),
+                  style: context.boldTextStyle(color: white),
                 ),
                 color: primary,
                 onTap: () async {
@@ -547,7 +552,7 @@ class _PricingPlanScreenState extends State<PricingPlanScreen> {
         list: [
           TextSpan(
             text: '${languages.unlimited} $name',
-            style: primaryTextStyle(),
+            style: context.primaryTextStyle(),
           ),
         ],
       );
@@ -557,11 +562,12 @@ class _PricingPlanScreenState extends State<PricingPlanScreen> {
         list: [
           TextSpan(
             text: '${languages.hintAdd} $name ${languages.upTo} ',
-            style: primaryTextStyle(decoration: TextDecoration.lineThrough),
+            style: context.primaryTextStyle(
+                decoration: TextDecoration.lineThrough),
           ),
           TextSpan(
             text: '0',
-            style: boldTextStyle(
+            style: context.boldTextStyle(
               color: primary,
               decoration: TextDecoration.lineThrough,
             ),
@@ -573,11 +579,11 @@ class _PricingPlanScreenState extends State<PricingPlanScreen> {
         list: [
           TextSpan(
             text: '${languages.hintAdd} $name ${languages.upTo} ',
-            style: primaryTextStyle(),
+            style: context.primaryTextStyle(),
           ),
           TextSpan(
             text: '${limitData.limit.validate()}',
-            style: boldTextStyle(color: primary),
+            style: context.boldTextStyle(color: primary),
           ),
         ],
       );

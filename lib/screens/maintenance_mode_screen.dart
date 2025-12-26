@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -13,12 +14,20 @@ class MaintenanceModeScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Lottie.asset(
-            appStore.isDarkMode ? 'assets/lottie/maintenance_mode_dark.json' : 'assets/lottie/maintenance_mode_light.json',
+            appStore.isDarkMode
+                ? 'assets/lottie/maintenance_mode_dark.json'
+                : 'assets/lottie/maintenance_mode_light.json',
             height: 300,
           ),
-          Text(languages.lblUnderMaintenance, style: boldTextStyle(size: 18), textAlign: TextAlign.center).center(),
+          Text(languages.lblUnderMaintenance,
+                  style: context.boldTextStyle(size: 18),
+                  textAlign: TextAlign.center)
+              .center(),
           8.height,
-          Text(languages.lblCatchUpAfterAWhile, style: secondaryTextStyle(), textAlign: TextAlign.center).center(),
+          Text(languages.lblCatchUpAfterAWhile,
+                  style: context.secondaryTextStyle(),
+                  textAlign: TextAlign.center)
+              .center(),
           16.height,
           TextButton(
             onPressed: () async {

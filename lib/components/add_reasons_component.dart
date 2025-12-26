@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../main.dart';
@@ -49,7 +50,8 @@ class _AddReasonsComponentState extends State<AddReasonsComponent> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(languages.addReason, style: boldTextStyle(color: white))
+                Text(languages.addReason,
+                        style: context.boldTextStyle(color: white))
                     .expand(),
                 CloseButton(color: Colors.white),
               ],
@@ -58,12 +60,13 @@ class _AddReasonsComponentState extends State<AddReasonsComponent> {
           AppTextField(
             textFieldType: TextFieldType.NAME,
             controller: reasonsCont,
-            decoration: inputDecoration(context, hintText: languages.writeReason),
+            decoration:
+                inputDecoration(context, hintText: languages.writeReason),
           ).paddingAll(16),
           AppButton(
             text: languages.btnSave,
             color: primary,
-            textStyle: boldTextStyle(color: white),
+            textStyle: context.boldTextStyle(color: white),
             width: context.width() - context.navigationBarHeight,
             onTap: () {
               if (reasonsCont.text.isNotEmpty) {

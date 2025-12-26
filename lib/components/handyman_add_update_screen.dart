@@ -456,7 +456,7 @@ class HandymanAddUpdateScreenState extends State<HandymanAddUpdateScreen> {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: context.primary.withOpacity(0.3),
+                          color: context.primary.withValues(alpha: 0.3),
                           width: 3,
                         ),
                       ),
@@ -880,7 +880,7 @@ class HandymanAddUpdateScreenState extends State<HandymanAddUpdateScreen> {
               builder: (context) => AppButton(
                 text: languages.btnSave,
                 color: context.primary,
-                textStyle: boldTextStyle(color: context.onPrimary),
+                textStyle: context.boldTextStyle(color: context.onPrimary),
                 width: context.width(),
                 onTap: appStore.isLoading
                     ? null

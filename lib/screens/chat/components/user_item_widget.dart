@@ -6,7 +6,6 @@ import 'package:handyman_provider_flutter/models/chat_message_model.dart';
 import 'package:handyman_provider_flutter/models/user_data.dart';
 import 'package:handyman_provider_flutter/screens/chat/user_chat_screen.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
-import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/text_styles.dart';
@@ -30,14 +29,15 @@ class _UserItemWidgetState extends State<UserItemWidget> {
           "${message.message.validate()}",
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: secondaryTextStyle(size: 14),
+          style: context.secondaryTextStyle(size: 14),
         );
       case IMAGE:
         return Row(
           children: [
             Icon(Icons.photo_sharp, size: 16),
             6.width,
-            Text(languages.lblImage, style: secondaryTextStyle(size: 16)),
+            Text(languages.lblImage,
+                style: context.secondaryTextStyle(size: 16)),
           ],
         );
       case VIDEO:
@@ -45,7 +45,8 @@ class _UserItemWidgetState extends State<UserItemWidget> {
           children: [
             Icon(Icons.videocam_outlined, size: 16),
             6.width,
-            Text(languages.lblVideo, style: secondaryTextStyle(size: 16)),
+            Text(languages.lblVideo,
+                style: context.secondaryTextStyle(size: 16)),
           ],
         );
       case AUDIO:
@@ -53,7 +54,8 @@ class _UserItemWidgetState extends State<UserItemWidget> {
           children: [
             Icon(Icons.audiotrack, size: 16),
             6.width,
-            Text(languages.lblAudio, style: secondaryTextStyle(size: 16)),
+            Text(languages.lblAudio,
+                style: context.secondaryTextStyle(size: 16)),
           ],
         );
       default:

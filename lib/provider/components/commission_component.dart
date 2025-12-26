@@ -5,6 +5,7 @@ import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/num_extenstions.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class CommissionComponent extends StatelessWidget {
@@ -32,10 +33,10 @@ class CommissionComponent extends StatelessWidget {
                   list: [
                     TextSpan(
                         text: '${languages.lblProviderType}: ',
-                        style: secondaryTextStyle()),
+                        style: context.secondaryTextStyle()),
                     TextSpan(
                       text: commission.name.validate().capitalizeFirstLetter(),
-                      style: boldTextStyle(),
+                      style: context.boldTextStyle(),
                     ),
                   ],
                 ),
@@ -45,12 +46,12 @@ class CommissionComponent extends StatelessWidget {
                   list: [
                     TextSpan(
                         text: '${languages.lblMyCommission}: ',
-                        style: secondaryTextStyle()),
+                        style: context.secondaryTextStyle()),
                     TextSpan(
                       text: isCommissionTypePercent(commission.type)
                           ? '${commission.commission.validate()}%'
                           : commission.commission.validate().toPriceFormat(),
-                      style: boldTextStyle(),
+                      style: context.boldTextStyle(),
                     ),
                   ],
                 ),

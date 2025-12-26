@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class UserDemoModeScreen extends StatefulWidget {
@@ -81,7 +82,7 @@ class _UserDemoModeScreenState extends State<UserDemoModeScreen> {
                         }
                       },
                       child: Text(demoLoginName[index],
-                          style: boldTextStyle(
+                          style: context.boldTextStyle(
                               color: isSelected
                                   ? context.primary
                                   : const Color(0xFF121212),

@@ -235,7 +235,7 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       text: languages.confirm,
                       height: 40,
                       color: primary,
-                      textStyle: boldTextStyle(color: white),
+                      textStyle: context.boldTextStyle(color: white),
                       width: context.width() - context.navigationBarHeight,
                       onTap: () {
                         ifNotTester(context, () {

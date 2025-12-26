@@ -5,11 +5,8 @@ import 'package:handyman_provider_flutter/components/base_scaffold_widget.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/networks/network_utils.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
-import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
-import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
-import 'package:handyman_provider_flutter/utils/images.dart';
 import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:http/http.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -245,7 +242,7 @@ class _AddBankScreenState extends State<AddBankScreen> {
             child: AppButton(
               text: languages.btnSave,
               color: context.primary,
-              textStyle: boldTextStyle(color: context.onPrimary),
+              textStyle: context.boldTextStyle(color: context.onPrimary),
               width: context.width(),
               onTap: () {
                 if (formKey.currentState!.validate()) {

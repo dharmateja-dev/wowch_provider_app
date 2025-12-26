@@ -23,6 +23,7 @@ import 'package:handyman_provider_flutter/utils/extensions/color_extension.dart'
 import 'package:handyman_provider_flutter/utils/extensions/num_extenstions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
 import 'package:handyman_provider_flutter/utils/model_keys.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../components/cached_image_widget.dart';
@@ -424,7 +425,7 @@ class _PromotionalBannerDetailScreenState
             children: [
               Text(
                 '${formatBookingDate(widget.promotionalBannerData.startDate, format: DATE_FORMAT_2)} ${languages.to} ${formatBookingDate(widget.promotionalBannerData.endDate, format: DATE_FORMAT_2)}',
-                style: boldTextStyle(),
+                style: context.boldTextStyle(),
               ).expand(),
               16.width,
               Container(
@@ -440,7 +441,7 @@ class _PromotionalBannerDetailScreenState
                   widget.promotionalBannerData.status
                       .validate()
                       .toPromotionalBannerStatus(),
-                  style: boldTextStyle(color: Colors.white, size: 12),
+                  style: context.boldTextStyle(color: Colors.white, size: 12),
                 ),
               ),
             ],
@@ -451,26 +452,26 @@ class _PromotionalBannerDetailScreenState
             16.height,
             ReadMoreText(
               widget.promotionalBannerData.description.validate(),
-              style: secondaryTextStyle(),
+              style: context.secondaryTextStyle(),
               colorClickableText: context.primaryColor,
             ),
           ],
           16.height,
           Row(
             children: [
-              Text('${languages.type} ', style: secondaryTextStyle()),
+              Text('${languages.type} ', style: context.secondaryTextStyle()),
               4.width,
               Text(
                   widget.promotionalBannerData.bannerType
                       .validate()
                       .toPromotionalBannerType(),
-                  style: boldTextStyle()),
+                  style: context.boldTextStyle()),
             ],
           ),
           if (widget.promotionalBannerData.bannerType ==
               PROMOTIONAL_TYPE_SERVICE)
             Text(widget.promotionalBannerData.serviceName.validate(),
-                    style: boldTextStyle())
+                    style: context.boldTextStyle())
                 .onTap(() {
               ServiceDetailScreen(
                       serviceId:
@@ -480,7 +481,7 @@ class _PromotionalBannerDetailScreenState
           if (widget.promotionalBannerData.bannerType == PROMOTIONAL_TYPE_LINK)
             Text(
               widget.promotionalBannerData.bannerRedirectUrl.validate(),
-              style: boldTextStyle(
+              style: context.boldTextStyle(
                 color: Colors.blue,
                 decoration: TextDecoration.underline,
                 decorationColor: Colors.blue,
@@ -494,13 +495,14 @@ class _PromotionalBannerDetailScreenState
           16.height,
           Row(
             children: [
-              Text('${languages.paymentStatus}:', style: secondaryTextStyle()),
+              Text('${languages.paymentStatus}:',
+                  style: context.secondaryTextStyle()),
               4.width,
               Text(
                   widget.promotionalBannerData.paymentStatus
                       .validate()
                       .toPaymentStatus(),
-                  style: boldTextStyle(
+                  style: context.boldTextStyle(
                       color:
                           widget.promotionalBannerData.paymentStatus == 'paid'
                               ? greenColor
@@ -511,7 +513,8 @@ class _PromotionalBannerDetailScreenState
             16.height,
             Row(
               children: [
-                Text(languages.totalAmount, style: secondaryTextStyle()),
+                Text(languages.totalAmount,
+                    style: context.secondaryTextStyle()),
                 4.width,
                 PriceWidget(
                     price: widget.promotionalBannerData.totalAmount.toDouble()),
@@ -522,7 +525,8 @@ class _PromotionalBannerDetailScreenState
             if (widget.promotionalBannerData.paymentStatus == 'pending' &&
                 widget.promotionalBannerData.status == 'pending') ...[
               20.height,
-              Text(languages.lblChoosePaymentMethod, style: boldTextStyle()),
+              Text(languages.lblChoosePaymentMethod,
+                  style: context.boldTextStyle()),
               4.height,
               AnimatedListView(
                 itemCount: paymentList.length,
@@ -551,7 +555,7 @@ class _PromotionalBannerDetailScreenState
                       contentPadding: EdgeInsets.zero,
                       visualDensity: VisualDensity.compact,
                       title: Text(paymentData.title.validate(),
-                          style: primaryTextStyle()),
+                          style: context.primaryTextStyle()),
                     ),
                   );
                 },
@@ -567,7 +571,8 @@ class _PromotionalBannerDetailScreenState
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(languages.lblTotalAmount, style: boldTextStyle()),
+                        Text(languages.lblTotalAmount,
+                            style: context.boldTextStyle()),
                         16.width,
                         Observer(builder: (context) {
                           return PriceWidget(
@@ -588,7 +593,7 @@ class _PromotionalBannerDetailScreenState
                   enabled: selectedPaymentSetting != null,
                   disabledColor: primary.withValues(alpha: 0.5),
                   color: primary,
-                  textStyle: boldTextStyle(color: Colors.white),
+                  textStyle: context.boldTextStyle(color: Colors.white),
                   width: context.width(),
                   onTap: appStore.isLoading
                       ? () {}

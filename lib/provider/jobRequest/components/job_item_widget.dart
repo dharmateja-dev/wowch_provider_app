@@ -81,7 +81,7 @@ class JobItemWidget extends StatelessWidget {
             ),
             child: Text(
               data!.status.validate().toPostJobStatus(),
-              style: boldTextStyle(
+              style: context.boldTextStyle(
                   color: data!.status.validate().getJobStatusColor, size: 12),
             ),
           ),

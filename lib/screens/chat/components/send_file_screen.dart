@@ -5,12 +5,12 @@ import 'package:flutter/services.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../../components/back_widget.dart';
 import '../../../components/cached_image_widget.dart';
 import '../../../components/common_file_placeholders.dart';
-import '../../../utils/colors.dart';
 import '../../../utils/common.dart';
 import '../../../utils/constant.dart';
 import '../../../utils/images.dart';
@@ -50,8 +50,8 @@ class _SendFilePreviewScreenState extends State<SendFilePreviewScreen> {
             statusBarIconBrightness: Brightness.light),
         titleWidget: Text(
           languages.sendMessage,
-          style:
-              boldTextStyle(color: context.onPrimary, size: APP_BAR_TEXT_SIZE),
+          style: context.boldTextStyle(
+              color: context.onPrimary, size: APP_BAR_TEXT_SIZE),
         ),
       ),
       body: SizedBox(
@@ -161,7 +161,7 @@ class _SendFilePreviewScreenState extends State<SendFilePreviewScreen> {
         AppTextField(
           textFieldType: TextFieldType.OTHER,
           controller: messageCont,
-          textStyle: primaryTextStyle(),
+          textStyle: context.primaryTextStyle(),
           minLines: 1,
           // onFieldSubmitted: (s) {},
           focus: messageFocus,
@@ -171,7 +171,8 @@ class _SendFilePreviewScreenState extends State<SendFilePreviewScreen> {
           textCapitalization: TextCapitalization.sentences,
           keyboardType: TextInputType.multiline,
           decoration: inputDecoration(context).copyWith(
-              hintText: languages.lblMessage, hintStyle: secondaryTextStyle()),
+              hintText: languages.lblMessage,
+              hintStyle: context.primaryTextStyle()),
         ).expand(),
       ],
     );

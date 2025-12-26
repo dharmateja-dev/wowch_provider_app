@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/color_extension.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../../components/cached_image_widget.dart';
@@ -70,7 +71,8 @@ class PromotionalBannerItemComponent extends StatelessWidget {
                         promotionalBannerData.status
                             .validate()
                             .toPromotionalBannerStatus(),
-                        style: boldTextStyle(color: Colors.white, size: 12),
+                        style: context.boldTextStyle(
+                            color: Colors.white, size: 12),
                       ),
                     ),
                   ),
@@ -81,7 +83,7 @@ class PromotionalBannerItemComponent extends StatelessWidget {
                 alignment: Alignment.topLeft,
                 child: Text(
                   promotionalBannerData.description.validate(),
-                  style: boldTextStyle(),
+                  style: context.boldTextStyle(),
                 ),
               ).paddingOnly(
                   left: 16,
@@ -95,11 +97,11 @@ class PromotionalBannerItemComponent extends StatelessWidget {
               alignment: Alignment.topLeft,
               child: RichText(
                 text: TextSpan(
-                  style: secondaryTextStyle(),
+                  style: context.secondaryTextStyle(),
                   children: <TextSpan>[
                     TextSpan(
                       text: '${languages.paymentStatus}: ',
-                      style: secondaryTextStyle(
+                      style: context.secondaryTextStyle(
                         size: 12,
                       ),
                     ),
@@ -107,7 +109,7 @@ class PromotionalBannerItemComponent extends StatelessWidget {
                         text: promotionalBannerData.paymentStatus
                             .validate()
                             .toPaymentStatus(),
-                        style: boldTextStyle(
+                        style: context.boldTextStyle(
                             size: 12,
                             color: promotionalBannerData.paymentStatus == 'paid'
                                 ? greenColor
@@ -122,15 +124,15 @@ class PromotionalBannerItemComponent extends StatelessWidget {
                 alignment: Alignment.topLeft,
                 child: RichText(
                   text: TextSpan(
-                    style: secondaryTextStyle(),
+                    style: context.secondaryTextStyle(),
                     children: <TextSpan>[
                       TextSpan(
                         text: languages.note,
-                        style: boldTextStyle(size: 12, color: redColor),
+                        style: context.boldTextStyle(size: 12, color: redColor),
                       ),
                       TextSpan(
                           text: languages.thisBannerIsCurrently,
-                          style: secondaryTextStyle()),
+                          style: context.secondaryTextStyle()),
                     ],
                   ),
                 ).paddingOnly(left: 16, right: 16, top: 8, bottom: 16),
@@ -144,15 +146,16 @@ class PromotionalBannerItemComponent extends StatelessWidget {
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                     text: TextSpan(
-                      style: secondaryTextStyle(),
+                      style: context.secondaryTextStyle(),
                       children: <TextSpan>[
                         TextSpan(
                           text: '${languages.reason} ',
-                          style: boldTextStyle(size: 12, color: redColor),
+                          style:
+                              context.boldTextStyle(size: 12, color: redColor),
                         ),
                         TextSpan(
                             text: promotionalBannerData.reason.validate(),
-                            style: secondaryTextStyle()),
+                            style: context.secondaryTextStyle()),
                       ],
                     ),
                   ),
@@ -160,7 +163,7 @@ class PromotionalBannerItemComponent extends StatelessWidget {
               AppButton(
                 text: languages.lblDelete,
                 color: cancelled.withValues(alpha: 0.1),
-                textStyle: boldTextStyle(color: cancelled),
+                textStyle: context.boldTextStyle(color: cancelled),
                 width: context.width(),
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 12),

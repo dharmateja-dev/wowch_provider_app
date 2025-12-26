@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/components/shimmer_widget.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class HandymanDashboardShimmer extends StatelessWidget {
@@ -14,15 +15,18 @@ class HandymanDashboardShimmer extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ShimmerWidget(height: 10, width: context.width() * 0.25).paddingLeft(16),
+          ShimmerWidget(height: 10, width: context.width() * 0.25)
+              .paddingLeft(16),
           8.height,
-          ShimmerWidget(height: 10, width: context.width() * 0.25).paddingLeft(16),
+          ShimmerWidget(height: 10, width: context.width() * 0.25)
+              .paddingLeft(16),
 
           /// Commission Widget
           Container(
             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
             margin: const EdgeInsets.only(top: 24, left: 16, right: 16),
-            decoration: boxDecorationWithRoundedCorners(borderRadius: radius(8), backgroundColor: context.cardColor),
+            decoration: boxDecorationWithRoundedCorners(
+                borderRadius: radius(8), backgroundColor: context.cardColor),
             child: Row(
               children: [
                 Column(
@@ -36,8 +40,10 @@ class HandymanDashboardShimmer extends StatelessWidget {
                 const Spacer(),
                 Container(
                   padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(shape: BoxShape.circle, color: context.cardColor),
-                  child: ShimmerWidget(width: 22, height: 22).cornerRadiusWithClipRRect(11),
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle, color: context.cardColor),
+                  child: ShimmerWidget(width: 22, height: 22)
+                      .cornerRadiusWithClipRRect(11),
                 ),
               ],
             ),
@@ -50,7 +56,8 @@ class HandymanDashboardShimmer extends StatelessWidget {
             runSpacing: 16,
             children: totalList.map((e) {
               return Container(
-                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                 decoration: boxDecorationDefault(color: context.cardColor),
                 width: context.width() / 2 - 24,
                 child: Column(
@@ -59,10 +66,14 @@ class HandymanDashboardShimmer extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        SizedBox(width: context.width() / 2 - 94, child: ShimmerWidget(height: 10, width: context.width() * 0.12)),
+                        SizedBox(
+                            width: context.width() / 2 - 94,
+                            child: ShimmerWidget(
+                                height: 10, width: context.width() * 0.12)),
                         Container(
                           padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(shape: BoxShape.circle, color: context.cardColor),
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle, color: context.cardColor),
                           child: ShimmerWidget(height: 18, width: 18),
                         ),
                       ],
@@ -98,7 +109,10 @@ class HandymanDashboardShimmer extends StatelessWidget {
                   width: context.width(),
                   padding: const EdgeInsets.all(8),
                   margin: const EdgeInsets.only(bottom: 16),
-                  decoration: BoxDecoration(color: context.scaffoldBackgroundColor, border: Border.all(color: context.dividerColor), borderRadius: radius()),
+                  decoration: BoxDecoration(
+                      color: context.scaffoldBackgroundColor,
+                      border: Border.all(color: context.dividerColor),
+                      borderRadius: radius()),
                   child: Column(
                     children: [
                       Row(
@@ -110,12 +124,18 @@ class HandymanDashboardShimmer extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Container(
-                                    padding: const EdgeInsets.symmetric(vertical: 4),
-                                    decoration: BoxDecoration(borderRadius: radius(8), color: Colors.transparent),
-                                    child: ShimmerWidget(height: 20, width: context.width() * 0.24),
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 4),
+                                    decoration: BoxDecoration(
+                                        borderRadius: radius(8),
+                                        color: Colors.transparent),
+                                    child: ShimmerWidget(
+                                        height: 20,
+                                        width: context.width() * 0.24),
                                   ).flexible(),
                                   8.width,
                                   ShimmerWidget(height: 20, width: 50),
@@ -164,21 +184,36 @@ class HandymanDashboardShimmer extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    ShimmerWidget(height: 10, width: context.width() * 0.25).flexible(),
+                                    ShimmerWidget(
+                                            height: 10,
+                                            width: context.width() * 0.25)
+                                        .flexible(),
                                     Row(
                                       children: [
-                                        Image.asset(ic_star_fill, height: 16, color: getRatingBarColor(5)),
+                                        Image.asset(ic_star_fill,
+                                            height: 16,
+                                            color: getRatingBarColor(5)),
                                         4.width,
-                                        Text('5', style: boldTextStyle(color: getRatingBarColor(5))),
+                                        Text('5',
+                                            style: context.boldTextStyle(
+                                                color: getRatingBarColor(5))),
                                       ],
                                     ),
                                   ],
                                 ),
-                                ShimmerWidget(height: 10, width: context.width() * 0.25),
-                                ShimmerWidget(height: 10, width: context.width() * 0.25).paddingTop(8),
-                                ShimmerWidget(height: 10, width: context.width() * 0.25).paddingTop(8),
+                                ShimmerWidget(
+                                    height: 10, width: context.width() * 0.25),
+                                ShimmerWidget(
+                                        height: 10,
+                                        width: context.width() * 0.25)
+                                    .paddingTop(8),
+                                ShimmerWidget(
+                                        height: 10,
+                                        width: context.width() * 0.25)
+                                    .paddingTop(8),
                               ],
                             ).flexible(),
                           ],

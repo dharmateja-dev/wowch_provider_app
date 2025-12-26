@@ -3,6 +3,7 @@ import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/models/shop_model.dart';
 import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class ServiceShopComponent extends StatefulWidget {
@@ -76,7 +77,7 @@ class _ServiceShopComponentState extends State<ServiceShopComponent> {
               tilePadding: const EdgeInsets.symmetric(horizontal: 16),
               childrenPadding: const EdgeInsets.symmetric(horizontal: 16),
               initiallyExpanded: widget.selectedList.validate().isNotEmpty,
-              title: Text("Select Shop", style: secondaryTextStyle()),
+              title: Text("Select Shop", style: context.secondaryTextStyle()),
               onExpansionChanged: (value) {
                 isExpanded = value;
                 setState(() {});
@@ -96,7 +97,7 @@ class _ServiceShopComponentState extends State<ServiceShopComponent> {
                         child: Center(
                           child: Text(
                             languages.lblNoShopsFound,
-                            style: secondaryTextStyle(),
+                            style: context.secondaryTextStyle(),
                           ),
                         ),
                       )
@@ -120,7 +121,8 @@ class _ServiceShopComponentState extends State<ServiceShopComponent> {
                                 const EdgeInsets.symmetric(horizontal: 16),
                             title: Text(
                               data.name.validate(),
-                              style: secondaryTextStyle(color: context.icon),
+                              style: context.secondaryTextStyle(
+                                  color: context.icon),
                             ),
                             value: data.isSelected,
                             onChanged: (bool? val) {

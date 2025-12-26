@@ -9,7 +9,6 @@ import 'package:handyman_provider_flutter/provider/components/service_widget.dar
 import 'package:handyman_provider_flutter/provider/services/add_services.dart';
 import 'package:handyman_provider_flutter/provider/services/service_detail_screen.dart';
 import 'package:handyman_provider_flutter/provider/services/shimmer/service_list_shimmer.dart';
-import 'package:handyman_provider_flutter/utils/colors.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/demo_mode.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
@@ -19,7 +18,6 @@ import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../components/empty_error_state_widget.dart';
-import '../../utils/configs.dart';
 import '../../utils/constant.dart';
 import 'model/service_list_approval_status_model.dart';
 
@@ -296,7 +294,7 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
                           ),
                           label: Text(
                             serviceStatus.name.toServiceApprovalStatusText(),
-                            style: boldTextStyle(
+                            style: context.boldTextStyle(
                               size: 12,
                               color: selectedTab.status == serviceStatus.status
                                   ? context.primary

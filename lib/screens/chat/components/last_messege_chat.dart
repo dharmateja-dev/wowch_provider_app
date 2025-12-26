@@ -4,7 +4,9 @@ import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/models/chat_message_model.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:nb_utils/nb_utils.dart' as context;
 
 class LastMessageChat extends StatelessWidget {
   final stream;
@@ -21,14 +23,15 @@ class LastMessageChat extends StatelessWidget {
           "${message.message.validate()}",
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: secondaryTextStyle(size: 14),
+          style: context.secondaryTextStyle(size: 14),
         );
       case IMAGE:
         return Row(
           children: [
             Icon(Icons.photo_sharp, size: 16),
             6.width,
-            Text(languages.lblImage, style: secondaryTextStyle(size: 16)),
+            Text(languages.lblImage,
+                style: context.secondaryTextStyle(size: 16)),
           ],
         );
       case VIDEO:
@@ -36,7 +39,8 @@ class LastMessageChat extends StatelessWidget {
           children: [
             Icon(Icons.videocam_outlined, size: 16),
             6.width,
-            Text(languages.lblVideo, style: secondaryTextStyle(size: 16)),
+            Text(languages.lblVideo,
+                style: context.secondaryTextStyle(size: 16)),
           ],
         );
       case AUDIO:
@@ -44,7 +48,8 @@ class LastMessageChat extends StatelessWidget {
           children: [
             Icon(Icons.audiotrack, size: 16),
             6.width,
-            Text(languages.lblAudio, style: secondaryTextStyle(size: 16)),
+            Text(languages.lblAudio,
+                style: context.secondaryTextStyle(size: 16)),
           ],
         );
       default:
@@ -61,11 +66,16 @@ class LastMessageChat extends StatelessWidget {
           var docList = snapshot.data!.docs;
 
           if (docList.isNotEmpty) {
-            ChatMessageModel message = ChatMessageModel.fromJson(docList.last.data() as Map<String, dynamic>);
+            ChatMessageModel message = ChatMessageModel.fromJson(
+                docList.last.data() as Map<String, dynamic>);
             String time = '';
-            DateTime date = DateTime.fromMicrosecondsSinceEpoch(message.createdAt! * 1000);
+            DateTime date =
+                DateTime.fromMicrosecondsSinceEpoch(message.createdAt! * 1000);
             if (date.isToday) {
-              time = formatDate(message.createdAt.validate().toString(), format: DATE_FORMAT_3, isFromMicrosecondsSinceEpoch: true, isTime: true);
+              time = formatDate(message.createdAt.validate().toString(),
+                  format: DATE_FORMAT_3,
+                  isFromMicrosecondsSinceEpoch: true,
+                  isTime: true);
             } else if (date.isYesterday) {
               time = languages.yesterday;
             } else {
@@ -81,12 +91,14 @@ class LastMessageChat extends StatelessWidget {
               children: [
                 message.isMe.validate()
                     ? !message.isMessageRead.validate()
-                        ? Icon(Icons.done, size: 12, color: textSecondaryColorGlobal)
-                        : Icon(Icons.done_all, size: 12, color: textSecondaryColorGlobal)
+                        ? Icon(Icons.done,
+                            size: 12, color: textSecondaryColorGlobal)
+                        : Icon(Icons.done_all,
+                            size: 12, color: textSecondaryColorGlobal)
                     : Offstage(),
                 typeWidget(message).expand(),
                 16.width,
-                Text(time, style: secondaryTextStyle(size: 10)),
+                Text(time, style: context.secondaryTextStyle(size: 10)),
               ],
             ).paddingTop(2);
           }

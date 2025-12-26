@@ -6,6 +6,7 @@ import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/models/package_response.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../../utils/images.dart';
@@ -82,7 +83,8 @@ class _PackageComponentState extends State<PackageComponent> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(data.name.validate(), style: boldTextStyle()),
+                      Text(data.name.validate(),
+                          style: context.boldTextStyle()),
                       8.height,
                       PriceWidget(
                         price: data.price.validate(),

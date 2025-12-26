@@ -1261,7 +1261,7 @@ class _AddEditShopScreenState extends State<AddEditShopScreen> {
               builder: (_) => AppButton(
                 text: languages.btnSave,
                 color: context.primary,
-                textStyle: boldTextStyle(color: context.onPrimary),
+                textStyle: context.boldTextStyle(color: context.onPrimary),
                 width: context.width(),
                 onTap: appStore.isLoading ? null : saveShop,
               ),

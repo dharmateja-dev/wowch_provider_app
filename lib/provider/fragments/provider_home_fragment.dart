@@ -79,6 +79,7 @@ class _ProviderHomeFragmentState extends State<ProviderHomeFragment> {
   Widget planBanner(DashboardResponse data) {
     if (data.isPlanExpired.validate()) {
       return subSubscriptionPlanWidget(
+        context,
         planBgColor:
             appStore.isDarkMode ? context.cardColor : Colors.red.shade50,
         planTitle: languages.lblPlanExpired,
@@ -91,6 +92,7 @@ class _ProviderHomeFragmentState extends State<ProviderHomeFragment> {
       );
     } else if (data.userNeverPurchasedPlan.validate()) {
       return subSubscriptionPlanWidget(
+        context,
         planBgColor:
             appStore.isDarkMode ? context.cardColor : Colors.red.shade50,
         planTitle: languages.lblChooseYourPlan,
@@ -106,6 +108,7 @@ class _ProviderHomeFragmentState extends State<ProviderHomeFragment> {
 
       if (days != 0 && days <= PLAN_REMAINING_DAYS) {
         return subSubscriptionPlanWidget(
+          context,
           planBgColor:
               appStore.isDarkMode ? context.cardColor : Colors.orange.shade50,
           planTitle: languages.lblReminder,

@@ -185,6 +185,7 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
             isSelected: isAcceptedTc,
             onChanged: () {
               isAcceptedTc = !isAcceptedTc;
+              // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
               valueNotifier.notifyListeners();
             },
           ),
@@ -512,7 +513,7 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
                   color: appStore.isLoading
                       ? context.primary.withValues(alpha: 0.5)
                       : context.primary,
-                  textStyle: boldTextStyle(color: context.onPrimary),
+                  textStyle: context.boldTextStyle(color: context.onPrimary),
                   width: context.width() - context.navigationBarHeight,
                   onTap: () {
                     if (!appStore.isLoading) {

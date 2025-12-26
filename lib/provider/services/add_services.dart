@@ -877,7 +877,7 @@ class _AddServicesState extends State<AddServices> {
                                 ),
                                 alignment: Alignment.center,
                                 child: Text(value.title.validate(),
-                                    style: primaryTextStyle(size: 12),
+                                    style: context.primaryTextStyle(size: 12),
                                     textAlign: TextAlign.center),
                               ).onTap(() {
                                 selectedVisitType = value;

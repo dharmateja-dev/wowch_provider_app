@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../../main.dart';
@@ -66,15 +67,15 @@ class _HelpDeskActivityComponentState extends State<HelpDeskActivityComponent> {
                     text: widget.helpDeskActivityData.activityType
                         .validate()
                         .toHelpDeskActivityType(),
-                    style: secondaryTextStyle(),
+                    style: context.secondaryTextStyle(),
                   ),
                   TextSpan(
                       text: ' ${widget.helpDeskActivityData.senderName} ',
-                      style: boldTextStyle(size: 12)),
+                      style: context.boldTextStyle(size: 12)),
                   TextSpan(
                     text:
                         '${languages.on} ${formatBookingDate(widget.helpDeskActivityData.updatedAt.validate(), format: DATE_FORMAT_11, isTime: true)}',
-                    style: secondaryTextStyle(),
+                    style: context.secondaryTextStyle(),
                   ),
                 ],
               ),
@@ -104,7 +105,8 @@ class _HelpDeskActivityComponentState extends State<HelpDeskActivityComponent> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(languages.showMessage,
-                          style: boldTextStyle(size: 12, color: primary)),
+                          style:
+                              context.boldTextStyle(size: 12, color: primary)),
                       8.width,
                       Icon(isExpansionTile
                           ? Icons.keyboard_arrow_up
@@ -185,23 +187,24 @@ class _HelpDeskActivityComponentState extends State<HelpDeskActivityComponent> {
                                   text: widget.helpDeskActivityData.activityType
                                       .validate()
                                       .toHelpDeskActivityType(),
-                                  style: secondaryTextStyle(),
+                                  style: context.secondaryTextStyle(),
                                 ),
                                 TextSpan(
                                     text:
                                         ' ${widget.helpDeskActivityData.senderName} ',
-                                    style: secondaryTextStyle(size: 12)),
+                                    style:
+                                        context.secondaryTextStyle(size: 12)),
                                 TextSpan(
                                   text:
                                       '${languages.on} ${formatBookingDate(widget.helpDeskActivityData.updatedAt.validate(), format: DATE_FORMAT_11, isTime: true)}',
-                                  style: secondaryTextStyle(),
+                                  style: context.secondaryTextStyle(),
                                 ),
                               ],
                             )
                           else
                             Text(
                               widget.helpDeskActivityData.messages.validate(),
-                              style: secondaryTextStyle(),
+                              style: context.secondaryTextStyle(),
                             ),
                         ],
                       ),

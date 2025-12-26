@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/color_extension.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../../main.dart';
@@ -55,24 +56,24 @@ class _HelpDeskItemComponentState extends State<HelpDeskItemComponent> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('#${widget.helpDeskData.id}',
-                    style: boldTextStyle(color: context.primary)),
+                    style: context.boldTextStyle(color: context.primary)),
                 8.height,
                 Text(
                   formatBookingDate(widget.helpDeskData.createdAt.validate(),
                       format: DATE_FORMAT_11),
-                  style: secondaryTextStyle(),
+                  style: context.secondaryTextStyle(),
                 ),
                 16.height,
                 Text(
                   widget.helpDeskData.subject.validate(),
-                  style: boldTextStyle(),
+                  style: context.boldTextStyle(),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
                 8.height,
                 Text(
                   widget.helpDeskData.description.validate(),
-                  style: secondaryTextStyle(),
+                  style: context.secondaryTextStyle(),
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -86,13 +87,14 @@ class _HelpDeskItemComponentState extends State<HelpDeskItemComponent> {
                         children: [
                           Text(
                             languages.closedOn,
-                            style: boldTextStyle(size: 12, color: Colors.green),
+                            style: context.boldTextStyle(
+                                size: 12, color: Colors.green),
                           ).expand(),
                           Text(
                             formatBookingDate(
                                 widget.helpDeskData.updatedAt.validate(),
                                 format: DATE_FORMAT_11),
-                            style: secondaryTextStyle(),
+                            style: context.secondaryTextStyle(),
                           ),
                         ],
                       ),
@@ -110,7 +112,8 @@ class _HelpDeskItemComponentState extends State<HelpDeskItemComponent> {
                           EdgeInsets.symmetric(vertical: 2, horizontal: 0))),
                   child: Text(
                     languages.viewDetail,
-                    style: boldTextStyle(color: context.primary, size: 12),
+                    style:
+                        context.boldTextStyle(color: context.primary, size: 12),
                   ),
                 ).withHeight(25),
               ],
@@ -128,7 +131,7 @@ class _HelpDeskItemComponentState extends State<HelpDeskItemComponent> {
                 ),
                 child: Text(
                   widget.helpDeskData.status.validate().toHelpDeskStatus(),
-                  style: boldTextStyle(color: Colors.white, size: 12),
+                  style: context.boldTextStyle(color: Colors.white, size: 12),
                 ),
               ),
             ),

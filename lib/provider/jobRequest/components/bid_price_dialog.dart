@@ -6,6 +6,7 @@ import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/extensions/context_ext.dart';
 import 'package:handyman_provider_flutter/utils/model_keys.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../models/post_job_data.dart';
@@ -86,7 +87,7 @@ class _BidPriceDialogState extends State<BidPriceDialog> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(languages.giveYourEstimatePriceHere,
-                            style: boldTextStyle()),
+                            style: context.boldTextStyle()),
                         16.height,
                         AppTextField(
                           textFieldType: TextFieldType.NUMBER,
@@ -109,10 +110,10 @@ class _BidPriceDialogState extends State<BidPriceDialog> {
                             fillColor: context.cardColor,
                             filled: true,
                             hintText: languages.enterBidPrice,
-                            hintStyle: secondaryTextStyle(),
+                            hintStyle: context.secondaryTextStyle(),
                             prefixText:
                                 "${appConfigurationStore.currencySymbol} ",
-                            prefixStyle: primaryTextStyle(size: 16),
+                            prefixStyle: context.primaryTextStyle(size: 16),
                           ),
                         ),
                       ],

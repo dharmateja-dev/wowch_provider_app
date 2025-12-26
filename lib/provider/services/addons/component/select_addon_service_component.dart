@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:handyman_provider_flutter/utils/extensions/context_ext.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../../../components/app_widgets.dart';
@@ -166,7 +167,7 @@ class _SelectAddonServiceComponentState
                 24.height,
                 // Service List Section
                 Text(languages.lblServices,
-                        style: boldTextStyle(size: LABEL_TEXT_SIZE))
+                        style: context.boldTextStyle(size: LABEL_TEXT_SIZE))
                     .paddingSymmetric(horizontal: 16),
                 8.height,
                 if (serviceList.isNotEmpty)
@@ -202,7 +203,7 @@ class _SelectAddonServiceComponentState
                                 ),
                                 16.width,
                                 Text(data.name.validate(),
-                                        style: secondaryTextStyle(
+                                        style: context.secondaryTextStyle(
                                             color: context.iconColor))
                                     .expand(),
                               ],

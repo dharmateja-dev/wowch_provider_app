@@ -1,5 +1,6 @@
 // import 'package:custom_date_range_picker/custom_date_range_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -91,9 +92,9 @@ class DateRangeComponentState extends State<DateRangeComponent> {
       padding: widget.padding ?? const EdgeInsets.all(16),
       child: AppTextField(
         title: widget.title ?? languages.dateRange,
-        titleTextStyle:
-            widget.titleTextStyle ?? boldTextStyle(size: LABEL_TEXT_SIZE),
-        textStyle: widget.hintTextStyle ?? primaryTextStyle(size: 12),
+        titleTextStyle: widget.titleTextStyle ??
+            context.boldTextStyle(size: LABEL_TEXT_SIZE),
+        textStyle: widget.hintTextStyle ?? context.primaryTextStyle(size: 12),
         controller: dateRangeCont,
         textFieldType: TextFieldType.NAME,
         readOnly: true,

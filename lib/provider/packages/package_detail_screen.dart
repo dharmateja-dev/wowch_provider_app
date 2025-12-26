@@ -234,7 +234,7 @@ class _PackageDetailScreenState extends State<PackageDetailScreen> {
                     ],
                   ),
                   16.height,
-                  Text(languages.lblServices, style: boldTextStyle()),
+                  Text(languages.lblServices, style: context.boldTextStyle()),
                   16.height,
                   if (widget.packageData!.serviceList != null)
                     AnimatedListView(

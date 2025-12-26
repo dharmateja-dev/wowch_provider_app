@@ -4,6 +4,7 @@ import 'package:handyman_provider_flutter/components/base_scaffold_widget.dart';
 import 'package:handyman_provider_flutter/provider/promotional_banner/shimmer/promotional_banner_list_shimmer.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../components/app_widgets.dart';
@@ -123,7 +124,7 @@ class _PromotionalBannerListScreenState
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           label: Text(
                             filterStatus.name,
-                            style: boldTextStyle(
+                            style: context.boldTextStyle(
                               size: 12,
                               color: selectedTab.status == filterStatus.status
                                   ? context.primary
@@ -168,7 +169,7 @@ class _PromotionalBannerListScreenState
                                 ? languages.noPromotionalBannerYet
                                 : languages
                                     .promotionalBannerYet(selectedTab.name),
-                            titleTextStyle: boldTextStyle(),
+                            titleTextStyle: context.boldTextStyle(),
                             subTitle:
                                 (selectedTab.status == PROMOTIONAL_BANNER_ALL ||
                                         selectedTab.status ==

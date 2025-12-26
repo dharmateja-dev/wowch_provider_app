@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/main.dart';
-import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class ThemeSelectionDaiLog extends StatefulWidget {
@@ -60,7 +60,8 @@ class ThemeSelectionDaiLogState extends State<ThemeSelectionDaiLog> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(languages.chooseTheme,
-                    style: boldTextStyle(color: context.onPrimary, size: 16)),
+                    style: context.boldTextStyle(
+                        color: context.onPrimary, size: 16)),
                 IconButton(
                   onPressed: () {
                     finish(context);
@@ -104,7 +105,8 @@ class ThemeSelectionDaiLogState extends State<ThemeSelectionDaiLog> {
                   value: index,
                   activeColor: context.primary,
                   controlAffinity: ListTileControlAffinity.trailing,
-                  title: Text(themeModeList[index], style: primaryTextStyle()),
+                  title: Text(themeModeList[index],
+                      style: context.primaryTextStyle()),
                 ),
               );
             },

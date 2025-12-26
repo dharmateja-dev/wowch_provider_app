@@ -478,7 +478,8 @@ String calculateTimer(int secTime) {
   return result;
 }
 
-Widget subSubscriptionPlanWidget({
+Widget subSubscriptionPlanWidget(
+  BuildContext context, {
   Color? planBgColor,
   String? planTitle,
   String? planSubtitle,
@@ -496,16 +497,16 @@ Widget subSubscriptionPlanWidget({
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(planTitle.validate(), style: boldTextStyle()),
+            Text(planTitle.validate(), style: context.boldTextStyle()),
             8.height,
-            Text(planSubtitle.validate(), style: secondaryTextStyle()),
+            Text(planSubtitle.validate(), style: context.secondaryTextStyle()),
           ],
         ).flexible(),
         8.width,
         AppButton(
           child: Text(
             planButtonTxt.validate(),
-            style: boldTextStyle(color: white),
+            style: context.boldTextStyle(color: context.onPrimary),
           ),
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
           color: btnColor,
@@ -672,12 +673,12 @@ Widget mobileNumberInfoWidget(BuildContext context) {
     list: [
       TextSpan(
         text: languages.lblAddYourCountryCode,
-        style: secondaryTextStyle(),
+        style: context.secondaryTextStyle(),
       ),
-      TextSpan(text: ' "91-", "236-" ', style: boldTextStyle(size: 12)),
+      TextSpan(text: ' "91-", "236-" ', style: context.boldTextStyle(size: 12)),
       TextSpan(
         text: ' (${languages.lblHelp})',
-        style: boldTextStyle(size: 12, color: primary),
+        style: context.boldTextStyle(size: 12, color: primary),
         recognizer: TapGestureRecognizer()
           ..onTap = () {
             launchUrlCustomTab("https://countrycode.org/");
@@ -836,7 +837,7 @@ class OptionListWidget extends StatelessWidget {
               onTap: optionList[index].onTap,
               child: Text(
                 optionList[index].title,
-                style: secondaryTextStyle(
+                style: context.secondaryTextStyle(
                   color: primary,
                   size: 12,
                   weight: FontWeight.bold,
@@ -844,7 +845,7 @@ class OptionListWidget extends StatelessWidget {
               ),
             ),
             8.width,
-            Text("|", style: secondaryTextStyle())
+            Text("|", style: context.secondaryTextStyle())
                 .visible(optionList.length != index + 1),
             8.width,
           ],
@@ -930,7 +931,7 @@ class MultiLanguageWidget extends StatelessWidget {
                         4.width,
                         Text(
                           languageData.name.validate().toUpperCase(),
-                          style: secondaryTextStyle(
+                          style: context.secondaryTextStyle(
                             color: appStore.selectedLanguage.languageCode ==
                                     languageData.languageCode
                                 ? white

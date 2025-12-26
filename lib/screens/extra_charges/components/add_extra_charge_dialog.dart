@@ -3,6 +3,7 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../../models/extra_charges_model.dart';
@@ -94,7 +95,7 @@ class _AddExtraChargesDialogState extends State<AddExtraChargesDialog> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(languages.lblAddExtraChargesDetail,
-                            style: boldTextStyle(color: white))
+                            style: context.boldTextStyle(color: white))
                         .paddingOnly(left: 16),
                     CloseButton(color: Colors.white),
                   ],
@@ -152,7 +153,8 @@ class _AddExtraChargesDialogState extends State<AddExtraChargesDialog> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(languages.quantity, style: boldTextStyle()),
+                          Text(languages.quantity,
+                              style: context.boldTextStyle()),
                           Container(
                             height: 40,
                             padding: EdgeInsets.all(8),
@@ -168,7 +170,8 @@ class _AddExtraChargesDialogState extends State<AddExtraChargesDialog> {
                                   setState(() {});
                                 }),
                                 16.width,
-                                Text(qty.toString(), style: primaryTextStyle()),
+                                Text(qty.toString(),
+                                    style: context.primaryTextStyle()),
                                 16.width,
                                 Icon(Icons.add, size: 24).onTap(() {
                                   qty = qty + 1;
@@ -184,7 +187,7 @@ class _AddExtraChargesDialogState extends State<AddExtraChargesDialog> {
                         text:
                             isEdit ? languages.saveChanges : languages.hintAdd,
                         color: primary,
-                        textStyle: boldTextStyle(color: white),
+                        textStyle: context.boldTextStyle(color: white),
                         width: context.width() - context.navigationBarHeight,
                         onTap: () {
                           addCharges();

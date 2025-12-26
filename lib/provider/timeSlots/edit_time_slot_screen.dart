@@ -236,7 +236,7 @@ class EditTimeSlotScreenState extends State<EditTimeSlotScreen> {
           color: context.cardSecondary,
           boxShadow: [
             BoxShadow(
-              color: context.onSurface.withOpacity(0.05),
+              color: context.onSurface.withValues(alpha: 0.05),
               blurRadius: 10,
               offset: const Offset(0, -2),
             ),

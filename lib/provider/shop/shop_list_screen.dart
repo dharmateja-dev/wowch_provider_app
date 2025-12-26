@@ -354,7 +354,7 @@ class _ShopListScreenState extends State<ShopListScreen> {
                   width: context.width() - context.navigationBarHeight,
                   text: languages.select,
                   color: context.primary,
-                  textStyle: boldTextStyle(color: context.onPrimary),
+                  textStyle: context.boldTextStyle(color: context.onPrimary),
                   onTap: () {
                     final selectedShop =
                         shops.firstWhere((e) => e.id == selectedShopId);
@@ -367,7 +367,7 @@ class _ShopListScreenState extends State<ShopListScreen> {
                   width: context.width() - context.navigationBarHeight,
                   text: languages.lblSelectShops,
                   color: context.primary,
-                  textStyle: boldTextStyle(color: context.onPrimary),
+                  textStyle: context.boldTextStyle(color: context.onPrimary),
                   onTap: () {
                     finish(context, selectedShops); // return multiple shops
                   },

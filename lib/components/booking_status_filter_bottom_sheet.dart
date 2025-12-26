@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../../main.dart';
@@ -62,7 +63,7 @@ class _BookingStatusFilterBottomSheetState
             ),
           Text(
             res.value.validate().toBookingStatus(),
-            style: primaryTextStyle(
+            style: context.primaryTextStyle(
                 color: appStore.isDarkMode
                     ? res.isSelected
                         ? context.primaryColor
@@ -97,7 +98,7 @@ class _BookingStatusFilterBottomSheetState
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(languages.filterBy, style: boldTextStyle()),
+                Text(languages.filterBy, style: context.boldTextStyle()),
                 IconButton(
                   padding: const EdgeInsets.all(0),
                   icon: Icon(Icons.close,
@@ -119,7 +120,7 @@ class _BookingStatusFilterBottomSheetState
                     color: gray.withValues(alpha: 0.3))
                 .center(),
             24.height,
-            Text(languages.bookingStatus, style: primaryTextStyle()),
+            Text(languages.bookingStatus, style: context.primaryTextStyle()),
             24.height,
             FutureBuilder<List<BookingStatusResponse>>(
               initialData: cachedBookingStatusDropdown,

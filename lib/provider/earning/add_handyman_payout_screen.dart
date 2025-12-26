@@ -98,13 +98,13 @@ class _AddHandymanPayoutScreenState extends State<AddHandymanPayoutScreen> {
                 items: [
                   DropdownMenuItem(
                     value: PAYMENT_METHOD_COD,
-                    child: Text(languages.cash, style: primaryTextStyle()),
+                    child: Text(languages.cash, style: context.primaryTextStyle()),
                   ),
                   if (getStringAsync(EARNING_TYPE) == EARNING_TYPE_COMMISSION)
                     DropdownMenuItem(
                       value: WALLET,
                       child:
-                          Text(languages.lblWallet, style: primaryTextStyle()),
+                          Text(languages.lblWallet, style: context.primaryTextStyle()),
                     ),
                 ],
                 dropdownColor: context.cardSecondary,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../main.dart';
@@ -51,7 +52,7 @@ class _AddKnownLanguagesComponentState
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(languages.addKnownLanguage,
-                        style: boldTextStyle(color: context.onPrimary))
+                        style: context.boldTextStyle(color: context.onPrimary))
                     .expand(),
                 CloseButton(color: context.onPrimary),
               ],
@@ -67,7 +68,7 @@ class _AddKnownLanguagesComponentState
           AppButton(
             text: languages.btnSave,
             color: context.primary,
-            textStyle: boldTextStyle(color: context.onPrimary),
+            textStyle: context.boldTextStyle(color: context.onPrimary),
             width: context.width() - context.navigationBarHeight,
             onTap: () {
               if (knownLangCont.text.isNotEmpty) {

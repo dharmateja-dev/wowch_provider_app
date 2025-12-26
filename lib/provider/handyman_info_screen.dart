@@ -19,7 +19,6 @@ import 'package:nb_utils/nb_utils.dart';
 
 import '../utils/images.dart';
 import '../utils/demo_data.dart';
-import '../utils/colors.dart';
 
 class HandymanInfoScreen extends StatefulWidget {
   final int? handymanId;

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:handyman_provider_flutter/main.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -75,11 +76,11 @@ class _AirtelMoneyDialogState extends State<AirtelMoneyDialog> {
                     ),
                     10.height,
                     Text(getAirtelMoneyReasonTextFromCode(responseCode).$1,
-                        style: boldTextStyle()),
+                        style: context.boldTextStyle()),
                     16.height,
                     Text(getAirtelMoneyReasonTextFromCode(responseCode).$2,
                         textAlign: TextAlign.center,
-                        style: secondaryTextStyle()),
+                        style: context.secondaryTextStyle()),
                   ],
                 ).paddingAll(16)
               else
@@ -89,11 +90,11 @@ class _AirtelMoneyDialogState extends State<AirtelMoneyDialog> {
                           CachedImageWidget(url: ic_verified, height: 60),
                           10.height,
                           Text(languages.paymentSuccess,
-                              style: boldTextStyle()),
+                              style: context.boldTextStyle()),
                           16.height,
                           Text(languages.redirectingToBookings,
                               textAlign: TextAlign.center,
-                              style: secondaryTextStyle()),
+                              style: context.secondaryTextStyle()),
                         ],
                       ).paddingAll(16)
                     : isTxnInProgress
@@ -102,11 +103,11 @@ class _AirtelMoneyDialogState extends State<AirtelMoneyDialog> {
                               LoaderWidget(),
                               10.height,
                               Text(languages.transactionIsInProcess,
-                                  style: boldTextStyle()),
+                                  style: context.boldTextStyle()),
                               16.height,
                               Text(languages.pleaseCheckThePayment,
                                   textAlign: TextAlign.center,
-                                  style: secondaryTextStyle()),
+                                  style: context.secondaryTextStyle()),
                             ],
                           ).paddingAll(16)
                         : Column(
@@ -128,7 +129,8 @@ class _AirtelMoneyDialogState extends State<AirtelMoneyDialog> {
                                 color: primary,
                                 height: 40,
                                 text: languages.lblSubmit,
-                                textStyle: boldTextStyle(color: Colors.white),
+                                textStyle:
+                                    context.boldTextStyle(color: Colors.white),
                                 width: context.width() -
                                     context.navigationBarHeight,
                                 onTap: () {

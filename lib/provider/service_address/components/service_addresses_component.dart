@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/main.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../../models/selectZoneModel.dart';
@@ -11,10 +12,16 @@ class ServiceAddressesComponent extends StatefulWidget {
   final Function() onDelete;
   final Function() onEdit;
 
-  ServiceAddressesComponent(this.data, {this.onStatusUpdate, required this.onDelete, required this.onEdit, Key? key}) : super(key: key);
+  ServiceAddressesComponent(this.data,
+      {this.onStatusUpdate,
+      required this.onDelete,
+      required this.onEdit,
+      Key? key})
+      : super(key: key);
 
   @override
-  ServiceAddressesComponentState createState() => ServiceAddressesComponentState();
+  ServiceAddressesComponentState createState() =>
+      ServiceAddressesComponentState();
 }
 
 class ServiceAddressesComponentState extends State<ServiceAddressesComponent> {
@@ -81,7 +88,11 @@ class ServiceAddressesComponentState extends State<ServiceAddressesComponent> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(widget.data.name.validate(), style: boldTextStyle(), overflow: TextOverflow.ellipsis, maxLines: 4).expand(),
+              Text(widget.data.name.validate(),
+                      style: context.boldTextStyle(),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 4)
+                  .expand(),
               /*Transform.scale(
                 scale: 0.8,
                 child: Switch.adaptive(
@@ -121,13 +132,15 @@ class ServiceAddressesComponentState extends State<ServiceAddressesComponent> {
               TextButton(
                 onPressed: widget.onEdit,
                 style: const ButtonStyle(visualDensity: VisualDensity.compact),
-                child: Text(languages.lblEdit, style: secondaryTextStyle()),
+                child: Text(languages.lblEdit,
+                    style: context.secondaryTextStyle()),
               ),
               16.width,
               TextButton(
                 onPressed: widget.onDelete,
                 style: const ButtonStyle(visualDensity: VisualDensity.compact),
-                child: Text(languages.lblDelete, style: secondaryTextStyle()),
+                child: Text(languages.lblDelete,
+                    style: context.secondaryTextStyle()),
               ),
             ],
           )

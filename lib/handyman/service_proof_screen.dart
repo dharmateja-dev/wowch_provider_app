@@ -189,7 +189,6 @@ class ServiceProofScreenState extends State<ServiceProofScreen> {
                     textFieldType: TextFieldType.NAME,
                     controller: serviceNameCont,
                     decoration: inputDecoration(context,
-                        
                         hintText: languages.hintServiceName),
                     enabled: false,
                   ),
@@ -264,7 +263,7 @@ class ServiceProofScreenState extends State<ServiceProofScreen> {
                         ),
                         16.height,
                         Text(languages.serviceProofMediaUploadNote,
-                            style: secondaryTextStyle()),
+                            style: context.secondaryTextStyle()),
                       ],
                     ),
                   ),

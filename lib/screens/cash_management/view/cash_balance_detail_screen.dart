@@ -175,7 +175,8 @@ class _CashBalanceDetailScreenState extends State<CashBalanceDetailScreen> {
                     context: context,
                     builder: (context) {
                       return Container(
-                        decoration: boxDecorationDefault(color: context.cardSecondary),
+                        decoration:
+                            boxDecorationDefault(color: context.cardSecondary),
                         width: context.width(),
                         height: context.height() * 0.8,
                         child: SingleChildScrollView(
@@ -404,7 +405,7 @@ class _CashBalanceDetailScreenState extends State<CashBalanceDetailScreen> {
                   todayCash: snap.$2, totalCashInHand: snap.$1),
               buildFilterWidget(),
               16.height,
-              //Text('${snap.$3.validate().where((element) => element.status == APPROVED_BY_HANDYMAN || element.status == SEND_TO_PROVIDER).sumByDouble((p0) => p0.totalAmount.validate())}', style: boldTextStyle()).paddingAll(16),
+              //Text('${snap.$3.validate().where((element) => element.status == APPROVED_BY_HANDYMAN || element.status == SEND_TO_PROVIDER).sumByDouble((p0) => p0.totalAmount.validate())}', style: context.boldTextStyle()).paddingAll(16),
               buildCashListWidget(list: snap.$3.validate()),
             ],
           );

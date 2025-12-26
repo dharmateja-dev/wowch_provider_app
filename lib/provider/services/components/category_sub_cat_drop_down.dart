@@ -3,6 +3,7 @@ import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/models/caregory_response.dart';
 import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class CategorySubCatDropDown extends StatefulWidget {
@@ -132,7 +133,8 @@ class _CategorySubCatDropDownState extends State<CategorySubCatDropDown> {
             items: categoryList.map((data) {
               return DropdownMenuItem<CategoryData>(
                 value: data,
-                child: Text(data.name.validate(), style: primaryTextStyle()),
+                child: Text(data.name.validate(),
+                    style: context.primaryTextStyle()),
               );
             }).toList(),
             validator: widget.isCategoryValidate.validate(value: true)
@@ -172,7 +174,8 @@ class _CategorySubCatDropDownState extends State<CategorySubCatDropDown> {
             items: subCategoryList.map((data) {
               return DropdownMenuItem<CategoryData>(
                 value: data,
-                child: Text(data.name.validate(), style: primaryTextStyle()),
+                child: Text(data.name.validate(),
+                    style: context.primaryTextStyle()),
               );
             }).toList(),
             onChanged: (CategoryData? value) async {

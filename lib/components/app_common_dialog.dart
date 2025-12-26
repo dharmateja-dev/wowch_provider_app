@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class AppCommonDialog extends StatelessWidget {
@@ -23,8 +25,10 @@ class AppCommonDialog extends StatelessWidget {
             ),
             child: Row(
               children: [
-                Text(title, style: boldTextStyle(color: Colors.white)).expand(),
-                const CloseButton(color: Colors.white),
+                Text(title,
+                        style: context.boldTextStyle(color: context.onPrimary))
+                    .expand(),
+                CloseButton(color: context.onPrimary),
               ],
             ),
           ),

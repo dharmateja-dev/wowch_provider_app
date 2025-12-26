@@ -138,12 +138,12 @@ class _ServiceDetailHeaderComponentState
                           PopupMenuItem(
                               value: 1,
                               child: Text(languages.lblEdit,
-                                  style: boldTextStyle())),
+                                  style: context.boldTextStyle())),
                         if (rolesAndPermissionStore.serviceDelete)
                           PopupMenuItem(
                               value: 2,
                               child: Text(languages.lblDelete,
-                                  style: boldTextStyle())),
+                                  style: context.boldTextStyle())),
                       ],
                     ),
                   )

@@ -5,6 +5,7 @@ import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../main.dart';
@@ -89,7 +90,7 @@ class _BookingStatusDropdownState extends State<BookingStatusDropdown> {
                 final BookingStatusResponse data = snap.data![index];
                 return DropdownMenuItem<BookingStatusResponse>(
                   value: data,
-                  child: Text(data.value.validate().toBookingStatus(), style: primaryTextStyle()),
+                  child: Text(data.value.validate().toBookingStatus(), style: context.primaryTextStyle()),
                 );
               },
             ),

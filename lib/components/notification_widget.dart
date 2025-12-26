@@ -4,6 +4,7 @@ import 'package:handyman_provider_flutter/models/notification_list_response.dart
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 //notification
@@ -64,14 +65,15 @@ class NotificationWidget extends StatelessWidget {
                         .split('_')
                         .join(' ')
                         .capitalizeFirstLetter(),
-                    style: boldTextStyle(size: 12),
+                    style: context.boldTextStyle(size: 12),
                   ).expand(),
-                  Text(data.createdAt.validate(), style: secondaryTextStyle()),
+                  Text(data.createdAt.validate(),
+                      style: context.secondaryTextStyle()),
                 ],
               ),
               4.height,
               Text(parseHtmlString(data.data!.message.validate()),
-                  style: secondaryTextStyle(),
+                  style: context.secondaryTextStyle(),
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis),
             ],

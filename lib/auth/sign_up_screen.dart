@@ -451,7 +451,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       dense: true,
                       visualDensity: VisualDensity.compact,
                       title: Text(languages.selectZones,
-                          style: secondaryTextStyle()),
+                          style: context.secondaryTextStyle()),
                       onExpansionChanged: (val) {
                         isZoneTileExpanded = val;
                         setState(() {});
@@ -484,8 +484,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               contentPadding:
                                   const EdgeInsets.symmetric(horizontal: 16),
                               title: Text(zone.name.validate(),
-                                  style:
-                                      secondaryTextStyle(color: context.icon)),
+                                  style: context.secondaryTextStyle(
+                                      color: context.icon)),
                               value: isSelected,
                               onChanged: (val) {
                                 if (val == true) {
@@ -533,7 +533,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(languages.selectedProvider,
-                                style: secondaryTextStyle())
+                                style: context.secondaryTextStyle())
                             .paddingOnly(bottom: 8),
                         Row(
                           children: [
@@ -546,7 +546,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             8.width,
                             Text(
                               selectedProvider!.displayName.validate(),
-                              style: primaryTextStyle(size: 12),
+                              style: context.primaryTextStyle(size: 12),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -633,7 +633,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           text: languages.lblNext,
           height: 40,
           color: context.primary,
-          textStyle: boldTextStyle(color: context.onPrimary),
+          textStyle: context.boldTextStyle(color: context.onPrimary),
           width: context.width() - context.navigationBarHeight,
           onTap: () {
             saveUser();
@@ -680,10 +680,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
           list: [
             TextSpan(
                 text: "${languages.alreadyHaveAccountTxt}? ",
-                style: primaryTextStyle(size: 14)),
+                style: context.primaryTextStyle(size: 14)),
             TextSpan(
               text: languages.signIn,
-              style: boldTextStyle(
+              style: context.boldTextStyle(
                   color: context.primary, fontStyle: FontStyle.italic),
               recognizer: TapGestureRecognizer()
                 ..onTap = () {

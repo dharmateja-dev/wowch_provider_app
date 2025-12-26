@@ -15,9 +15,7 @@ import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/screens/about_us_screen.dart';
 import 'package:handyman_provider_flutter/screens/languages_screen.dart';
 import 'package:handyman_provider_flutter/utils/app_configuration.dart';
-import 'package:handyman_provider_flutter/utils/colors.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
-import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/num_extenstions.dart';
@@ -295,7 +293,7 @@ class _HandymanProfileFragmentState extends State<HandymanProfileFragment> {
                     },
                     trailing: Text(
                       appStore.userWalletAmount.toPriceFormat(),
-                      style: boldTextStyle(color: context.primary),
+                      style: context.boldTextStyle(color: context.primary),
                     ),
                   ),
                   if (appStore.isLoggedIn &&

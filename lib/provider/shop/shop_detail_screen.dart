@@ -238,7 +238,7 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
         leading: BackWidget(color: context.onPrimary),
         title: Text(
           languages.lblShopDetails,
-          style: boldTextStyle(color: context.onPrimary, size: 18),
+          style: context.boldTextStyle(color: context.onPrimary, size: 18),
         ),
         centerTitle: true,
       ),

@@ -3,6 +3,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:handyman_provider_flutter/helpDesk/shimmer/help_desk_list_shimmer.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../main.dart';
@@ -130,7 +131,7 @@ class _HelpDeskListScreenState extends State<HelpDeskListScreen> {
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             label: Text(
                               filterStatus.name,
-                              style: boldTextStyle(
+                              style: context.boldTextStyle(
                                 size: 12,
                                 color: selectedTab.status == filterStatus.status
                                     ? context.primary
@@ -172,7 +173,7 @@ class _HelpDeskListScreenState extends State<HelpDeskListScreen> {
                         : NoDataWidget(
                             title:
                                 '${languages.lblNo} ${selectedTab.name} ${languages.queryYet}',
-                            titleTextStyle: boldTextStyle(),
+                            titleTextStyle: context.boldTextStyle(),
                             subTitle: selectedTab.status == HelpDeskStatus.open
                                 ? languages.toSubmitYourProblems
                                 : '${languages.noRecordsFoundFor} ${selectedTab.name.toLowerCase()} ${languages.queries}',

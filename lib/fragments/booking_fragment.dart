@@ -17,7 +17,6 @@ import '../components/empty_error_state_widget.dart';
 import '../components/price_widget.dart';
 import '../store/filter_store.dart';
 import '../utils/colors.dart';
-import '../utils/configs.dart';
 import 'components/total_earnings_components.dart';
 
 String selectedBookingStatus = BOOKING_PAYMENT_STATUS_ALL;

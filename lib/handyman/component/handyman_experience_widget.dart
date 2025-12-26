@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../utils/constant.dart';
@@ -52,11 +53,12 @@ class _HandymanExperienceWidgetState extends State<HandymanExperienceWidget> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text("$value",
-              style: boldTextStyle(color: primary, size: LABEL_TEXT_SIZE)),
+              style:
+                  context.boldTextStyle(color: primary, size: LABEL_TEXT_SIZE)),
           8.height,
           Text(
             "$temp${languages.lblOf} \n${languages.lblExperience}",
-            style: secondaryTextStyle(),
+            style: context.secondaryTextStyle(),
             textAlign: TextAlign.center,
           ),
         ],

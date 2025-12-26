@@ -11,7 +11,6 @@ import '../../components/selected_item_widget.dart';
 import '../../main.dart';
 import '../../models/user_data.dart';
 import '../../networks/rest_apis.dart';
-import '../../utils/colors.dart';
 import '../../utils/constant.dart';
 
 class FilterCustomerListComponent extends StatefulWidget {

@@ -9,7 +9,6 @@ import 'package:handyman_provider_flutter/models/service_model.dart';
 import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/provider/packages/components/selected_service_component.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
-import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/context_ext.dart';
@@ -271,6 +270,7 @@ class _SelectServiceScreenState extends State<SelectServiceScreen> {
                       scale: 0.8,
                       child: Switch.adaptive(
                         value: isPackageTypeSingle.validate(),
+                        // ignore: deprecated_member_use
                         activeColor: context.primary,
                         activeTrackColor:
                             context.primary.withValues(alpha: 0.3),

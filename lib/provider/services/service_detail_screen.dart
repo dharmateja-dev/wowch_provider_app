@@ -17,6 +17,7 @@ import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/demo_mode.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../components/back_widget.dart';
@@ -174,7 +175,8 @@ class ServiceDetailScreenState extends State<ServiceDetailScreen> {
                 physics: const NeverScrollableScrollPhysics(),
                 padding: const EdgeInsets.symmetric(vertical: 6),
               )
-            : Text(languages.lblNoReviewYet, style: secondaryTextStyle()),
+            : Text(languages.lblNoReviewYet,
+                style: context.secondaryTextStyle()),
       ],
     ).paddingSymmetric(horizontal: 16);
   }
@@ -190,7 +192,7 @@ class ServiceDetailScreenState extends State<ServiceDetailScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(languages.availableAt,
-                style: boldTextStyle(size: LABEL_TEXT_SIZE)),
+                style: context.boldTextStyle(size: LABEL_TEXT_SIZE)),
             16.height,
             Wrap(
               spacing: 16,
@@ -205,7 +207,8 @@ class ServiceDetailScreenState extends State<ServiceDetailScreen> {
                     decoration: boxDecorationDefault(color: context.cardColor),
                     child: Text(
                       '${value.name.validate()} ', // <-- showing zone ID
-                      style: boldTextStyle(color: textPrimaryColorGlobal),
+                      style:
+                          context.boldTextStyle(color: textPrimaryColorGlobal),
                     ),
                   );
                 },
@@ -225,7 +228,7 @@ class ServiceDetailScreenState extends State<ServiceDetailScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(languages.availableAt,
-                style: boldTextStyle(size: LABEL_TEXT_SIZE)),
+                style: context.boldTextStyle(size: LABEL_TEXT_SIZE)),
             16.height,
             Wrap(
               spacing: 16,
@@ -243,7 +246,8 @@ class ServiceDetailScreenState extends State<ServiceDetailScreen> {
                     decoration: boxDecorationDefault(color: context.cardColor),
                     child: Text(
                       value.providerAddressMapping!.address.validate(),
-                      style: boldTextStyle(color: textPrimaryColorGlobal),
+                      style:
+                          context.boldTextStyle(color: textPrimaryColorGlobal),
                     ),
                   );
                 },
@@ -289,27 +293,28 @@ class ServiceDetailScreenState extends State<ServiceDetailScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   8.height,
-                  Text(languages.serviceVisitType, style: boldTextStyle()),
+                  Text(languages.serviceVisitType,
+                      style: context.boldTextStyle()),
                   8.height,
                   Text(languages.thisServiceIsOnlineRemote,
-                      style: secondaryTextStyle()),
+                      style: context.secondaryTextStyle()),
                 ],
               ).paddingAll(16),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(languages.hintDescription,
-                    style: boldTextStyle(size: LABEL_TEXT_SIZE)),
+                    style: context.boldTextStyle(size: LABEL_TEXT_SIZE)),
                 8.height,
                 snap.data!.serviceDetail!.description.validate().isNotEmpty
                     ? ReadMoreText(
                         snap.data!.serviceDetail!.description.validate(),
-                        style: secondaryTextStyle(),
+                        style: context.secondaryTextStyle(),
                         textAlign: TextAlign.justify,
                         colorClickableText: context.primaryColor,
                       )
                     : Text(languages.lblNoDescriptionAvailable,
-                        style: secondaryTextStyle()),
+                        style: context.secondaryTextStyle()),
               ],
             ).paddingAll(16),
             availableWidget(
@@ -343,15 +348,15 @@ class ServiceDetailScreenState extends State<ServiceDetailScreen> {
                 SERVICE_PENDING)
               RichText(
                 text: TextSpan(
-                  style: secondaryTextStyle(),
+                  style: context.secondaryTextStyle(),
                   children: <TextSpan>[
                     TextSpan(
                       text: '${languages.note} ',
-                      style: boldTextStyle(color: redColor),
+                      style: context.boldTextStyle(color: redColor),
                     ),
                     TextSpan(
                         text: languages.thisServiceIsCurrently,
-                        style: secondaryTextStyle()),
+                        style: context.secondaryTextStyle()),
                   ],
                 ),
               ).paddingOnly(left: 16, right: 16, bottom: 16),
@@ -361,16 +366,16 @@ class ServiceDetailScreenState extends State<ServiceDetailScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('${languages.lblReason} :',
-                      style: boldTextStyle(color: redColor)),
+                      style: context.boldTextStyle(color: redColor)),
                   8.height,
                   Text(snap.data!.serviceDetail!.rejectReason.validate(),
-                      style: secondaryTextStyle()),
+                      style: context.secondaryTextStyle()),
                   16.height,
                   AppButton(
                     text: languages.lblDelete,
                     width: context.width(),
                     color: cancelled.withValues(alpha: 0.1),
-                    textStyle: boldTextStyle(color: cancelled),
+                    textStyle: context.boldTextStyle(color: cancelled),
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 12),
                     onTap: () {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../main.dart';
@@ -50,7 +51,7 @@ class _AddSkillComponentState extends State<AddSkillComponent> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(languages.addEssentialSkill,
-                        style: boldTextStyle(color: white))
+                        style: context.boldTextStyle(color: white))
                     .expand(),
                 const CloseButton(color: Colors.white),
               ],
@@ -66,7 +67,7 @@ class _AddSkillComponentState extends State<AddSkillComponent> {
           AppButton(
             text: languages.btnSave,
             color: primary,
-            textStyle: boldTextStyle(color: white),
+            textStyle: context.boldTextStyle(color: white),
             width: context.width() - context.navigationBarHeight,
             onTap: () {
               if (skillsCont.text.isNotEmpty) {

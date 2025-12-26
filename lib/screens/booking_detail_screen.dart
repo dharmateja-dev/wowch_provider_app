@@ -525,6 +525,8 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
           handymanID != appStore.userId) {
         stopLocationUpdates();
         showConfirmDialogCustom(
+          height: 80,
+          width: 290,
           context,
           title: languages.youHavePermanentlyDenied,
           shape: appDialogShape(8),
@@ -534,6 +536,8 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
           positiveText: languages.lblYes,
           positiveTextColor: context.onPrimary,
           negativeText: languages.lblNo,
+          customCenterWidget: ic_warning.iconImage(
+              context: context, color: context.dialogIconColor, size: 24),
           negativeTextColor: context.dialogCancelColor,
           dialogType: DialogType.CONFIRMATION,
           onAccept: (context) async {
@@ -893,7 +897,8 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
                   },
                   child: Text(
                     languages.viewStatus,
-                    style: boldTextStyle(color: context.primary, size: 14),
+                    style:
+                        context.boldTextStyle(color: context.primary, size: 14),
                   ),
                 ),
               ),
@@ -1348,7 +1353,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
           return Column(
             children: [
               Text('${res.handymanData!.first.displayName.validate()} ${languages.lblAssigned}',
-                      style: boldTextStyle())
+                      style: context.boldTextStyle())
                   .center(),
               16.height,
               AppButton(
@@ -1488,7 +1493,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
           return Column(
             children: [
               Text('${res.handymanData!.first.displayName.validate()} ${languages.lblAssigned}',
-                      style: boldTextStyle())
+                      style: context.boldTextStyle())
                   .center(),
               16.height,
               AppButton(
@@ -1525,7 +1530,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
             children: [
               AppButton(
                 text: languages.lblCompleted,
-                textStyle: boldTextStyle(color: white),
+                textStyle: context.boldTextStyle(color: white),
                 color: context.primaryColor,
                 onTap: () {
                   bool isAnyServiceAddonUnCompleted = res
@@ -1554,7 +1559,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
                   margin: EdgeInsets.only(left: 16),
                   child: Text(
                     languages.lblAddExtraCharges,
-                    style: boldTextStyle(color: Colors.white),
+                    style: context.boldTextStyle(color: Colors.white),
                   ).fit(),
                   color: addExtraCharge,
                   onTap: () async {
@@ -1670,7 +1675,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
             children: [
               AppButton(
                 text: languages.lblCompleted,
-                textStyle: boldTextStyle(color: white),
+                textStyle: context.boldTextStyle(color: white),
                 color: context.primaryColor,
                 onTap: () {
                   bool isAnyServiceAddonUnCompleted = res
@@ -1699,7 +1704,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
                   margin: EdgeInsets.only(left: 16),
                   child: Text(
                     languages.lblAddExtraCharges,
-                    style: boldTextStyle(color: Colors.white),
+                    style: context.boldTextStyle(color: Colors.white),
                   ).fit(),
                   color: addExtraCharge,
                   onTap: () async {
@@ -1716,7 +1721,8 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
         );
       } else if (res.bookingDetail!.status == BookingStatusKeys.onGoing) {
         showBottomActionBar = true;
-        return Text(languages.lblWaitingForResponse, style: boldTextStyle())
+        return Text(languages.lblWaitingForResponse,
+                style: context.boldTextStyle())
             .center();
       } else if (res.bookingDetail!.status == BookingStatusKeys.complete) {
         if (res.bookingDetail!.paymentMethod == PAYMENT_METHOD_COD &&
@@ -1750,7 +1756,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
       } else if (res.bookingDetail!.status == BookingStatusKeys.inProgress) {
         showBottomActionBar = true;
         return Text(res.bookingDetail!.statusLabel.validate(),
-                style: boldTextStyle())
+                style: context.boldTextStyle())
             .center();
       }
       return const Offstage();
@@ -1814,14 +1820,14 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
                 children: [
                   Text(
                     data.title.validate(),
-                    style: secondaryTextStyle(size: 14),
+                    style: context.secondaryTextStyle(size: 14),
                   ).expand(),
                   16.width,
                   Row(
                     children: [
                       Text(
                         '${data.qty} * ${data.price.validate()} = ',
-                        style: secondaryTextStyle(),
+                        style: context.secondaryTextStyle(),
                       ),
                       4.width,
                       PriceWidget(

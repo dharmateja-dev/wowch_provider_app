@@ -7,11 +7,9 @@ import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/provider/components/assign_handyman_screen.dart';
 import 'package:handyman_provider_flutter/screens/booking_detail_screen.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
-import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/color_extension.dart';
-import 'package:handyman_provider_flutter/utils/extensions/num_extenstions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
 import 'package:handyman_provider_flutter/utils/model_keys.dart';
@@ -221,7 +219,7 @@ class BookingItemComponentState extends State<BookingItemComponent> {
                                 widget.bookingData.status
                                     .validate()
                                     .toBookingStatus(),
-                                style: boldTextStyle(
+                                style: context.boldTextStyle(
                                   color: widget.bookingData.status
                                       .validate()
                                       .getBookingStatusBackgroundColor,

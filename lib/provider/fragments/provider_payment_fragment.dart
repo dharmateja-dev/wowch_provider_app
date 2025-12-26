@@ -11,6 +11,7 @@ import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/demo_data.dart';
 import 'package:handyman_provider_flutter/utils/demo_mode.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../components/empty_error_state_widget.dart';
@@ -122,11 +123,11 @@ class _ProviderPaymentFragmentState extends State<ProviderPaymentFragment> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(data.customerName.validate(),
-                                      style: boldTextStyle(size: 12))
+                                      style: context.boldTextStyle(size: 12))
                                   .flexible(),
                               Text('#' + data.bookingId.validate().toString(),
-                                  style:
-                                      boldTextStyle(color: primary, size: 12)),
+                                  style: context.boldTextStyle(
+                                      color: primary, size: 12)),
                             ],
                           ),
                         ),
@@ -137,9 +138,10 @@ class _ProviderPaymentFragmentState extends State<ProviderPaymentFragment> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(languages.lblPaymentID,
-                                    style: secondaryTextStyle(size: 12)),
+                                    style:
+                                        context.secondaryTextStyle(size: 12)),
                                 Text("#" + data.id.validate().toString(),
-                                    style: boldTextStyle(size: 12)),
+                                    style: context.boldTextStyle(size: 12)),
                               ],
                             ).paddingSymmetric(vertical: 4),
                             Divider(
@@ -148,13 +150,14 @@ class _ProviderPaymentFragmentState extends State<ProviderPaymentFragment> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(languages.paymentStatus,
-                                    style: secondaryTextStyle(size: 12)),
+                                    style:
+                                        context.secondaryTextStyle(size: 12)),
                                 Text(
                                   getPaymentStatusText(
                                       data.paymentStatus
                                           .validate(value: languages.pending),
                                       data.paymentMethod),
-                                  style: boldTextStyle(size: 12),
+                                  style: context.boldTextStyle(size: 12),
                                 ),
                               ],
                             ).paddingSymmetric(vertical: 4),
@@ -164,13 +167,14 @@ class _ProviderPaymentFragmentState extends State<ProviderPaymentFragment> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(languages.paymentMethod,
-                                    style: secondaryTextStyle(size: 12)),
+                                    style:
+                                        context.secondaryTextStyle(size: 12)),
                                 Text(
                                   (data.paymentMethod.validate().isNotEmpty
                                           ? data.paymentMethod.validate()
                                           : languages.notAvailable)
                                       .capitalizeFirstLetter(),
-                                  style: boldTextStyle(size: 12),
+                                  style: context.boldTextStyle(size: 12),
                                 ),
                               ],
                             ).paddingSymmetric(vertical: 4),
@@ -180,7 +184,8 @@ class _ProviderPaymentFragmentState extends State<ProviderPaymentFragment> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(languages.lblAmount,
-                                    style: secondaryTextStyle(size: 12)),
+                                    style:
+                                        context.secondaryTextStyle(size: 12)),
                                 if (data.isPackageBooking)
                                   PriceWidget(
                                     price: data.packageData!.price.validate(),

@@ -2,6 +2,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/components/cached_image_widget.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../main.dart';
@@ -54,20 +55,22 @@ class SuccessDialog extends StatelessWidget {
                   Text(
                     title,
                     textAlign: TextAlign.center,
-                    style: primaryTextStyle(size: 18, weight: FontWeight.bold),
+                    style: context.primaryTextStyle(
+                        size: 18, weight: FontWeight.bold),
                   ),
                   8.height,
                   Text(
                     description,
                     textAlign: TextAlign.center,
-                    style: secondaryTextStyle(size: 14, color: Colors.grey),
+                    style: context.secondaryTextStyle(
+                        size: 14, color: Colors.grey),
                   ),
                   32.height,
                   AppButton(
                     text: languages.done,
                     height: 40,
                     color: primary,
-                    textStyle: boldTextStyle(color: white),
+                    textStyle: context.boldTextStyle(color: white),
                     width: context.width() * 0.4,
                     onTap: () {
                       finish(context, true);

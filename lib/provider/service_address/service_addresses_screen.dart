@@ -8,8 +8,10 @@ import 'package:handyman_provider_flutter/provider/service_address/components/ad
 import 'package:handyman_provider_flutter/provider/service_address/shimmer/service_address_shimmer.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
 import 'package:handyman_provider_flutter/utils/model_keys.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../components/app_widgets.dart';
@@ -115,15 +117,18 @@ class ServiceAddressesScreenState extends State<ServiceAddressesScreen> {
             children: [
               Image.asset(delete, width: 110, height: 110, fit: BoxFit.cover),
               32.height,
-              Text(languages.lblDeleteAddress, style: boldTextStyle(size: 16)),
+              Text(languages.lblDeleteAddress,
+                  style: context.boldTextStyle(size: 16)),
               16.height,
               Text(languages.lblDeleteAddressMsg,
-                  style: secondaryTextStyle(), textAlign: TextAlign.center),
+                  style: context.secondaryTextStyle(),
+                  textAlign: TextAlign.center),
               28.height,
               Row(
                 children: [
                   AppButton(
-                    child: Text(languages.lblCancel, style: boldTextStyle()),
+                    child: Text(languages.lblCancel,
+                        style: context.boldTextStyle()),
                     color: context.cardColor,
                     elevation: 0,
                     onTap: () {
@@ -133,8 +138,8 @@ class ServiceAddressesScreenState extends State<ServiceAddressesScreen> {
                   16.width,
                   AppButton(
                     child: Text(languages.lblDelete,
-                        style: boldTextStyle(color: white)),
-                    color: primary,
+                        style: context.boldTextStyle(color: context.onPrimary)),
+                    color: context.primary,
                     elevation: 0,
                     onTap: () async {
                       deleteAddress(id);
@@ -164,7 +169,7 @@ class ServiceAddressesScreenState extends State<ServiceAddressesScreen> {
     return Scaffold(
       appBar: appBarWidget(
         languages.lblServiceAddress,
-        textColor: white,
+        textColor: context.onPrimary,
         showBack: true,
         backWidget: BackWidget(),
         color: context.primaryColor,

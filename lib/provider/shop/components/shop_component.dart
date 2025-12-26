@@ -3,7 +3,6 @@ import 'package:handyman_provider_flutter/components/cached_image_widget.dart';
 import 'package:handyman_provider_flutter/components/view_all_label_component.dart';
 import 'package:handyman_provider_flutter/generated/assets.dart';
 import 'package:handyman_provider_flutter/main.dart';
-import 'package:handyman_provider_flutter/models/service_model.dart';
 import 'package:handyman_provider_flutter/models/shop_model.dart';
 import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/provider/services/service_detail_screen.dart';

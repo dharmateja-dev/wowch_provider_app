@@ -343,7 +343,7 @@ class _HandymanCommissionTypeListScreenState
                               if (rolesAndPermissionStore.handymanTypeDelete)
                                 PopupMenuItem(
                                   child: Text(languages.lblDelete,
-                                      style: boldTextStyle(
+                                      style: context.boldTextStyle(
                                           color: typeData.deletedAt == null
                                               ? textPrimaryColorGlobal
                                               : textSecondaryColor)),
@@ -352,7 +352,7 @@ class _HandymanCommissionTypeListScreenState
                                 ),
                               PopupMenuItem(
                                 child: Text(languages.lblRestore,
-                                    style: boldTextStyle(
+                                    style: context.boldTextStyle(
                                         color: typeData.deletedAt != null
                                             ? textPrimaryColorGlobal
                                             : textSecondaryColor)),
@@ -362,7 +362,7 @@ class _HandymanCommissionTypeListScreenState
                               if (rolesAndPermissionStore.handymanTypeDelete)
                                 PopupMenuItem(
                                   child: Text(languages.lblForceDelete,
-                                      style: boldTextStyle(
+                                      style: context.boldTextStyle(
                                           color: typeData.deletedAt != null
                                               ? textPrimaryColorGlobal
                                               : textSecondaryColor)),
@@ -427,7 +427,7 @@ class _HandymanCommissionTypeListScreenState
                                   typeData.status == 1
                                       ? ACTIVE.toUpperCase()
                                       : INACTIVE.toUpperCase(),
-                                  style: boldTextStyle(
+                                  style: context.boldTextStyle(
                                       size: 12,
                                       color: typeData.status == 1
                                           ? context.primary
@@ -444,7 +444,7 @@ class _HandymanCommissionTypeListScreenState
                               value: typeData.status == 1,
                               activeThumbColor: context.primary,
                               activeTrackColor:
-                                  context.primary.withOpacity(0.4),
+                                  context.primary.withValues(alpha: 0.4),
                               onChanged: (_) {
                                 ifNotTester(context, () {
                                   if (typeData.status.validate() == 1) {

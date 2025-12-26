@@ -327,7 +327,8 @@ class _HelpDeskDetailScreenState extends State<HelpDeskDetailScreen> {
                                                   setState(() {});
                                                 },
                                                 text: languages.close,
-                                                textStyle: boldTextStyle(),
+                                                textStyle:
+                                                    context.boldTextStyle(),
                                               ),
                                               16.width,
                                               AppButton(
@@ -385,7 +386,7 @@ class _HelpDeskDetailScreenState extends State<HelpDeskDetailScreen> {
                                       );
                                     },
                                     text: languages.markAsClosed,
-                                    textStyle: boldTextStyle(),
+                                    textStyle: context.boldTextStyle(),
                                   ).expand(),
                                   16.width,
                                   AppButton(
@@ -395,8 +396,8 @@ class _HelpDeskDetailScreenState extends State<HelpDeskDetailScreen> {
                                     color: appStore.isLoading
                                         ? context.primary.withValues(alpha: 0.5)
                                         : context.primary,
-                                    textStyle:
-                                        boldTextStyle(color: context.onPrimary),
+                                    textStyle: context.boldTextStyle(
+                                        color: context.onPrimary),
                                     onTap: () {
                                       isReplyBtnClick = true;
                                       imageFiles.clear();

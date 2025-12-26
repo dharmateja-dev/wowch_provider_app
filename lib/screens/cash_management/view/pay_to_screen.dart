@@ -18,6 +18,7 @@ import 'package:handyman_provider_flutter/utils/constant.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class PayToScreen extends StatefulWidget {
@@ -60,7 +61,7 @@ class _PayToScreenState extends State<PayToScreen> {
   Widget buildTotalAmountWidget() {
     return SettingSection(
       title: Text(languages.totalAmountToPay,
-          style: boldTextStyle(size: LABEL_TEXT_SIZE)),
+          style: context.boldTextStyle(size: LABEL_TEXT_SIZE)),
       headerPadding:
           const EdgeInsets.only(top: 24, bottom: 12, left: 16, right: 16),
       headingDecoration: headingDecoration,
@@ -78,7 +79,7 @@ class _PayToScreenState extends State<PayToScreen> {
               if (widget.totalNumberOfBookings != null)
                 Text(
                     '${languages.from} ${widget.totalNumberOfBookings} ${languages.booking}',
-                    style: secondaryTextStyle()),
+                    style: context.secondaryTextStyle()),
             ],
           ),
         )
@@ -88,7 +89,8 @@ class _PayToScreenState extends State<PayToScreen> {
 
   Widget buildPaymentWidget() {
     return SettingSection(
-      title: Text(languages.choosePaymentMethod, style: boldTextStyle()),
+      title:
+          Text(languages.choosePaymentMethod, style: context.boldTextStyle()),
       headingDecoration: headingDecoration,
       headerPadding:
           const EdgeInsets.only(top: 24, bottom: 8, left: 16, right: 16),
@@ -113,7 +115,8 @@ class _PayToScreenState extends State<PayToScreen> {
                   value: data,
                   tileColor: data == selectedPaymentList ? context.card : null,
                   controlAffinity: ListTileControlAffinity.trailing,
-                  title: Text(data.name.validate(), style: primaryTextStyle()),
+                  title: Text(data.name.validate(),
+                      style: context.primaryTextStyle()),
                 ),
               );
             },
@@ -141,11 +144,11 @@ class _PayToScreenState extends State<PayToScreen> {
               headerPadding:
                   const EdgeInsets.only(left: 0, right: 0, bottom: 12, top: 8),
               title: Text(languages.detailsOfTheBank,
-                  style: boldTextStyle(size: LABEL_TEXT_SIZE)),
+                  style: context.boldTextStyle(size: LABEL_TEXT_SIZE)),
               subTitle: Text(
                 languages
                     .selectABankTransferMoneyAndEnterTheReferenceIDInTheTextFieldBelow,
-                style: secondaryTextStyle(),
+                style: context.secondaryTextStyle(),
               ).paddingBottom(8),
               headingDecoration: headingDecoration,
               divider: const Offstage(),
@@ -194,10 +197,10 @@ class _PayToScreenState extends State<PayToScreen> {
                               Row(
                                 children: [
                                   Text(languages.bankName,
-                                          style: secondaryTextStyle())
+                                          style: context.secondaryTextStyle())
                                       .expand(),
                                   Text(data.bankName.validate(),
-                                          style: boldTextStyle(),
+                                          style: context.boldTextStyle(),
                                           textAlign: TextAlign.end)
                                       .expand(),
                                 ],
@@ -206,7 +209,7 @@ class _PayToScreenState extends State<PayToScreen> {
                               Row(
                                 children: [
                                   Text(languages.accountNumber,
-                                      style: secondaryTextStyle()),
+                                      style: context.secondaryTextStyle()),
                                   8.width,
                                   GestureDetector(
                                     onTap: () {
@@ -217,7 +220,7 @@ class _PayToScreenState extends State<PayToScreen> {
                                     child: const Icon(Icons.copy, size: 14),
                                   ),
                                   Text(data.accountNo.validate(),
-                                          style: boldTextStyle(),
+                                          style: context.boldTextStyle(),
                                           textAlign: TextAlign.end)
                                       .expand(),
                                 ],
@@ -226,10 +229,10 @@ class _PayToScreenState extends State<PayToScreen> {
                               Row(
                                 children: [
                                   Text(languages.iFSCCode,
-                                          style: secondaryTextStyle())
+                                          style: context.secondaryTextStyle())
                                       .expand(),
                                   Text(data.ifscNo.validate(),
-                                          style: boldTextStyle(),
+                                          style: context.boldTextStyle(),
                                           textAlign: TextAlign.end)
                                       .expand(),
                                 ],
@@ -238,10 +241,10 @@ class _PayToScreenState extends State<PayToScreen> {
                               Row(
                                 children: [
                                   Text(languages.bankAddress,
-                                          style: secondaryTextStyle())
+                                          style: context.secondaryTextStyle())
                                       .expand(),
                                   Text(data.branchName.validate(),
-                                          style: boldTextStyle(),
+                                          style: context.boldTextStyle(),
                                           textAlign: TextAlign.end)
                                       .expand(),
                                 ],
@@ -255,7 +258,7 @@ class _PayToScreenState extends State<PayToScreen> {
                   ]
                 else
                   Text(languages.pleaseWaitWhileWeLoadBankDetails,
-                          style: primaryTextStyle())
+                          style: context.primaryTextStyle())
                       .center()
                       .paddingTop(60),
               ],
@@ -371,7 +374,7 @@ class CashProviderWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return SettingSection(
       title: Text(isUserTypeProvider ? languages.admin : languages.provider,
-          style: boldTextStyle(size: LABEL_TEXT_SIZE)),
+          style: context.boldTextStyle(size: LABEL_TEXT_SIZE)),
       headingDecoration: headingDecoration,
       divider: const Offstage(),
       items: [
@@ -387,7 +390,7 @@ class CashProviderWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(data.displayName.validate(),
-                      style: boldTextStyle(size: 12)),
+                      style: context.boldTextStyle(size: 12)),
                   TextIcon(
                     spacing: 6,
                     edgeInsets: const EdgeInsets.fromLTRB(0, 4, 8, 8),
@@ -397,7 +400,7 @@ class CashProviderWidget extends StatelessWidget {
                     prefix: Image.asset(ic_message,
                         width: 12, height: 12, color: context.onSurface),
                     text: data.email.validate(),
-                    textStyle: secondaryTextStyle(),
+                    textStyle: context.secondaryTextStyle(),
                     expandedText: true,
                   ),
                   TextIcon(
@@ -409,7 +412,7 @@ class CashProviderWidget extends StatelessWidget {
                     prefix: Image.asset(calling,
                         width: 12, height: 12, color: context.onSurface),
                     text: '${data.contactNumber.validate()}',
-                    textStyle: secondaryTextStyle(),
+                    textStyle: context.secondaryTextStyle(),
                     expandedText: true,
                   ),
                 ],

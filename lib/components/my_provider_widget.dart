@@ -8,6 +8,7 @@ import 'package:handyman_provider_flutter/models/user_info_response.dart';
 import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class MyProviderWidget extends StatelessWidget {
@@ -19,7 +20,7 @@ class MyProviderWidget extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(languages.lblMyProvider, style: boldTextStyle(size: 16)),
+          Text(languages.lblMyProvider, style: context.boldTextStyle(size: 16)),
           32.height,
           SnapHelperWidget<UserInfoResponse>(
             future: getUserDetail(appStore.providerId.validate()),
@@ -29,25 +30,30 @@ class MyProviderWidget extends StatelessWidget {
 
               return Container(
                 padding: const EdgeInsets.all(16),
-                decoration: boxDecorationDefault(color: context.scaffoldBackgroundColor),
+                decoration: boxDecorationDefault(
+                    color: context.scaffoldBackgroundColor),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
-                        ImageBorder(src: data.profileImage.validate(), height: 70),
+                        ImageBorder(
+                            src: data.profileImage.validate(), height: 70),
                         16.width,
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
                               children: [
-                                Text(data.displayName.validate(), style: boldTextStyle()).flexible(),
+                                Text(data.displayName.validate(),
+                                        style: context.boldTextStyle())
+                                    .flexible(),
                                 16.width,
                               ],
                             ),
                             4.height,
-                            DisabledRatingBarWidget(rating: data.providerServiceRating.validate()),
+                            DisabledRatingBarWidget(
+                                rating: data.providerServiceRating.validate()),
                           ],
                         ).expand(),
                       ],
@@ -58,7 +64,12 @@ class MyProviderWidget extends StatelessWidget {
                       onTap: () {
                         launchMail(data.email.validate());
                       },
-                      prefix: Image.asset(ic_message, width: 20, height: 20, color: appStore.isDarkMode ? Colors.white : Colors.black),
+                      prefix: Image.asset(ic_message,
+                          width: 20,
+                          height: 20,
+                          color: appStore.isDarkMode
+                              ? Colors.white
+                              : Colors.black),
                       text: data.email.validate(),
                       expandedText: true,
                     ),
@@ -73,7 +84,12 @@ class MyProviderWidget extends StatelessWidget {
                               launchMap(data.address.validate());
                             },
                             expandedText: true,
-                            prefix: Image.asset(ic_location, width: 20, height: 20, color: appStore.isDarkMode ? Colors.white : Colors.black),
+                            prefix: Image.asset(ic_location,
+                                width: 20,
+                                height: 20,
+                                color: appStore.isDarkMode
+                                    ? Colors.white
+                                    : Colors.black),
                             text: data.address.validate(),
                           ),
                         ],
@@ -84,7 +100,12 @@ class MyProviderWidget extends StatelessWidget {
                       onTap: () {
                         launchCall(data.contactNumber.validate());
                       },
-                      prefix: Image.asset(calling, width: 20, height: 20, color: appStore.isDarkMode ? Colors.white : Colors.black),
+                      prefix: Image.asset(calling,
+                          width: 20,
+                          height: 20,
+                          color: appStore.isDarkMode
+                              ? Colors.white
+                              : Colors.black),
                       text: data.contactNumber.validate(),
                       expandedText: true,
                     ),

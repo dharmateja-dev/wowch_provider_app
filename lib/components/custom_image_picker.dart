@@ -82,7 +82,8 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
             await showInDialog(
               context,
               contentPadding: const EdgeInsets.symmetric(vertical: 16),
-              title: Text(languages.chooseAction, style: boldTextStyle()),
+              title:
+                  Text(languages.chooseAction, style: context.boldTextStyle()),
               builder: (p0) {
                 return FilePickerDialog(isSelected: (false));
               },
@@ -179,7 +180,7 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
           itemCount: imageFiles.length,
           spacing: 16,
           itemBuilder: (context, index) {
-            bool isNetworkImage = imageFiles[index].path.contains("http");
+            imageFiles[index].path.contains("http");
             return Stack(
               clipBehavior: Clip.none,
               children: [

@@ -5,6 +5,7 @@ import 'package:handyman_provider_flutter/components/price_widget.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class CashConfirmDialog extends StatefulWidget {
@@ -58,16 +59,17 @@ class _CashConfirmDialogState extends State<CashConfirmDialog> {
                 list: [
                   TextSpan(
                       text: languages.yourCashPaymentForBookingId,
-                      style: primaryTextStyle()),
+                      style: context.primaryTextStyle()),
                   TextSpan(
-                      text: " #${widget.bookingId}", style: boldTextStyle()),
+                      text: " #${widget.bookingId}",
+                      style: context.boldTextStyle()),
                   TextSpan(
                       text: " ${languages.isAcceptedAsOn}",
-                      style: primaryTextStyle()),
+                      style: context.primaryTextStyle()),
                   TextSpan(
                       text:
                           " ${formatDate(DateTime.now().toString(), format: DATE_FORMAT_9, isLanguageNeeded: true)}",
-                      style: boldTextStyle()),
+                      style: context.boldTextStyle()),
                 ],
               ),
               26.height,
@@ -75,7 +77,7 @@ class _CashConfirmDialogState extends State<CashConfirmDialog> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text('${languages.amountToBeReceived}:  ',
-                      style: secondaryTextStyle()),
+                      style: context.secondaryTextStyle()),
                   PriceWidget(price: widget.bookingAmount.validate(), size: 16),
                 ],
               ).center(),

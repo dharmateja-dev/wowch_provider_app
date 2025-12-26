@@ -7,7 +7,6 @@ import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/provider/bank_details/add_bank_screen.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
-import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/num_extenstions.dart';
@@ -151,7 +150,7 @@ class _WithdrawRequestState extends State<WithdrawRequest> {
                   ),
                 ),
                 24.height,
-                Text(languages.lblEnterAmount, style: boldTextStyle()),
+                Text(languages.lblEnterAmount, style: context.boldTextStyle()),
                 8.height,
                 AppTextField(
                   textFieldType: TextFieldType.NUMBER,
@@ -279,7 +278,7 @@ class _WithdrawRequestState extends State<WithdrawRequest> {
                 AppButton(
                   text: languages.withdraw,
                   color: context.primary,
-                  textStyle: boldTextStyle(color: context.onPrimary),
+                  textStyle: context.boldTextStyle(color: context.onPrimary),
                   width: context.width() - context.navigationBarHeight,
                   onTap: () {
                     if (formKey.currentState!.validate()) {

@@ -355,7 +355,7 @@ class _AddBlogScreenState extends State<AddBlogScreen> {
             child: AppButton(
               text: languages.btnSave,
               color: context.primary,
-              textStyle: boldTextStyle(color: context.onPrimary),
+              textStyle: context.boldTextStyle(color: context.onPrimary),
               width: context.width(),
               onTap: () {
                 ifNotTester(context, () {

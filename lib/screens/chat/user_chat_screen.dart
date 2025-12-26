@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:handyman_provider_flutter/components/app_widgets.dart';
-import 'package:handyman_provider_flutter/components/empty_error_state_widget.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/models/chat_message_model.dart';
 import 'package:handyman_provider_flutter/models/user_data.dart';
@@ -112,7 +111,7 @@ class _UserChatScreenState extends State<UserChatScreen>
         AppTextField(
           textFieldType: TextFieldType.OTHER,
           controller: messageCont,
-          textStyle: primaryTextStyle(),
+          textStyle: context.primaryTextStyle(),
           minLines: 1,
           onFieldSubmitted: (s) {
             sendMessages();
@@ -419,7 +418,8 @@ class _UserChatScreenState extends State<UserChatScreen>
                 list.add(
                   PopupMenuItem(
                     value: 0,
-                    child: Text(languages.clearChat, style: primaryTextStyle()),
+                    child: Text(languages.clearChat,
+                        style: context.primaryTextStyle()),
                   ),
                 );
                 return list;

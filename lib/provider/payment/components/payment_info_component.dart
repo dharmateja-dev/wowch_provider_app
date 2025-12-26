@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../../components/price_widget.dart';
@@ -49,7 +50,8 @@ class _PaymentInfoComponentState extends State<PaymentInfoComponent> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(languages.paymentHistory, style: boldTextStyle()).paddingAll(16),
+            Text(languages.paymentHistory, style: context.boldTextStyle())
+                .paddingAll(16),
             SnapHelperWidget<List<PaymentData>>(
               future: future,
               onSuccess: (data) {
@@ -69,26 +71,36 @@ class _PaymentInfoComponentState extends State<PaymentInfoComponent> {
                     PaymentData data = list[index];
 
                     return Container(
-                      decoration: boxDecorationDefault(color: context.scaffoldBackgroundColor),
+                      decoration: boxDecorationDefault(
+                          color: context.scaffoldBackgroundColor),
                       padding: const EdgeInsets.all(16),
                       margin: const EdgeInsets.all(8),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Marquee(child: Text('${languages.transactionId} ${data.txnId.validate()}', style: primaryTextStyle())),
+                          Marquee(
+                              child: Text(
+                                  '${languages.transactionId} ${data.txnId.validate()}',
+                                  style: context.primaryTextStyle())),
                           8.height,
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Row(
                                 children: [
-                                  PriceWidget(price: data.totalAmount.validate()),
+                                  PriceWidget(
+                                      price: data.totalAmount.validate()),
                                   8.width,
-                                  Text('(${data.paymentMethod.validate().capitalizeFirstLetter()})', style: primaryTextStyle()).expand(),
+                                  Text('(${data.paymentMethod.validate().capitalizeFirstLetter()})',
+                                          style: context.primaryTextStyle())
+                                      .expand(),
                                 ],
                               ).expand(),
                               8.width,
-                              Text(formatDate(data.date.validate().toString(), format: DATE_FORMAT_8), style: secondaryTextStyle()),
+                              Text(
+                                  formatDate(data.date.validate().toString(),
+                                      format: DATE_FORMAT_8),
+                                  style: context.secondaryTextStyle()),
                             ],
                           ),
                         ],

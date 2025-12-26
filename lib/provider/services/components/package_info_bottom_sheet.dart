@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/models/package_response.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../../components/cached_image_widget.dart';
@@ -62,23 +63,23 @@ class _PackageInfoComponentState extends State<PackageInfoComponent> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(widget.packageData.name.validate(),
-                        style: boldTextStyle(size: LABEL_TEXT_SIZE)),
+                        style: context.boldTextStyle(size: LABEL_TEXT_SIZE)),
                     4.height,
                     widget.packageData.description.validate().isNotEmpty
                         ? ReadMoreText(
                             widget.packageData.description.validate(),
-                            style: primaryTextStyle(),
+                            style: context.primaryTextStyle(),
                             colorClickableText: context.primaryColor,
                           )
                         : Text(languages.lblNoDescriptionAvailable,
-                            style: secondaryTextStyle()),
+                            style: context.secondaryTextStyle()),
                   ],
                 ).expand(),
               ],
             ),
             16.height,
             Text(languages.youWillGetTheseServicesWithThisPackage,
-                style: secondaryTextStyle()),
+                style: context.secondaryTextStyle()),
             8.height,
             if (widget.packageData.serviceList != null)
               ListView.builder(
@@ -118,23 +119,23 @@ class _PackageInfoComponentState extends State<PackageInfoComponent> {
                           children: [
                             Marquee(
                                 child: Text(data.name.validate(),
-                                    style:
-                                        boldTextStyle(size: LABEL_TEXT_SIZE))),
+                                    style: context.boldTextStyle(
+                                        size: LABEL_TEXT_SIZE))),
                             4.height,
                             if (data.subCategoryName.validate().isNotEmpty)
                               Marquee(
                                 child: Row(
                                   children: [
                                     Text('${data.categoryName}',
-                                        style: boldTextStyle(
+                                        style: context.boldTextStyle(
                                             size: 12,
                                             color: textSecondaryColorGlobal)),
                                     Text('  >  ',
-                                        style: boldTextStyle(
+                                        style: context.boldTextStyle(
                                             size: 14,
                                             color: textSecondaryColorGlobal)),
                                     Text('${data.subCategoryName}',
-                                        style: boldTextStyle(
+                                        style: context.boldTextStyle(
                                             size: 12,
                                             color: context.primaryColor)),
                                   ],
@@ -142,7 +143,7 @@ class _PackageInfoComponentState extends State<PackageInfoComponent> {
                               )
                             else
                               Text('${data.categoryName}',
-                                  style: boldTextStyle(
+                                  style: context.boldTextStyle(
                                       size: 12, color: context.primaryColor)),
                             4.height,
                             PriceWidget(

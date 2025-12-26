@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/components/back_widget.dart';
 import 'package:handyman_provider_flutter/components/shimmer_widget.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class BlogDetailShimmer extends StatelessWidget {
@@ -16,13 +18,18 @@ class BlogDetailShimmer extends StatelessWidget {
             width: context.width(),
             child: Stack(
               children: [
-                SizedBox(height: 400, width: context.width(), child: const ShimmerWidget()),
+                SizedBox(
+                    height: 400,
+                    width: context.width(),
+                    child: const ShimmerWidget()),
                 Positioned(
                   top: context.statusBarHeight + 8,
                   left: 16,
                   child: Container(
-                    child: BackWidget(color: context.iconColor),
-                    decoration: BoxDecoration(shape: BoxShape.circle, color: context.cardColor.withValues(alpha: 0.7)),
+                    child: BackWidget(color: context.icon),
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: context.cardColor.withValues(alpha: 0.7)),
                   ),
                 ),
                 Positioned(
@@ -39,8 +46,10 @@ class BlogDetailShimmer extends StatelessWidget {
                             children: List.generate(
                               3,
                               (i) => Container(
-                                decoration: BoxDecoration(borderRadius: radius()),
-                                child: const ShimmerWidget(height: 60, width: 60),
+                                decoration:
+                                    BoxDecoration(borderRadius: radius()),
+                                child:
+                                    const ShimmerWidget(height: 60, width: 60),
                               ),
                             ),
                           ),
@@ -51,9 +60,13 @@ class BlogDetailShimmer extends StatelessWidget {
                             child: Container(
                               height: 60,
                               width: 60,
-                              decoration: BoxDecoration(borderRadius: radius(), color: Colors.grey.withValues(alpha: 0.2)),
+                              decoration: BoxDecoration(
+                                  borderRadius: radius(),
+                                  color: Colors.grey.withValues(alpha: 0.2)),
                               alignment: Alignment.center,
-                              child: Text('+' '5', style: boldTextStyle(color: white)),
+                              child: Text('+' '5',
+                                  style: context.boldTextStyle(
+                                      color: context.onPrimary)),
                             ),
                           ),
                         ],

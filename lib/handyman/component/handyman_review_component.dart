@@ -7,6 +7,7 @@ import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/models/booking_detail_response.dart';
 import 'package:handyman_provider_flutter/screens/rating_view_all_screen.dart';
 import 'package:handyman_provider_flutter/utils/demo_data.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class HandymanReviewComponent extends StatefulWidget {
@@ -60,7 +61,7 @@ class _HandymanReviewComponentState extends State<HandymanReviewComponent> {
             Observer(
               builder: (_) => Text(
                 languages.lblNoReviewYet,
-                style: secondaryTextStyle(),
+                style: context.secondaryTextStyle(),
               ).center().visible(!appStore.isLoading && _reviews.isEmpty),
             ),
           ],

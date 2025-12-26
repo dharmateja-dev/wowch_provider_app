@@ -10,7 +10,6 @@ import '../components/empty_error_state_widget.dart';
 import '../main.dart';
 import '../models/user_data.dart';
 import '../networks/rest_apis.dart';
-import '../utils/configs.dart';
 
 class ProviderListScreen extends StatefulWidget {
   final String? status;

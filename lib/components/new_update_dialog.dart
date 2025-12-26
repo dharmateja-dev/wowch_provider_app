@@ -5,6 +5,7 @@ import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -26,11 +27,12 @@ class NewUpdateDialog extends StatelessWidget {
             listAnimationType: ListAnimationType.FadeIn,
             children: [
               60.height,
-              Text(languages.lblNewUpdate, style: boldTextStyle(size: 18)),
+              Text(languages.lblNewUpdate,
+                  style: context.boldTextStyle(size: 18)),
               8.height,
               Text(
                 '${languages.lblAnUpdateTo}$APP_NAME ${languages.isAvailableGoTo}',
-                style: secondaryTextStyle(),
+                style: context.secondaryTextStyle(),
                 textAlign: TextAlign.left,
               ),
               24.height,
@@ -40,7 +42,7 @@ class NewUpdateDialog extends StatelessWidget {
                 children: [
                   AppButton(
                     text: canClose ? languages.later : languages.closeApp,
-                    textStyle: boldTextStyle(color: primary, size: 14),
+                    textStyle: context.boldTextStyle(color: primary, size: 14),
                     shapeBorder: RoundedRectangleBorder(
                         borderRadius: radius(),
                         side: const BorderSide(color: primary)),
@@ -56,7 +58,7 @@ class NewUpdateDialog extends StatelessWidget {
                   32.width,
                   AppButton(
                     text: languages.lblUpdate,
-                    textStyle: boldTextStyle(color: Colors.white),
+                    textStyle: context.boldTextStyle(color: Colors.white),
                     shapeBorder: RoundedRectangleBorder(borderRadius: radius()),
                     color: primary,
                     elevation: 0,

@@ -6,7 +6,6 @@ import 'package:handyman_provider_flutter/models/user_data.dart';
 import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/provider/components/handyman_widget.dart';
 import 'package:handyman_provider_flutter/provider/shimmer/handyman_list_shimmer.dart';
-import 'package:handyman_provider_flutter/utils/colors.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/demo_mode.dart';

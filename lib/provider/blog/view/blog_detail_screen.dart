@@ -172,7 +172,7 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: context.primary.withOpacity(0.3),
+                              color: context.primary.withValues(alpha: 0.3),
                               width: 2,
                             ),
                           ),

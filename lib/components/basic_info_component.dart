@@ -6,9 +6,7 @@ import 'package:handyman_provider_flutter/models/booking_list_response.dart';
 import 'package:handyman_provider_flutter/models/service_model.dart';
 import 'package:handyman_provider_flutter/models/user_data.dart';
 import 'package:handyman_provider_flutter/screens/chat/user_chat_screen.dart';
-import 'package:handyman_provider_flutter/utils/colors.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
-import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
@@ -205,7 +203,7 @@ class BasicInfoComponentState extends State<BasicInfoComponent> {
                   children: [
                     Text(
                       languages.email,
-                      style: boldTextStyle(
+                      style: context.boldTextStyle(
                         size: 12,
                       ),
                       maxLines: 2,
@@ -318,7 +316,8 @@ class BasicInfoComponentState extends State<BasicInfoComponent> {
                           color: context.onPrimary, height: 18, width: 18),
                       16.width,
                       Text(languages.lblChat,
-                          style: boldTextStyle(color: context.onPrimary)),
+                          style:
+                              context.boldTextStyle(color: context.onPrimary)),
                     ],
                   ),
                 ).expand(),

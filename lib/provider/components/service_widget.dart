@@ -2,15 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/components/cached_image_widget.dart';
 import 'package:handyman_provider_flutter/components/disabled_rating_bar_widget.dart';
 import 'package:handyman_provider_flutter/components/price_widget.dart';
-import 'package:handyman_provider_flutter/generated/assets.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/models/service_model.dart';
 import 'package:handyman_provider_flutter/utils/colors.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
-import 'package:handyman_provider_flutter/utils/extensions/color_extension.dart';
-import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
 import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -147,7 +144,7 @@ class ServiceComponent extends StatelessWidget {
                 //                 data.serviceRequestStatus
                 //                     .validate()
                 //                     .toServiceApprovalStatus,
-                //                 style: boldTextStyle(color: white, size: 12),
+                //                 style: context.boldTextStyle(color: white, size: 12),
                 //               ).paddingSymmetric(horizontal: 4, vertical: 2),
                 //             ),
                 //           ),
@@ -219,15 +216,15 @@ class ServiceComponent extends StatelessWidget {
               if (data.serviceRequestStatus == SERVICE_PENDING)
                 RichText(
                   text: TextSpan(
-                    style: secondaryTextStyle(),
+                    style: context.secondaryTextStyle(),
                     children: <TextSpan>[
                       TextSpan(
                         text: '${languages.note} ',
-                        style: boldTextStyle(size: 12, color: redColor),
+                        style: context.boldTextStyle(size: 12, color: redColor),
                       ),
                       TextSpan(
                         text: languages.thisServiceIsCurrently,
-                        style: secondaryTextStyle(),
+                        style: context.secondaryTextStyle(),
                       ),
                     ],
                   ),
@@ -238,16 +235,17 @@ class ServiceComponent extends StatelessWidget {
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                     text: TextSpan(
-                      style: secondaryTextStyle(),
+                      style: context.secondaryTextStyle(),
                       children: <TextSpan>[
                         TextSpan(
                           text: '${languages.lblReason}: ',
-                          style: boldTextStyle(size: 12, color: redColor),
+                          style:
+                              context.boldTextStyle(size: 12, color: redColor),
                         ),
                         if (changeList)
                           TextSpan(
                             text: data.rejectReason.validate(),
-                            style: secondaryTextStyle(),
+                            style: context.secondaryTextStyle(),
                           ),
                       ],
                     ),
@@ -256,7 +254,7 @@ class ServiceComponent extends StatelessWidget {
                 if (!changeList)
                   Text(
                     data.rejectReason.validate(),
-                    style: secondaryTextStyle(),
+                    style: context.secondaryTextStyle(),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ).paddingSymmetric(horizontal: 16),
@@ -264,7 +262,7 @@ class ServiceComponent extends StatelessWidget {
                 AppButton(
                   text: languages.lblDelete,
                   color: cancelled.withValues(alpha: 0.1),
-                  textStyle: boldTextStyle(color: cancelled),
+                  textStyle: context.boldTextStyle(color: cancelled),
                   width: context.width(),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 12),

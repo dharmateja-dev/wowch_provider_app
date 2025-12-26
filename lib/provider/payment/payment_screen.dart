@@ -7,6 +7,7 @@ import 'package:handyman_provider_flutter/models/provider_subscription_model.dar
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
 import 'package:handyman_provider_flutter/utils/extensions/num_extenstions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../components/app_common_dialog.dart';
@@ -294,7 +295,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 children: [
                   16.height,
                   Text(languages.lblChoosePaymentMethod,
-                          style: boldTextStyle(size: 18))
+                          style: context.boldTextStyle(size: 18))
                       .paddingOnly(left: 16),
                   16.height,
                   AnimatedListView(
@@ -318,7 +319,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           value: value,
                           controlAffinity: ListTileControlAffinity.trailing,
                           title: Text(value.title.validate(),
-                              style: primaryTextStyle()),
+                              style: context.primaryTextStyle()),
                         ),
                       );
                     },

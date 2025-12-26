@@ -9,9 +9,7 @@ import 'package:handyman_provider_flutter/provider/fragments/provider_home_fragm
 import 'package:handyman_provider_flutter/provider/fragments/provider_profile_fragment.dart';
 import 'package:handyman_provider_flutter/screens/chat/user_chat_list_screen.dart';
 import 'package:handyman_provider_flutter/utils/app_configuration.dart';
-import 'package:handyman_provider_flutter/utils/colors.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
-import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';

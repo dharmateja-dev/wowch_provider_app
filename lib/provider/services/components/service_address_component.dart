@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../../models/selectZoneModel.dart';
@@ -76,7 +77,7 @@ class _ServiceAddressComponentState extends State<ServiceAddressComponent> {
               childrenPadding: const EdgeInsets.symmetric(horizontal: 16),
               initiallyExpanded: widget.selectedList.validate().isNotEmpty,
               title: Text(languages.selectServiceZones,
-                  style: secondaryTextStyle()),
+                  style: context.secondaryTextStyle()),
               onExpansionChanged: (value) {
                 isExpanded = value;
                 setState(() {});

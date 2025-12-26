@@ -4,6 +4,7 @@ import 'package:handyman_provider_flutter/components/view_all_label_component.da
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/models/booking_detail_response.dart';
 import 'package:handyman_provider_flutter/screens/zoom_image_screen.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class ServiceProofListWidget extends StatefulWidget {
@@ -46,7 +47,11 @@ class _ServiceProofListWidgetState extends State<ServiceProofListWidget> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (data.title.validate().isNotEmpty) Text(data.title.validate(), style: boldTextStyle(), maxLines: 1, overflow: TextOverflow.ellipsis),
+                    if (data.title.validate().isNotEmpty)
+                      Text(data.title.validate(),
+                          style: context.boldTextStyle(),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis),
                     if (data.description.validate().isNotEmpty)
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,7 +59,7 @@ class _ServiceProofListWidgetState extends State<ServiceProofListWidget> {
                           8.height,
                           ReadMoreText(
                             data.description.validate(),
-                            style: secondaryTextStyle(),
+                            style: context.secondaryTextStyle(),
                             trimMode: TrimMode.Line,
                             trimLength: 3,
                           ),
@@ -79,7 +84,10 @@ class _ServiceProofListWidgetState extends State<ServiceProofListWidget> {
                                   fit: BoxFit.cover,
                                 ),
                               ).onTap(() {
-                                ZoomImageScreen(galleryImages: data.attachments, index: i).launch(context);
+                                ZoomImageScreen(
+                                        galleryImages: data.attachments,
+                                        index: i)
+                                    .launch(context);
                               });
                             },
                           ),

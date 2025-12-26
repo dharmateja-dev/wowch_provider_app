@@ -154,7 +154,7 @@ class DarkThemeColors {
       Color(0xFF6E7D73); // Divider on secondary container
 
   // ——— Accent Colors for Dark Theme ———
-  static const Color primaryOrange = Color(0xFF2E6B4F); // Main brand color
+  static const Color primaryGreen = Color(0xFF2E6B4F); // Main brand color
   static const Color primaryGreenLite = Color(0xFF65AE6A); // Primary color lite
   static const Color primaryGreenLight = Color(0xFF66BB6A); // Light variant
   static const Color primaryGreenDark = Color(0xFF2E7D32); // Dark variant
@@ -228,7 +228,7 @@ class DarkThemeColors {
   static Color overlayIntense = Colors.black.withValues(alpha: 0.8);
 
   // ——— LEGACY COMPATIBILITY ALIASES ———
-  static const Color primary = primaryOrange;
+  static const Color primary = primaryGreen;
   static const Color primaryLight = Color(0xFF1C1F26);
   static const Color scaffoldBackground = richBlack;
   static const Color scaffoldSecondary = charcoal;

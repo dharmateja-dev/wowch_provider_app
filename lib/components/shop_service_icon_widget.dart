@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/generated/assets.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/utils/colors.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class ShopServiceIconWidget extends StatelessWidget {
@@ -24,7 +26,7 @@ class ShopServiceIconWidget extends StatelessWidget {
               child: Image.asset(
                 Assets.iconsIcDefaultShop,
                 height: 12,
-                color: Colors.white,
+                color: context.onPrimary,
               ),
               decoration: boxDecorationDefault(
                 shape: BoxShape.circle,
@@ -32,7 +34,7 @@ class ShopServiceIconWidget extends StatelessWidget {
               ),
             ),
             4.width,
-            Text(languages.lblAtShop, style: boldTextStyle(size: 12))
+            Text(languages.lblAtShop, style: context.boldTextStyle(size: 12))
                 .paddingSymmetric(vertical: 4, horizontal: 2),
             8.width,
           ],
@@ -45,7 +47,7 @@ class ShopServiceIconWidget extends StatelessWidget {
         child: Image.asset(
           Assets.iconsIcDefaultShop,
           height: 12,
-          color: Colors.white,
+          color: context.onPrimary,
         ),
         decoration: boxDecorationDefault(
           shape: BoxShape.circle,

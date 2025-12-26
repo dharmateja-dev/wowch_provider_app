@@ -9,14 +9,12 @@ import 'package:handyman_provider_flutter/models/shop_model.dart';
 import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/provider/shop/shimmer/shop_list_shimmer.dart';
 import 'package:handyman_provider_flutter/utils/demo_data.dart';
-import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
 import 'package:handyman_provider_flutter/utils/demo_mode.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
-import '../../utils/colors.dart';
 
 class FilterShopListComponent extends StatefulWidget {
   const FilterShopListComponent({Key? key}) : super(key: key);

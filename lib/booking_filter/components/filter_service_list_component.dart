@@ -8,11 +8,9 @@ import 'package:nb_utils/nb_utils.dart';
 
 import '../../components/empty_error_state_widget.dart';
 import '../../components/cached_image_widget.dart';
-import '../../components/image_border_component.dart';
 import '../../components/selected_item_widget.dart';
 import '../../models/service_model.dart';
 import '../../networks/rest_apis.dart';
-import '../../utils/colors.dart';
 import '../../utils/constant.dart';
 import '../../utils/demo_data.dart';
 import '../../utils/demo_mode.dart';

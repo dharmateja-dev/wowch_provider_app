@@ -4,7 +4,6 @@ import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../main.dart';
-import '../../utils/colors.dart';
 import '../../utils/common.dart';
 import '../../utils/constant.dart';
 import '../models/payment_status_model.dart';

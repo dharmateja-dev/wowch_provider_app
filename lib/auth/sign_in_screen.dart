@@ -252,12 +252,12 @@ class _SignInScreenState extends State<SignInScreen> {
     return Container(
       child: Column(
         children: [
-          Text(languages.lblLoginTitle, style: boldTextStyle(size: 24))
+          Text(languages.lblLoginTitle, style: context.boldTextStyle(size: 24))
               .center(),
           16.height,
           Text(
             languages.lblLoginSubtitle,
-            style: primaryTextStyle(size: 16),
+            style: context.primaryTextStyle(size: 16),
             textAlign: TextAlign.center,
           ).paddingSymmetric(horizontal: 16).center(),
           64.height,
