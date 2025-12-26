@@ -149,11 +149,16 @@ class FlutterImageStack extends StatelessWidget {
           Container(
             child: showTotalCount && totalCount - widgetList.length > 0
                 ? Container(
-                    constraints: BoxConstraints(minWidth: itemRadius! - itemBorderWidth!),
+                    constraints: BoxConstraints(
+                        minWidth: itemRadius! - itemBorderWidth!),
                     padding: const EdgeInsets.all(3),
                     height: itemRadius! - itemBorderWidth!,
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(itemRadius! - itemBorderWidth!), border: Border.all(color: itemBorderColor!, width: itemBorderWidth!), color: backgroundColor),
+                        borderRadius: BorderRadius.circular(
+                            itemRadius! - itemBorderWidth!),
+                        border: Border.all(
+                            color: itemBorderColor!, width: itemBorderWidth!),
+                        color: backgroundColor),
                     child: Center(
                       child: Text(
                         "+${totalCount - widgetList.length}",

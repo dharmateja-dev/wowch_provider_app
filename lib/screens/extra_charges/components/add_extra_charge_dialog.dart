@@ -3,6 +3,7 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -88,16 +89,17 @@ class _AddExtraChargesDialogState extends State<AddExtraChargesDialog> {
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(8),
                       topRight: Radius.circular(8)),
-                  backgroundColor: primary,
+                  backgroundColor: context.primary,
                 ),
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(languages.lblAddExtraChargesDetail,
-                            style: context.boldTextStyle(color: white))
+                            style:
+                                context.boldTextStyle(color: context.onPrimary))
                         .paddingOnly(left: 16),
-                    CloseButton(color: Colors.white),
+                    CloseButton(color: context.onPrimary),
                   ],
                 ),
               ),

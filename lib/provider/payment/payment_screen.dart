@@ -6,6 +6,7 @@ import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/models/provider_subscription_model.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/num_extenstions.dart';
 import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -275,7 +276,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     return Scaffold(
       appBar: appBarWidget(languages.lblPayment,
           color: context.primaryColor,
-          textColor: Colors.white,
+          textColor: context.onPrimary,
           backWidget: BackWidget()),
       body: Stack(
         children: [

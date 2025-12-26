@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/context_ext.dart';
 import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -12,7 +13,6 @@ import '../../../../models/booking_detail_response.dart';
 import '../../../../models/service_model.dart';
 import '../../../../networks/rest_apis.dart';
 import '../../../../utils/common.dart';
-import '../../../../utils/configs.dart';
 import '../../../../utils/constant.dart';
 
 class SelectAddonServiceComponent extends StatefulWidget {
@@ -204,7 +204,7 @@ class _SelectAddonServiceComponentState
                                 16.width,
                                 Text(data.name.validate(),
                                         style: context.secondaryTextStyle(
-                                            color: context.iconColor))
+                                            color: context.icon))
                                     .expand(),
                               ],
                             ).expand(),
@@ -218,8 +218,8 @@ class _SelectAddonServiceComponentState
                               color: ((appStore.selectedServiceData.id ==
                                           data.id) ||
                                       selectedIndex == i)
-                                  ? primary
-                                  : context.iconColor,
+                                  ? context.primary
+                                  : context.icon,
                             ),
                             8.width,
                           ],
@@ -269,7 +269,7 @@ class _SelectAddonServiceComponentState
         ),
         floatingActionButton: appStore.selectedServiceData.id != null
             ? FloatingActionButton(
-                child: const Icon(Icons.check, color: Colors.white),
+                child: Icon(Icons.check, color: context.onPrimary),
                 backgroundColor: context.primaryColor,
                 onPressed: () {
                   finish(context, appStore.selectedServiceData.id);

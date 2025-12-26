@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
 import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -58,9 +59,9 @@ class NewUpdateDialog extends StatelessWidget {
                   32.width,
                   AppButton(
                     text: languages.lblUpdate,
-                    textStyle: context.boldTextStyle(color: Colors.white),
+                    textStyle: context.boldTextStyle(color: context.onPrimary),
                     shapeBorder: RoundedRectangleBorder(borderRadius: radius()),
-                    color: primary,
+                    color: context.primary,
                     elevation: 0,
                     onTap: () async {
                       getPackageName().then((value) async {

@@ -72,7 +72,7 @@ class PromotionalBannerItemComponent extends StatelessWidget {
                             .validate()
                             .toPromotionalBannerStatus(),
                         style: context.boldTextStyle(
-                            color: Colors.white, size: 12),
+                            color: context.onPrimary, size: 12),
                       ),
                     ),
                   ),

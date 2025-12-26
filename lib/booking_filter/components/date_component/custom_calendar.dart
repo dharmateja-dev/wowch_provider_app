@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 
 /// user for DateTime formatting
 import 'package:intl/intl.dart';
@@ -310,7 +311,7 @@ class CustomCalendarState extends State<CustomCalendar> {
                                 const BorderRadius.all(Radius.circular(32.0)),
                             border: Border.all(
                               color: getIsItStartAndEndDate(date)
-                                  ? Colors.white
+                                  ? context.onPrimary
                                   : Colors.transparent,
                               width: 2,
                             ),
@@ -366,7 +367,7 @@ class CustomCalendarState extends State<CustomCalendar> {
                                 DateTime.now().month == date.month &&
                                 DateTime.now().year == date.year
                             ? getIsInRange(date)
-                                ? Colors.white
+                                ? context.onPrimary
                                 : widget.primaryColor
                             : Colors.transparent,
                         shape: BoxShape.circle,

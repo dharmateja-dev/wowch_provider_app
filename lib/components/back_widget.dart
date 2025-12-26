@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class BackWidget extends StatelessWidget {
@@ -21,7 +22,7 @@ class BackWidget extends StatelessWidget {
       },
       alignment: Alignment.center,
       icon: Icon(Icons.arrow_back_ios,
-          color: iconColor ?? Colors.white, size: iconSize ?? 20),
+          color: iconColor ?? context.onPrimary, size: iconSize ?? 20),
     );
   }
 }

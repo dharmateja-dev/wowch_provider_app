@@ -7,6 +7,7 @@ import 'package:handyman_provider_flutter/models/user_data.dart';
 import 'package:handyman_provider_flutter/models/user_info_response.dart';
 import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
 import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -30,8 +31,7 @@ class MyProviderWidget extends StatelessWidget {
 
               return Container(
                 padding: const EdgeInsets.all(16),
-                decoration: boxDecorationDefault(
-                    color: context.scaffoldBackgroundColor),
+                decoration: boxDecorationDefault(color: context.cardSecondary),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -65,11 +65,7 @@ class MyProviderWidget extends StatelessWidget {
                         launchMail(data.email.validate());
                       },
                       prefix: Image.asset(ic_message,
-                          width: 20,
-                          height: 20,
-                          color: appStore.isDarkMode
-                              ? Colors.white
-                              : Colors.black),
+                          width: 20, height: 20, color: context.icon),
                       text: data.email.validate(),
                       expandedText: true,
                     ),
@@ -85,11 +81,7 @@ class MyProviderWidget extends StatelessWidget {
                             },
                             expandedText: true,
                             prefix: Image.asset(ic_location,
-                                width: 20,
-                                height: 20,
-                                color: appStore.isDarkMode
-                                    ? Colors.white
-                                    : Colors.black),
+                                width: 20, height: 20, color: context.icon),
                             text: data.address.validate(),
                           ),
                         ],
@@ -101,11 +93,7 @@ class MyProviderWidget extends StatelessWidget {
                         launchCall(data.contactNumber.validate());
                       },
                       prefix: Image.asset(calling,
-                          width: 20,
-                          height: 20,
-                          color: appStore.isDarkMode
-                              ? Colors.white
-                              : Colors.black),
+                          width: 20, height: 20, color: context.icon),
                       text: data.contactNumber.validate(),
                       expandedText: true,
                     ),

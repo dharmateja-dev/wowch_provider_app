@@ -327,7 +327,7 @@ class CustomCalendarState extends State<CustomCalendar> {
       return widget.disabledDateColor.withValues(alpha: 0.4);
     }
     if (isStartOrEnd) {
-      return Colors.white;
+      return context.onPrimary;
     }
     if (isDisabled) {
       return widget.disabledDateColor;

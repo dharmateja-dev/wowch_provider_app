@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -51,9 +52,9 @@ class _AddSkillComponentState extends State<AddSkillComponent> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(languages.addEssentialSkill,
-                        style: context.boldTextStyle(color: white))
+                        style: context.boldTextStyle(color: context.onPrimary))
                     .expand(),
-                const CloseButton(color: Colors.white),
+                CloseButton(color: context.onPrimary),
               ],
             ),
           ),

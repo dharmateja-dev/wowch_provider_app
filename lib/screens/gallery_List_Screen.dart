@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/components/back_widget.dart';
 import 'package:handyman_provider_flutter/components/gallery_component.dart';
 import 'package:handyman_provider_flutter/main.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class GalleryListScreen extends StatelessWidget {
@@ -15,8 +16,8 @@ class GalleryListScreen extends StatelessWidget {
     return Scaffold(
       appBar: appBarWidget(
           "${languages.lblGallery} ${'- ${serviceName.validate()}'}",
-          textColor: Colors.white,
-          color: context.primaryColor,
+          textColor: context.onPrimary,
+          color: context.primary,
           backWidget: BackWidget()),
       body: AnimatedWrap(
         spacing: 16,

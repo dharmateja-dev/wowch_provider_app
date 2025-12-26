@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:handyman_provider_flutter/components/back_widget.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class HtmlWidget extends StatelessWidget {
@@ -18,7 +19,7 @@ class HtmlWidget extends StatelessWidget {
         elevation: 0,
         backWidget: BackWidget(),
         color: context.primaryColor,
-        textColor: Colors.white,
+        textColor: context.onPrimary,
       ),
       backgroundColor: context.scaffoldBackgroundColor,
       body: SingleChildScrollView(
@@ -28,7 +29,7 @@ class HtmlWidget extends StatelessWidget {
           style: {
             "body": Style(
               fontSize: FontSize(16.0),
-              color: context.iconColor,
+              color: context.icon,
             ),
             "p": Style(backgroundColor: context.scaffoldBackgroundColor),
           },

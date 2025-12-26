@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -53,7 +54,7 @@ class _AddReasonsComponentState extends State<AddReasonsComponent> {
                 Text(languages.addReason,
                         style: context.boldTextStyle(color: white))
                     .expand(),
-                CloseButton(color: Colors.white),
+                CloseButton(color: context.onPrimary),
               ],
             ),
           ),

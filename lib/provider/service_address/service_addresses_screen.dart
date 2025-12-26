@@ -7,7 +7,6 @@ import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/provider/service_address/components/add_service_component.dart';
 import 'package:handyman_provider_flutter/provider/service_address/shimmer/service_address_shimmer.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
-import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
 import 'package:handyman_provider_flutter/utils/model_keys.dart';

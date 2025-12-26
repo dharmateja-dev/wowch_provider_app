@@ -29,13 +29,22 @@ class SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     afterBuildCreated(() {
-      setStatusBarColor(Colors.transparent,
-          statusBarBrightness: Brightness.dark,
-          statusBarIconBrightness:
-              appStore.isDarkMode ? Brightness.light : Brightness.dark);
-
+      _setThemeAwareStatusBar(context);
       init();
     });
+  }
+
+  /// Sets status bar color based on current theme mode
+  /// Light mode: light background, dark icons/text
+  /// Dark mode: dark background, light/white icons/text
+  void _setThemeAwareStatusBar(BuildContext context) {
+    setStatusBarColor(
+      context.scaffold,
+      statusBarBrightness:
+          appStore.isDarkMode ? Brightness.dark : Brightness.light,
+      statusBarIconBrightness:
+          appStore.isDarkMode ? Brightness.light : Brightness.dark,
+    );
   }
 
   Future<void> init() async {
@@ -87,11 +96,11 @@ class SplashScreenState extends State<SplashScreen> {
         } else {
           await updateProfilePhoto();
           if (isUserTypeProvider) {
-            setStatusBarColor(primary);
+            _setThemeAwareStatusBar(context);
             ProviderDashboardScreen(index: 0).launch(context,
                 isNewTask: true, pageRouteAnimation: PageRouteAnimation.Fade);
           } else if (isUserTypeHandyman) {
-            setStatusBarColor(primary);
+            _setThemeAwareStatusBar(context);
             HandymanDashboardScreen(index: 0).launch(context,
                 isNewTask: true, pageRouteAnimation: PageRouteAnimation.Fade);
           } else {
@@ -250,11 +259,11 @@ class SplashScreenState extends State<SplashScreen> {
           isNewTask: true, pageRouteAnimation: PageRouteAnimation.Fade);
     } else {
       if (isUserTypeProvider) {
-        setStatusBarColor(primary);
+        _setThemeAwareStatusBar(context);
         ProviderDashboardScreen(index: 0).launch(context,
             isNewTask: true, pageRouteAnimation: PageRouteAnimation.Fade);
       } else if (isUserTypeHandyman) {
-        setStatusBarColor(primary);
+        _setThemeAwareStatusBar(context);
         HandymanDashboardScreen(index: 0).launch(context,
             isNewTask: true, pageRouteAnimation: PageRouteAnimation.Fade);
       } else {
@@ -305,11 +314,11 @@ class SplashScreenState extends State<SplashScreen> {
 
     // Navigate to appropriate dashboard
     if (demoUser.userType == USER_TYPE_PROVIDER) {
-      setStatusBarColor(primary);
+      _setThemeAwareStatusBar(context);
       ProviderDashboardScreen(index: 0).launch(context,
           isNewTask: true, pageRouteAnimation: PageRouteAnimation.Fade);
     } else {
-      setStatusBarColor(primary);
+      _setThemeAwareStatusBar(context);
       HandymanDashboardScreen(index: 0).launch(context,
           isNewTask: true, pageRouteAnimation: PageRouteAnimation.Fade);
     }

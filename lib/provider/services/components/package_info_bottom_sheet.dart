@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/models/package_response.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -69,7 +70,7 @@ class _PackageInfoComponentState extends State<PackageInfoComponent> {
                         ? ReadMoreText(
                             widget.packageData.description.validate(),
                             style: context.primaryTextStyle(),
-                            colorClickableText: context.primaryColor,
+                            colorClickableText: context.primary,
                           )
                         : Text(languages.lblNoDescriptionAvailable,
                             style: context.secondaryTextStyle()),
@@ -97,9 +98,7 @@ class _PackageInfoComponentState extends State<PackageInfoComponent> {
                     decoration: boxDecorationWithRoundedCorners(
                       borderRadius: radius(),
                       backgroundColor: context.scaffoldBackgroundColor,
-                      border: appStore.isDarkMode
-                          ? Border.all(color: context.dividerColor)
-                          : null,
+                      border: Border.all(color: context.outlineVariant),
                     ),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,26 +128,25 @@ class _PackageInfoComponentState extends State<PackageInfoComponent> {
                                     Text('${data.categoryName}',
                                         style: context.boldTextStyle(
                                             size: 12,
-                                            color: textSecondaryColorGlobal)),
+                                            color: context.secondaryTextColor)),
                                     Text('  >  ',
                                         style: context.boldTextStyle(
                                             size: 14,
-                                            color: textSecondaryColorGlobal)),
+                                            color: context.secondaryTextColor)),
                                     Text('${data.subCategoryName}',
                                         style: context.boldTextStyle(
-                                            size: 12,
-                                            color: context.primaryColor)),
+                                            size: 12, color: context.primary)),
                                   ],
                                 ),
                               )
                             else
                               Text('${data.categoryName}',
                                   style: context.boldTextStyle(
-                                      size: 12, color: context.primaryColor)),
+                                      size: 12, color: context.primary)),
                             4.height,
                             PriceWidget(
                               price: data.price.validate(),
-                              hourlyTextColor: Colors.white,
+                              hourlyTextColor: context.secondaryTextColor,
                               size: 14,
                             ),
                           ],

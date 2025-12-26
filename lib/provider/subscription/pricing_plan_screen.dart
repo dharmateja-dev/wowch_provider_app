@@ -9,6 +9,7 @@ import 'package:handyman_provider_flutter/provider/payment/payment_screen.dart';
 import 'package:handyman_provider_flutter/provider/provider_dashboard_screen.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/num_extenstions.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
 import 'package:handyman_provider_flutter/utils/text_styles.dart';
@@ -252,9 +253,9 @@ class _PricingPlanScreenState extends State<PricingPlanScreen> {
                                           ),
                                         ),
                                         padding: const EdgeInsets.all(2),
-                                        child: const Icon(
+                                        child: Icon(
                                           Icons.check,
-                                          color: Colors.white,
+                                          color: context.onPrimary,
                                           size: 16,
                                         ),
                                       )

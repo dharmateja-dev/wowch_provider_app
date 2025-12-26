@@ -444,7 +444,7 @@ void launchUrlCustomTab(String? url) {
       ),
       safariVCOptions: const custom_tabs.SafariViewControllerOptions(
         preferredBarTintColor: primary,
-        preferredControlTintColor: Colors.white,
+        preferredControlTintColor: white,
         barCollapsingEnabled: true,
         entersReaderIfAvailable: true,
         dismissButtonStyle:

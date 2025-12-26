@@ -88,7 +88,7 @@ class _PackageComponentState extends State<PackageComponent> {
                       8.height,
                       PriceWidget(
                         price: data.price.validate(),
-                        hourlyTextColor: Colors.white,
+                        hourlyTextColor: context.onPrimary,
                         size: 14,
                       ),
                     ],

@@ -276,6 +276,7 @@ class ServiceDetailScreenState extends State<ServiceDetailScreen> {
   Widget buildBodyWidget(AsyncSnapshot<ServiceDetailResponse> snap) {
     if (snap.hasData) {
       return Scaffold(
+        backgroundColor: context.scaffoldSecondary,
         body: AnimatedScrollView(
           padding: const EdgeInsets.only(bottom: 120),
           listAnimationType: ListAnimationType.FadeIn,

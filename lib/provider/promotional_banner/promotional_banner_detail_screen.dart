@@ -19,6 +19,7 @@ import 'package:handyman_provider_flutter/provider/payment/components/stripe_ser
 import 'package:handyman_provider_flutter/provider/promotional_banner/promotional_banner_repository.dart';
 import 'package:handyman_provider_flutter/utils/app_configuration.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/color_extension.dart';
 import 'package:handyman_provider_flutter/utils/extensions/num_extenstions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
@@ -441,7 +442,8 @@ class _PromotionalBannerDetailScreenState
                   widget.promotionalBannerData.status
                       .validate()
                       .toPromotionalBannerStatus(),
-                  style: context.boldTextStyle(color: Colors.white, size: 12),
+                  style:
+                      context.boldTextStyle(color: context.onPrimary, size: 12),
                 ),
               ),
             ],
@@ -453,7 +455,7 @@ class _PromotionalBannerDetailScreenState
             ReadMoreText(
               widget.promotionalBannerData.description.validate(),
               style: context.secondaryTextStyle(),
-              colorClickableText: context.primaryColor,
+              colorClickableText: context.primary,
             ),
           ],
           16.height,
@@ -593,7 +595,7 @@ class _PromotionalBannerDetailScreenState
                   enabled: selectedPaymentSetting != null,
                   disabledColor: primary.withValues(alpha: 0.5),
                   color: primary,
-                  textStyle: context.boldTextStyle(color: Colors.white),
+                  textStyle: context.boldTextStyle(color: context.onPrimary),
                   width: context.width(),
                   onTap: appStore.isLoading
                       ? () {}

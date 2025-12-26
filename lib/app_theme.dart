@@ -220,8 +220,7 @@ class AppTheme {
 
   static ThemeData darkTheme({Color? color}) {
     // Legacy support
-    final primary =
-        color ?? DarkThemeColors.primaryGreen; // Using merged Green
+    final primary = color ?? DarkThemeColors.primaryGreen; // Using merged Green
 
     return ThemeData(
       useMaterial3: true,

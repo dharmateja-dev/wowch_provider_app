@@ -53,11 +53,20 @@ class _ServiceDetailHeaderComponentState
   Future<void> confirmationDialog(BuildContext context) async {
     showConfirmDialogCustom(
       context,
+      height: 80,
+      width: 290,
       title: languages.confirmationRequestTxt,
       shape: appDialogShape(8),
       titleColor: context.dialogTitleColor,
       backgroundColor: context.dialogBackgroundColor,
       primaryColor: context.primary,
+      customCenterWidget: Image.asset(
+        ic_warning,
+        color: context.onSecondaryContainer,
+        height: 70,
+        width: 70,
+        fit: BoxFit.cover,
+      ),
       positiveText: languages.lblYes,
       positiveTextColor: context.onPrimary,
       negativeText: languages.lblNo,
@@ -278,7 +287,7 @@ class _ServiceDetailHeaderComponentState
                             isHourlyService: widget
                                 .serviceDetail.serviceDetail!.isHourlyService,
                             size: 16,
-                            hourlyTextColor: textSecondaryColorGlobal,
+                            hourlyTextColor: context.secondaryTextColor,
                             isFreeService: widget
                                 .serviceDetail.serviceDetail!.isFreeService,
                           ),
@@ -288,7 +297,8 @@ class _ServiceDetailHeaderComponentState
                               0)
                             Text(
                               '(${widget.serviceDetail.serviceDetail!.discount.validate()}% ${languages.lblOff})',
-                              style: context.boldTextStyle(color: Colors.green),
+                              style: context.boldTextStyle(
+                                  color: context.discountColor),
                             ),
                         ],
                       ),

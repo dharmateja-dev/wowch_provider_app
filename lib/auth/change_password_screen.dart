@@ -5,7 +5,6 @@ import 'package:handyman_provider_flutter/components/back_widget.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
-import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
@@ -234,7 +233,7 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     AppButton(
                       text: languages.confirm,
                       height: 40,
-                      color: primary,
+                      color: context.primary,
                       textStyle: context.boldTextStyle(color: white),
                       width: context.width() - context.navigationBarHeight,
                       onTap: () {

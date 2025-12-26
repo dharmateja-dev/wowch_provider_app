@@ -56,6 +56,15 @@ extension ColorSchemeExtension on BuildContext {
   Color get errorContainer => colorScheme.errorContainer;
   Color get onErrorContainer => colorScheme.onErrorContainer;
 
+  // ——— Success/Discount Colors ———
+  /// Success color for positive indicators (discounts, offers, completed status)
+  /// Light: #4CAF50 (Material green), Dark: #81C784 (lighter green for better contrast)
+  Color get successColor =>
+      isDarkMode ? const Color(0xFF81C784) : const Color(0xFF4CAF50);
+
+  /// Discount text color for offers and promotions
+  Color get discountColor => successColor;
+
   // ——— Surface Colors ———
   Color get surface => colorScheme.surface;
   Color get onSurface => colorScheme.onSurface;

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:handyman_provider_flutter/main.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
@@ -72,7 +73,7 @@ class _AirtelMoneyDialogState extends State<AirtelMoneyDialog> {
                       height: 50,
                       decoration: const BoxDecoration(
                           shape: BoxShape.circle, color: Colors.redAccent),
-                      child: const Icon(Icons.close_sharp, color: Colors.white),
+                      child: Icon(Icons.close_sharp, color: context.onPrimary),
                     ),
                     10.height,
                     Text(getAirtelMoneyReasonTextFromCode(responseCode).$1,
@@ -129,8 +130,8 @@ class _AirtelMoneyDialogState extends State<AirtelMoneyDialog> {
                                 color: primary,
                                 height: 40,
                                 text: languages.lblSubmit,
-                                textStyle:
-                                    context.boldTextStyle(color: Colors.white),
+                                textStyle: context.boldTextStyle(
+                                    color: context.onPrimary),
                                 width: context.width() -
                                     context.navigationBarHeight,
                                 onTap: () {

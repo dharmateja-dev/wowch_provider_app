@@ -617,7 +617,7 @@ class _VerifyProviderScreenState extends State<VerifyProviderScreen> {
       child: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.9),
+          color: context.onPrimary.withValues(alpha: 0.9),
           borderRadius: radius(8),
         ),
         child: Icon(icon, color: color, size: 18),

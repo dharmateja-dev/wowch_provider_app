@@ -131,7 +131,28 @@ void main() async {
   appStore.setLanguage(
       getStringAsync(SELECTED_LANGUAGE_CODE, defaultValue: DEFAULT_LANGUAGE));
 
+  // Initialize theme mode BEFORE runApp to ensure correct theme on first frame
+  await _initializeThemeMode();
+
   runApp(MyApp());
+}
+
+/// Initialize theme mode before app starts
+/// This ensures the correct theme is applied from the first frame in release mode
+Future<void> _initializeThemeMode() async {
+  int themeModeIndex =
+      getIntAsync(THEME_MODE_INDEX, defaultValue: THEME_MODE_SYSTEM);
+
+  if (themeModeIndex == THEME_MODE_LIGHT) {
+    await appStore.setDarkMode(false);
+  } else if (themeModeIndex == THEME_MODE_DARK) {
+    await appStore.setDarkMode(true);
+  } else if (themeModeIndex == THEME_MODE_SYSTEM) {
+    // Set theme based on system preference
+    final brightness =
+        WidgetsBinding.instance.platformDispatcher.platformBrightness;
+    await appStore.setDarkMode(brightness == Brightness.dark);
+  }
 }
 
 class MyApp extends StatefulWidget {

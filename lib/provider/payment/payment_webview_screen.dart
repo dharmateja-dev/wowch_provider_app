@@ -7,6 +7,7 @@ import 'package:handyman_provider_flutter/components/back_widget.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:http/http.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -112,7 +113,7 @@ class _PaymentWebViewScreenState extends State<PaymentWebViewScreen> {
     return Scaffold(
       appBar: appBarWidget(languages.lblPayment,
           color: context.primaryColor,
-          textColor: Colors.white,
+          textColor: context.onPrimary,
           backWidget: BackWidget()),
       body: SizedBox(
         height: context.height(),

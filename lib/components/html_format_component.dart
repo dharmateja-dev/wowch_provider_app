@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 const ARTICLE_LINE_HEIGHT = 1.5;
@@ -23,16 +24,16 @@ class HTMLFormatComponent extends StatelessWidget {
       },*/
       style: {
         "table": Style(
-            backgroundColor: color ?? Colors.white,
+            backgroundColor: color ?? context.onPrimary,
             lineHeight: const LineHeight(ARTICLE_LINE_HEIGHT),
             padding: HtmlPaddings.zero),
         "tr": Style(
-            border: const Border(bottom: BorderSide(color: Colors.white)),
+            border: Border(bottom: BorderSide(color: context.onPrimary)),
             lineHeight: const LineHeight(ARTICLE_LINE_HEIGHT),
             padding: HtmlPaddings.zero),
         "th": Style(
             padding: HtmlPaddings.zero,
-            backgroundColor: Colors.white,
+            backgroundColor: context.onPrimary,
             lineHeight: const LineHeight(ARTICLE_LINE_HEIGHT)),
         "td": Style(
             padding: HtmlPaddings.zero,
@@ -46,7 +47,7 @@ class HTMLFormatComponent extends StatelessWidget {
             lineHeight: const LineHeight(ARTICLE_LINE_HEIGHT),
             padding: HtmlPaddings.zero),
         'strong': Style(
-            color: Colors.white,
+            color: context.onPrimary,
             fontSize: FontSize(fontSize),
             lineHeight: const LineHeight(ARTICLE_LINE_HEIGHT),
             padding: HtmlPaddings.zero),
@@ -59,120 +60,120 @@ class HTMLFormatComponent extends StatelessWidget {
           textDecoration: TextDecoration.none,
         ),
         'div': Style(
-            color: Colors.white,
+            color: context.onPrimary,
             fontSize: FontSize(fontSize),
             lineHeight: const LineHeight(ARTICLE_LINE_HEIGHT),
             padding: HtmlPaddings.zero),
         'figure': Style(
-            color: Colors.white,
+            color: context.onPrimary,
             fontSize: FontSize(fontSize),
             padding: HtmlPaddings.zero,
             margin: Margins.zero,
             lineHeight: const LineHeight(ARTICLE_LINE_HEIGHT)),
         'h1': Style(
-            color: Colors.white,
+            color: context.onPrimary,
             fontSize: FontSize(fontSize),
             lineHeight: const LineHeight(ARTICLE_LINE_HEIGHT),
             padding: HtmlPaddings.zero),
         'h2': Style(
-            color: Colors.white,
+            color: context.onPrimary,
             fontSize: FontSize(fontSize),
             lineHeight: const LineHeight(ARTICLE_LINE_HEIGHT),
             padding: HtmlPaddings.zero),
         'h3': Style(
-            color: Colors.white,
+            color: context.onPrimary,
             fontSize: FontSize(fontSize),
             lineHeight: const LineHeight(ARTICLE_LINE_HEIGHT),
             padding: HtmlPaddings.zero),
         'h4': Style(
-            color: Colors.white,
+            color: context.onPrimary,
             fontSize: FontSize(fontSize),
             lineHeight: const LineHeight(ARTICLE_LINE_HEIGHT),
             padding: HtmlPaddings.zero),
         'h5': Style(
-            color: Colors.white,
+            color: context.onPrimary,
             fontSize: FontSize(fontSize),
             lineHeight: const LineHeight(ARTICLE_LINE_HEIGHT),
             padding: HtmlPaddings.zero),
         'h6': Style(
-            color: Colors.white,
+            color: context.onPrimary,
             fontSize: FontSize(fontSize),
             lineHeight: const LineHeight(ARTICLE_LINE_HEIGHT),
             padding: HtmlPaddings.zero),
         'p': Style(
-          color: Colors.white,
+          color: context.onPrimary,
           fontSize: FontSize(16),
           textAlign: TextAlign.justify,
           lineHeight: const LineHeight(ARTICLE_LINE_HEIGHT),
           padding: HtmlPaddings.zero,
         ),
         'ol': Style(
-            color: Colors.white,
+            color: context.onPrimary,
             fontSize: FontSize(fontSize),
             lineHeight: const LineHeight(ARTICLE_LINE_HEIGHT),
             padding: HtmlPaddings.zero),
         'ul': Style(
-            color: Colors.white,
+            color: context.onPrimary,
             fontSize: FontSize(fontSize),
             lineHeight: const LineHeight(ARTICLE_LINE_HEIGHT),
             padding: HtmlPaddings.zero),
         'strike': Style(
-            color: Colors.white,
+            color: context.onPrimary,
             fontSize: FontSize(fontSize),
             lineHeight: const LineHeight(ARTICLE_LINE_HEIGHT),
             padding: HtmlPaddings.zero),
         'u': Style(
-            color: Colors.white,
+            color: context.onPrimary,
             fontSize: FontSize(fontSize),
             lineHeight: const LineHeight(ARTICLE_LINE_HEIGHT),
             padding: HtmlPaddings.zero),
         'b': Style(
-            color: Colors.white,
+            color: context.onPrimary,
             fontSize: FontSize(fontSize),
             lineHeight: const LineHeight(ARTICLE_LINE_HEIGHT),
             padding: HtmlPaddings.zero),
         'i': Style(
-            color: Colors.white,
+            color: context.onPrimary,
             fontSize: FontSize(fontSize),
             lineHeight: const LineHeight(ARTICLE_LINE_HEIGHT),
             padding: HtmlPaddings.zero),
         'hr': Style(
-            color: Colors.white,
+            color: context.onPrimary,
             fontSize: FontSize(fontSize),
             lineHeight: const LineHeight(ARTICLE_LINE_HEIGHT),
             padding: HtmlPaddings.zero),
         'header': Style(
-            color: Colors.white,
+            color: context.onPrimary,
             fontSize: FontSize(fontSize),
             lineHeight: const LineHeight(ARTICLE_LINE_HEIGHT),
             padding: HtmlPaddings.zero),
         'code': Style(
-            color: Colors.white,
+            color: context.onPrimary,
             fontSize: FontSize(fontSize),
             lineHeight: const LineHeight(ARTICLE_LINE_HEIGHT),
             padding: HtmlPaddings.zero),
         'data': Style(
-            color: Colors.white,
+            color: context.onPrimary,
             fontSize: FontSize(fontSize),
             lineHeight: const LineHeight(ARTICLE_LINE_HEIGHT),
             padding: HtmlPaddings.zero),
         'body': Style(
-            color: Colors.white,
+            color: context.onPrimary,
             fontSize: FontSize(fontSize),
             lineHeight: const LineHeight(ARTICLE_LINE_HEIGHT),
             padding: HtmlPaddings.zero),
         'big': Style(
-            color: Colors.white,
+            color: context.onPrimary,
             fontSize: FontSize(fontSize),
             lineHeight: const LineHeight(ARTICLE_LINE_HEIGHT),
             padding: HtmlPaddings.zero),
         'blockquote': Style(
-            color: Colors.white,
+            color: context.onPrimary,
             fontSize: FontSize(fontSize),
             lineHeight: const LineHeight(ARTICLE_LINE_HEIGHT),
             padding: HtmlPaddings.zero),
         'audio': Style(
-            color: Colors.white,
+            color: context.onPrimary,
             fontSize: FontSize(fontSize),
             padding: HtmlPaddings.zero),
         'img': Style(
@@ -180,7 +181,7 @@ class HTMLFormatComponent extends StatelessWidget {
             padding: HtmlPaddings.only(bottom: 8),
             fontSize: FontSize(fontSize)),
         'li': Style(
-          color: Colors.white,
+          color: context.onPrimary,
           fontSize: FontSize(fontSize),
           listStyleType: ListStyleType.disc,
           listStylePosition: ListStylePosition.outside,

@@ -1,3 +1,5 @@
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
+
 import 'custom_calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -198,12 +200,12 @@ class CustomDateRangePickerState extends State<CustomDateRangePicker>
                                   widget.onCancelClick();
                                   Navigator.pop(context);
                                 },
-                                child: const Text(
+                                child: Text(
                                   'Cancel',
                                   style: TextStyle(
                                     fontWeight: FontWeight.w500,
                                     fontSize: 18,
-                                    color: Colors.white,
+                                    color: context.onPrimary,
                                   ),
                                 ),
                               ),
@@ -227,12 +229,12 @@ class CustomDateRangePickerState extends State<CustomDateRangePicker>
                                   widget.onApplyClick(startDate!, endDate!);
                                   Navigator.pop(context);
                                 },
-                                child: const Text(
+                                child: Text(
                                   'Apply',
                                   style: TextStyle(
                                     fontWeight: FontWeight.w500,
                                     fontSize: 18,
-                                    color: Colors.white,
+                                    color: context.onPrimary,
                                   ),
                                 ),
                               ),

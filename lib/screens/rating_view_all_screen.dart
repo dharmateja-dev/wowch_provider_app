@@ -5,6 +5,7 @@ import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/models/booking_detail_response.dart';
 import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/screens/shimmer/review_shimmer.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/model_keys.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -29,8 +30,8 @@ class RatingViewAllScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBarWidget(title ?? languages.lblServiceRatings,
-          color: context.primaryColor,
-          textColor: Colors.white,
+          color: context.primary,
+          textColor: context.onPrimary,
           backWidget: BackWidget()),
       body: SnapHelperWidget<List<RatingData>>(
         future: serviceId != null

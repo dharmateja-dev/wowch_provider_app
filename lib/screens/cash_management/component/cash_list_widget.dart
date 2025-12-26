@@ -9,6 +9,7 @@ import 'package:handyman_provider_flutter/screens/cash_management/view/pay_to_sc
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/color_extension.dart';
 import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -110,22 +111,25 @@ class _CashListWidgetState extends State<CashListWidget> {
                           price: widget.data.totalAmount.validate(),
                           size: 16,
                           color: appStore.isDarkMode
-                              ? Colors.white
-                              : context.primaryColor),
+                              ? context.onPrimary
+                              : context.primary),
                     ).expand(),
                     if (widget.data.status.validate() != APPROVED_BY_HANDYMAN)
                       Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: primary.withValues(alpha: 0.1),
+                          color: context.primary.withValues(alpha: 0.1),
                           borderRadius: radius(8),
                         ),
                         child: Marquee(
                           child: Text(
                             handleBankText(status: widget.data.type.validate()),
-                            style:
-                                context.boldTextStyle(color: primary, size: 12),
+                            style: context.boldTextStyle(
+                                color: appStore.isDarkMode
+                                    ? context.onPrimary
+                                    : context.primary,
+                                size: 12),
                           ),
                         ),
                       ),

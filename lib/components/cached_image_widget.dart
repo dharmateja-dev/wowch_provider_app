@@ -41,7 +41,7 @@ class CachedImageWidget extends StatelessWidget {
         color: color ?? grey.withValues(alpha: 0.1),
         alignment: alignment,
         //padding: EdgeInsets.all(10),
-        //child: Image.asset(ic_no_photo, color: appStore.isDarkMode ? Colors.white : Colors.black),
+        //child: Image.asset(ic_no_photo, color: appStore.isDarkMode ? context.onPrimary : Colors.black),
         child: Stack(
           children: [
             PlaceHolderWidget(
@@ -52,7 +52,8 @@ class CachedImageWidget extends StatelessWidget {
             child ?? const Offstage(),
           ],
         ),
-      ).cornerRadiusWithClipRRect(radius ?? (radius ?? (circle ? (height / 2) : 0)));
+      ).cornerRadiusWithClipRRect(
+          radius ?? (radius ?? (circle ? (height / 2) : 0)));
     } else if (url.validate().startsWith('http')) {
       return CachedNetworkImage(
         placeholder: (_, __) {
@@ -64,7 +65,8 @@ class CachedImageWidget extends StatelessWidget {
                 width: width ?? height,
                 fit: fit,
                 alignment: alignment,
-              ).cornerRadiusWithClipRRect(radius ?? (circle ? (height / 2) : 0)),
+              ).cornerRadiusWithClipRRect(
+                  radius ?? (circle ? (height / 2) : 0)),
               child ?? const Offstage(),
             ],
           );
@@ -84,7 +86,8 @@ class CachedImageWidget extends StatelessWidget {
                 width: width ?? height,
                 fit: fit,
                 alignment: alignment,
-              ).cornerRadiusWithClipRRect(radius ?? (circle ? (height / 2) : 0)),
+              ).cornerRadiusWithClipRRect(
+                  radius ?? (circle ? (height / 2) : 0)),
               child ?? const Offstage(),
             ],
           );
@@ -107,7 +110,8 @@ class CachedImageWidget extends StatelessWidget {
                   width: width ?? height,
                   fit: fit,
                   alignment: alignment,
-                ).cornerRadiusWithClipRRect(radius ?? (circle ? (height / 2) : 0)),
+                ).cornerRadiusWithClipRRect(
+                    radius ?? (circle ? (height / 2) : 0)),
                 child ?? const Offstage(),
               ],
             );
@@ -129,12 +133,14 @@ class CachedImageWidget extends StatelessWidget {
                   width: width ?? height,
                   fit: fit,
                   alignment: alignment,
-                ).cornerRadiusWithClipRRect(radius ?? (circle ? (height / 2) : 0)),
+                ).cornerRadiusWithClipRRect(
+                    radius ?? (circle ? (height / 2) : 0)),
                 child ?? const Offstage(),
               ],
             );
           },
-        ).cornerRadiusWithClipRRect(radius ?? (circle ? (height.validate() / 2) : 0));
+        ).cornerRadiusWithClipRRect(
+            radius ?? (circle ? (height.validate() / 2) : 0));
       }
     }
   }

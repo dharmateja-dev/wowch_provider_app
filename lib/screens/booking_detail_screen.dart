@@ -809,7 +809,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
                                   '(${bookingResponse.bookingDetail!.discount.validate()}% ${languages.lblOff})',
                                   style: context.boldTextStyle(
                                     size: 12,
-                                    color: Colors.green,
+                                    color: context.discountColor,
                                   ),
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 1,
@@ -1559,7 +1559,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
                   margin: EdgeInsets.only(left: 16),
                   child: Text(
                     languages.lblAddExtraCharges,
-                    style: context.boldTextStyle(color: Colors.white),
+                    style: context.boldTextStyle(color: context.onPrimary),
                   ).fit(),
                   color: addExtraCharge,
                   onTap: () async {
@@ -1704,7 +1704,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
                   margin: EdgeInsets.only(left: 16),
                   child: Text(
                     languages.lblAddExtraCharges,
-                    style: context.boldTextStyle(color: Colors.white),
+                    style: context.boldTextStyle(color: context.onPrimary),
                   ).fit(),
                   color: addExtraCharge,
                   onTap: () async {
