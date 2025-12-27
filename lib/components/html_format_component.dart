@@ -52,7 +52,7 @@ class HTMLFormatComponent extends StatelessWidget {
             lineHeight: const LineHeight(ARTICLE_LINE_HEIGHT),
             padding: HtmlPaddings.zero),
         'a': Style(
-          color: color ?? context.primaryColor,
+          color: color ?? context.primary,
           fontWeight: FontWeight.bold,
           fontSize: FontSize(fontSize),
           lineHeight: const LineHeight(ARTICLE_LINE_HEIGHT),

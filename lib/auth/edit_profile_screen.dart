@@ -571,7 +571,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
       title: languages.confirmationRequestTxt,
       positiveText: languages.lblOk,
       negativeText: languages.lblNo,
-      primaryColor: context.primaryColor,
+      primaryColor: context.primary,
       onAccept: (BuildContext context) async {
         imageFile = File(pickedFile!.path);
         setState(() {});

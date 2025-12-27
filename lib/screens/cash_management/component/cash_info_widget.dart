@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/screens/cash_management/cash_constant.dart';
 import 'package:handyman_provider_flutter/screens/cash_management/model/cash_filter_model.dart';
-import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -22,7 +22,7 @@ class CashInfoWidget extends StatelessWidget {
           8.height,
           Text(languages.cashStatus,
                   style: context.boldTextStyle(
-                      size: LABEL_TEXT_SIZE, color: context.primaryColor))
+                      size: LABEL_TEXT_SIZE, color: context.primary))
               .paddingOnly(left: 16, right: 16, top: 16, bottom: 8)
               .center(),
           ...List.generate(
@@ -64,7 +64,7 @@ class CashInfoWidget extends StatelessWidget {
                 finish(context);
               },
               child: Text(languages.close,
-                  style: context.boldTextStyle(color: primary)),
+                  style: context.boldTextStyle(color: context.primary)),
             ),
           ).paddingRight(8),
           8.height,

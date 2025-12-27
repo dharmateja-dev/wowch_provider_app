@@ -140,18 +140,27 @@ void main() async {
 /// Initialize theme mode before app starts
 /// This ensures the correct theme is applied from the first frame in release mode
 Future<void> _initializeThemeMode() async {
-  int themeModeIndex =
+  // Read the stored theme mode preference
+  int storedThemeModeIndex =
       getIntAsync(THEME_MODE_INDEX, defaultValue: THEME_MODE_SYSTEM);
 
-  if (themeModeIndex == THEME_MODE_LIGHT) {
+  // IMPORTANT: Sync the appStore.themeModeIndex with the stored value
+  // This is needed because appStore is created before initialize() is called,
+  // so the initial getIntAsync in AppStore returns the default value
+  appStore.themeModeIndex = storedThemeModeIndex;
+
+  log('_initializeThemeMode: storedThemeModeIndex = $storedThemeModeIndex');
+
+  if (storedThemeModeIndex == THEME_MODE_LIGHT) {
     await appStore.setDarkMode(false);
-  } else if (themeModeIndex == THEME_MODE_DARK) {
+  } else if (storedThemeModeIndex == THEME_MODE_DARK) {
     await appStore.setDarkMode(true);
-  } else if (themeModeIndex == THEME_MODE_SYSTEM) {
+  } else if (storedThemeModeIndex == THEME_MODE_SYSTEM) {
     // Set theme based on system preference
     final brightness =
         WidgetsBinding.instance.platformDispatcher.platformBrightness;
     await appStore.setDarkMode(brightness == Brightness.dark);
+    log('System mode: brightness = $brightness');
   }
 }
 
@@ -175,7 +184,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   void _updateThemeFromPreference() {
-    int val = getIntAsync(THEME_MODE_INDEX, defaultValue: THEME_MODE_SYSTEM);
+    // Use the MobX observable directly - it's already initialized from SharedPreferences
+    int val = appStore.themeModeIndex;
 
     if (val == THEME_MODE_LIGHT) {
       appStore.setDarkMode(false);
@@ -191,12 +201,31 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   void didChangePlatformBrightness() {
-    // Called when system theme changes
-    int val = getIntAsync(THEME_MODE_INDEX, defaultValue: THEME_MODE_SYSTEM);
+    super.didChangePlatformBrightness();
+
+    // Called when system theme changes (e.g., user switches dark/light mode in phone settings)
+    // Use the MobX observable directly instead of getIntAsync (which is async)
+    int val = appStore.themeModeIndex;
+
+    log('didChangePlatformBrightness called - themeModeIndex: $val');
+
     if (val == THEME_MODE_SYSTEM) {
       final brightness =
           WidgetsBinding.instance.platformDispatcher.platformBrightness;
-      appStore.setDarkMode(brightness == Brightness.dark);
+      final isDark = brightness == Brightness.dark;
+
+      log('System brightness changed - isDark: $isDark, current appStore.isDarkMode: ${appStore.isDarkMode}');
+
+      // Only update if the theme actually changed
+      if (appStore.isDarkMode != isDark) {
+        appStore.setDarkMode(isDark);
+        log('Theme updated to ${isDark ? "dark" : "light"} mode');
+
+        // Force UI rebuild
+        if (mounted) {
+          setState(() {});
+        }
+      }
     }
   }
 

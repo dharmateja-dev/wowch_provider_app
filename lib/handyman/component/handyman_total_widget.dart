@@ -20,7 +20,7 @@ class HandymanTotalWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
       decoration: boxDecorationDefault(color: context.primary),
-      //decoration: cardDecoration(context, showBorder: true,color: context.primaryColor),
+      //decoration: cardDecoration(context, showBorder: true,color: context.primary),
       width: context.width() / 2 - 24,
       child: Row(
         children: [

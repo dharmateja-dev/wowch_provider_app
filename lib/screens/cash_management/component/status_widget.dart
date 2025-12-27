@@ -18,7 +18,7 @@ class StatusWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       decoration: boxDecorationDefault(
           border: Border.all(color: context.dividerColor),
-          color: isSelected ? context.primaryColor : context.cardColor),
+          color: isSelected ? context.primary : context.cardColor),
       child: Text(data.name.validate(),
           style: context.primaryTextStyle(
               color: isSelected ? context.onPrimary : context.primary)),

@@ -163,7 +163,7 @@ class ServiceProofScreenState extends State<ServiceProofScreen> {
     return Scaffold(
       appBar: appBarWidget(
         languages.lblServiceProof,
-        color: context.primaryColor,
+        color: context.primary,
         textColor: white,
         backWidget: BackWidget(),
       ),

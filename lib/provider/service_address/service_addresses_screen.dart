@@ -171,7 +171,7 @@ class ServiceAddressesScreenState extends State<ServiceAddressesScreen> {
         textColor: context.onPrimary,
         showBack: true,
         backWidget: BackWidget(),
-        color: context.primaryColor,
+        color: context.primary,
         actions: [
           IconButton(
             onPressed: () {

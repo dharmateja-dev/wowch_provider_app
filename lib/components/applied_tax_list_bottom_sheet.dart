@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/components/price_widget.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -54,7 +55,7 @@ class AppliedTaxListBottomSheet extends StatelessWidget {
                               4.width,
                               Text("(${data.value.validate()}%)",
                                   style: context.primaryTextStyle(
-                                      color: context.primaryColor)),
+                                      color: context.primary)),
                             ],
                           ).expand()
                         : Text(data.title.validate(),

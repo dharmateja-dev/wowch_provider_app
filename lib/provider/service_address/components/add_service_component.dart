@@ -165,8 +165,7 @@ class _AddServiceComponentState extends State<AddServiceComponent> {
                       height: 40,
                       color: primary,
                       enabled: isUpdate ? isTextChangedFromPrevious : true,
-                      disabledColor:
-                          context.primaryColor.withValues(alpha: 0.5),
+                      disabledColor: context.primary.withValues(alpha: 0.5),
                       textStyle: context.boldTextStyle(color: white),
                       width: context.width() - context.navigationBarHeight,
                       onTap: () async {

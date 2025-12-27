@@ -19,7 +19,7 @@ class AppCommonDialog extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 12, 8, 12),
             width: context.width(),
             decoration: boxDecorationDefault(
-              color: context.primaryColor,
+              color: context.primary,
               borderRadius:
                   radiusOnly(topRight: defaultRadius, topLeft: defaultRadius),
             ),

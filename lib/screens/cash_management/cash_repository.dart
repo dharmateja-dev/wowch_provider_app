@@ -7,6 +7,7 @@ import 'package:handyman_provider_flutter/screens/cash_management/model/cash_det
 import 'package:handyman_provider_flutter/screens/cash_management/model/payment_history_model.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 Future<List<PaymentHistoryData>> getPaymentHistory(
@@ -86,7 +87,7 @@ Future<void> transferAmountAPI(
     title: languages.confirmationRequestTxt,
     positiveText: languages.lblYes,
     negativeText: languages.lblNo,
-    primaryColor: context.primaryColor,
+    primaryColor: context.primary,
     onAccept: (p0) async {
       Map<String, dynamic> req = {
         "payment_id": paymentData.paymentId.validate(),

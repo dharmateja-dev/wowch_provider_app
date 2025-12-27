@@ -125,7 +125,7 @@ class _SelectAddonServiceComponentState
         appBar: appBarWidget(
           languages.selectService,
           textColor: white,
-          color: context.primaryColor,
+          color: context.primary,
         ),
         body: Stack(
           children: [
@@ -270,7 +270,7 @@ class _SelectAddonServiceComponentState
         floatingActionButton: appStore.selectedServiceData.id != null
             ? FloatingActionButton(
                 child: Icon(Icons.check, color: context.onPrimary),
-                backgroundColor: context.primaryColor,
+                backgroundColor: context.primary,
                 onPressed: () {
                   finish(context, appStore.selectedServiceData.id);
                 },

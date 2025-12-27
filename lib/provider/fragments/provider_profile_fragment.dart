@@ -67,7 +67,7 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
     init();
     afterBuildCreated(() {
       appStore.setLoading(false);
-      setStatusBarColor(context.primaryColor);
+      setStatusBarColor(context.primary);
     });
   }
 

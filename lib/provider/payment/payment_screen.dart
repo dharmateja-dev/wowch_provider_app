@@ -275,7 +275,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBarWidget(languages.lblPayment,
-          color: context.primaryColor,
+          color: context.primary,
           textColor: context.onPrimary,
           backWidget: BackWidget()),
       body: Stack(
@@ -334,7 +334,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       _handleClick();
                     },
                     text: languages.lblProceed,
-                    color: context.primaryColor,
+                    color: context.primary,
                     width: context.width(),
                   ).paddingAll(16),
                 ],

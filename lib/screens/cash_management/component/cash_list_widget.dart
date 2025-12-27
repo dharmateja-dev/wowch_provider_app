@@ -45,7 +45,7 @@ class _CashListWidgetState extends State<CashListWidget> {
     if (status == APPROVED_BY_HANDYMAN) {
       return AppButton(
         width: context.width(),
-        color: context.primaryColor,
+        color: context.primary,
         text: languages.sendCashToProvider,
         onTap: () async {
           await PayToScreen(paymentData: widget.data, totalNumberOfBookings: 1)
@@ -56,7 +56,7 @@ class _CashListWidgetState extends State<CashListWidget> {
     } else if (isUserTypeProvider && status == APPROVED_BY_PROVIDER) {
       return AppButton(
         width: context.width(),
-        color: context.primaryColor,
+        color: context.primary,
         text: languages.sendCashToAdmin,
         onTap: () async {
           await PayToScreen(paymentData: widget.data, totalNumberOfBookings: 1)
@@ -67,7 +67,7 @@ class _CashListWidgetState extends State<CashListWidget> {
     } else if (isUserTypeProvider && status == PENDING_BY_PROVIDER) {
       return AppButton(
         width: context.width(),
-        color: context.primaryColor,
+        color: context.primary,
         text: languages.lblConfirmPayment,
         onTap: () {
           transferAmountAPI(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/string_extension.dart';
 import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -59,17 +60,17 @@ class _BookingStatusFilterBottomSheetState
             Container(
               padding: const EdgeInsets.all(2),
               margin: const EdgeInsets.only(right: 1),
-              child: Icon(Icons.done, size: 16, color: context.primaryColor),
+              child: Icon(Icons.done, size: 16, color: context.primary),
             ),
           Text(
             res.value.validate().toBookingStatus(),
             style: context.primaryTextStyle(
                 color: appStore.isDarkMode
                     ? res.isSelected
-                        ? context.primaryColor
+                        ? context.primary
                         : Colors.white54
                     : res.isSelected
-                        ? context.primaryColor
+                        ? context.primary
                         : Colors.black38,
                 size: 12),
           ),
@@ -104,7 +105,7 @@ class _BookingStatusFilterBottomSheetState
                   icon: Icon(Icons.close,
                       color: appStore.isDarkMode
                           ? lightPrimaryColor
-                          : context.primaryColor,
+                          : context.primary,
                       size: 20),
                   visualDensity: VisualDensity.compact,
                   onPressed: () async {
@@ -148,7 +149,7 @@ class _BookingStatusFilterBottomSheetState
                   color: appStore.isDarkMode
                       ? context.scaffoldBackgroundColor
                       : white,
-                  textColor: appStore.isDarkMode ? white : context.primaryColor,
+                  textColor: appStore.isDarkMode ? white : context.primary,
                   width: context.width() - context.navigationBarHeight,
                   onTap: () {
                     final int selectedCount = cachedBookingStatusDropdown!
@@ -170,7 +171,7 @@ class _BookingStatusFilterBottomSheetState
                 16.width,
                 AppButton(
                   text: languages.apply,
-                  color: context.primaryColor,
+                  color: context.primary,
                   textColor: white,
                   width: context.width() - context.navigationBarHeight,
                   onTap: () {

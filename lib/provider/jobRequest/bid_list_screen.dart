@@ -5,6 +5,7 @@ import 'package:handyman_provider_flutter/components/back_widget.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/provider/jobRequest/shimmer/bid_shimmer.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../components/empty_error_state_widget.dart';
@@ -49,10 +50,10 @@ class _BidListScreenState extends State<BidListScreen> {
     return Scaffold(
       appBar: appBarWidget(
         languages.bidList,
-        textColor: white,
+        textColor: context.onPrimary,
         showBack: true,
         backWidget: BackWidget(),
-        color: context.primaryColor,
+        color: context.primary,
       ),
       body: Stack(
         children: [

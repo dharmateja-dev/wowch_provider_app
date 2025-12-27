@@ -22,24 +22,44 @@ class SplashScreen extends StatefulWidget {
   SplashScreenState createState() => SplashScreenState();
 }
 
-class SplashScreenState extends State<SplashScreen> {
+class SplashScreenState extends State<SplashScreen>
+    with WidgetsBindingObserver {
   bool appNotSynced = false;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     afterBuildCreated(() {
       _setThemeAwareStatusBar(context);
       init();
     });
   }
 
+  @override
+  void didChangePlatformBrightness() {
+    super.didChangePlatformBrightness();
+    // Respond to system theme changes
+    int themeModeIndex =
+        getIntAsync(THEME_MODE_INDEX, defaultValue: THEME_MODE_SYSTEM);
+    if (themeModeIndex == THEME_MODE_SYSTEM) {
+      final brightness =
+          WidgetsBinding.instance.platformDispatcher.platformBrightness;
+      final isDark = brightness == Brightness.dark;
+      if (appStore.isDarkMode != isDark) {
+        appStore.setDarkMode(isDark);
+        _setThemeAwareStatusBar(context);
+        if (mounted) setState(() {});
+      }
+    }
+  }
+
   /// Sets status bar color based on current theme mode
-  /// Light mode: light background, dark icons/text
-  /// Dark mode: dark background, light/white icons/text
+  /// Light mode: light background (white/scaffold), dark icons/text
+  /// Dark mode: dark background (matching splash), light/white icons/text
   void _setThemeAwareStatusBar(BuildContext context) {
     setStatusBarColor(
-      context.scaffold,
+      context.scaffoldSecondary,
       statusBarBrightness:
           appStore.isDarkMode ? Brightness.dark : Brightness.light,
       statusBarIconBrightness:
@@ -332,6 +352,7 @@ class SplashScreenState extends State<SplashScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 

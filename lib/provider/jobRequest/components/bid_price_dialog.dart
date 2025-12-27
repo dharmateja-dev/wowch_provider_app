@@ -4,6 +4,7 @@ import 'package:handyman_provider_flutter/components/app_widgets.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/networks/rest_apis.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/context_ext.dart';
 import 'package:handyman_provider_flutter/utils/model_keys.dart';
 import 'package:handyman_provider_flutter/utils/text_styles.dart';
@@ -130,12 +131,12 @@ class _BidPriceDialogState extends State<BidPriceDialog> {
                             RoundedRectangleBorder(borderRadius: radius()),
                         color: context.scaffoldBackgroundColor,
                         text: languages.lblCancel,
-                        textColor: context.iconColor,
+                        textColor: context.icon,
                       ).expand(),
                       16.width,
                       AppButton(
                         onTap: _handleSubmitClick,
-                        color: context.primaryColor,
+                        color: context.primary,
                         text: languages.confirm,
                       ).expand(),
                     ],

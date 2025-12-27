@@ -5,6 +5,7 @@ import 'package:handyman_provider_flutter/components/price_widget.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -100,16 +101,16 @@ class _CashConfirmDialogState extends State<CashConfirmDialog> {
                     onTap: () {
                       finish(context);
                     },
-                    color: context.scaffoldBackgroundColor,
+                    color: context.cardSecondary,
                     shapeBorder: RoundedRectangleBorder(
-                        side: BorderSide(color: context.primaryColor),
+                        side: BorderSide(color: context.primary),
                         borderRadius: radius()),
-                    textColor: context.primaryColor,
+                    textColor: context.primary,
                   ).expand(),
                   16.width,
                   AppButton(
                     text: languages.confirm,
-                    color: context.primaryColor,
+                    color: context.primary,
                     onTap: () {
                       widget.onAccept.call(remarkCont.text);
                     },

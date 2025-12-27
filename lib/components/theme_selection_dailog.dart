@@ -25,15 +25,20 @@ class ThemeSelectionDaiLogState extends State<ThemeSelectionDaiLog> {
   }
 
   Future<void> init() async {
+    // Load current theme mode from storage
+    currentIndex =
+        getIntAsync(THEME_MODE_INDEX, defaultValue: THEME_MODE_SYSTEM);
+
     afterBuildCreated(() {
+      // Populate theme mode list with localized strings
       themeModeList = [
         languages.lightMode,
         languages.darkMode,
         languages.systemDefault
       ];
+      // Refresh UI after loading
+      setState(() {});
     });
-    currentIndex =
-        getIntAsync(THEME_MODE_INDEX, defaultValue: THEME_MODE_SYSTEM);
   }
 
   @override
@@ -79,35 +84,31 @@ class ThemeSelectionDaiLogState extends State<ThemeSelectionDaiLog> {
             fadeInConfiguration: FadeInConfiguration(duration: 2.seconds),
             itemCount: themeModeList.length,
             itemBuilder: (BuildContext context, int index) {
-              return RadioGroup(
+              return RadioListTile(
+                value: index,
                 groupValue: currentIndex,
+                activeColor: context.primary,
+                controlAffinity: ListTileControlAffinity.trailing,
+                title: Text(themeModeList[index],
+                    style: context.primaryTextStyle()),
                 onChanged: (dynamic val) async {
                   currentIndex = val;
 
-                  if (val == THEME_MODE_SYSTEM) {
-                    appStore.setDarkMode(
-                        context.platformBrightness() == Brightness.dark);
-                  } else if (val == THEME_MODE_LIGHT) {
-                    appStore.setDarkMode(false);
-                    defaultToastBackgroundColor = Colors.black;
-                    defaultToastTextColor = context.onPrimary;
-                  } else if (val == THEME_MODE_DARK) {
-                    appStore.setDarkMode(true);
+                  // Use MobX action to set theme mode - handles persistence and theme application
+                  await appStore.setThemeModeIndex(val);
+
+                  // Update toast colors based on theme
+                  if (val == THEME_MODE_DARK) {
                     defaultToastBackgroundColor = context.onPrimary;
                     defaultToastTextColor = Colors.black;
+                  } else {
+                    defaultToastBackgroundColor = Colors.black;
+                    defaultToastTextColor = context.onPrimary;
                   }
-                  await setValue(THEME_MODE_INDEX, val);
 
                   setState(() {});
                   finish(context);
                 },
-                child: RadioListTile(
-                  value: index,
-                  activeColor: context.primary,
-                  controlAffinity: ListTileControlAffinity.trailing,
-                  title: Text(themeModeList[index],
-                      style: context.primaryTextStyle()),
-                ),
               );
             },
           ),

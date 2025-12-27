@@ -676,7 +676,7 @@ class BookingItemComponentState extends State<BookingItemComponent> {
                                         showConfirmDialogCustom(
                                           context,
                                           title: languages.lblAreYouSureYouWantToAssignToYourself,
-                                          primaryColor: context.primaryColor,
+                                          primaryColor: context.primary,
                                           positiveText: languages.lblYes,
                                           negativeText: languages.lblCancel,
                                           onAccept: (c) async {

@@ -227,7 +227,7 @@ class _PackageDetailScreenState extends State<PackageDetailScreen> {
                           ? ReadMoreText(
                               widget.packageData!.description.validate(),
                               style: context.primaryTextStyle(),
-                              colorClickableText: context.primaryColor,
+                              colorClickableText: context.primary,
                             )
                           : Text(languages.lblNoDescriptionAvailable,
                               style: context.primaryTextStyle()),

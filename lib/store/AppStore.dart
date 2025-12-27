@@ -3,10 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:handyman_provider_flutter/locale/applocalizations.dart';
 import 'package:handyman_provider_flutter/locale/base_language.dart';
 import 'package:handyman_provider_flutter/main.dart';
-import 'package:handyman_provider_flutter/utils/colors.dart';
+
 import 'package:handyman_provider_flutter/utils/common.dart';
 import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
+import 'package:handyman_provider_flutter/utils/theme_colors.dart';
 import 'package:mobx/mobx.dart';
 import 'package:nb_utils/nb_utils.dart';
 import '../models/provider_subscription_model.dart';
@@ -23,6 +24,11 @@ abstract class _AppStore with Store {
 
   @observable
   bool isDarkMode = false;
+
+  /// Theme mode preference: 0 = Light, 1 = Dark, 2 = System
+  @observable
+  int themeModeIndex =
+      getIntAsync(THEME_MODE_INDEX, defaultValue: THEME_MODE_SYSTEM);
 
   @observable
   bool isLoading = false;
@@ -428,35 +434,93 @@ abstract class _AppStore with Store {
     await setValue(IS_SUBSCRIBED_FOR_PUSH_NOTIFICATION, val);
   }
 
+  /// Sets the dark mode state and updates all system UI overlays
+  ///
+  /// This action:
+  /// 1. Updates the isDarkMode observable
+  /// 2. Sets global text colors for nb_utils
+  /// 3. Updates system navigation bar and status bar styling
+  ///
+  /// @param val - true for dark mode, false for light mode
   @action
   Future<void> setDarkMode(bool val) async {
     isDarkMode = val;
-    if (isDarkMode) {
-      textPrimaryColorGlobal = Colors.white;
-      textSecondaryColorGlobal = textSecondaryColor;
 
-      defaultLoaderBgColorGlobal = scaffoldSecondaryDark;
-      appButtonBackgroundColorGlobal = appButtonColorDark;
+    if (isDarkMode) {
+      // ══════════════════════════════════════════════════════════════
+      // DARK MODE CONFIGURATION
+      // ══════════════════════════════════════════════════════════════
+
+      // Global text colors (nb_utils)
+      textPrimaryColorGlobal = DarkThemeColors.textPrimary;
+      textSecondaryColorGlobal = DarkThemeColors.hintText;
+
+      // Loader and button colors
+      defaultLoaderBgColorGlobal = DarkThemeColors.scaffoldSecondary;
+      appButtonBackgroundColorGlobal = DarkThemeColors.appButtonBackground;
       shadowColorGlobal = Colors.white12;
-      setStatusBarColor(appButtonColorDark);
+
+      // Status bar styling - transparent with light icons
+      setStatusBarColor(Colors.transparent);
+
+      // System UI overlay - navigation bar + status bar
       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        systemNavigationBarColor: scaffoldColorDark,
+        // Navigation bar
+        systemNavigationBarColor: DarkThemeColors.scaffoldBackground,
         systemNavigationBarDividerColor: Colors.transparent,
-        systemNavigationBarIconBrightness: Brightness.dark,
+        systemNavigationBarIconBrightness: Brightness.light,
+        // Status bar
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
       ));
     } else {
-      textPrimaryColorGlobal = textPrimaryColor;
-      textSecondaryColorGlobal = textSecondaryColor;
+      // ══════════════════════════════════════════════════════════════
+      // LIGHT MODE CONFIGURATION
+      // ══════════════════════════════════════════════════════════════
 
+      // Global text colors (nb_utils)
+      textPrimaryColorGlobal = LightThemeColors.textPrimary;
+      textSecondaryColorGlobal = LightThemeColors.mutedText;
+
+      // Loader and button colors
       defaultLoaderBgColorGlobal = Colors.white;
       appButtonBackgroundColorGlobal = Colors.white;
       shadowColorGlobal = Colors.black12;
-      setStatusBarColor(primary);
+
+      // Status bar styling - transparent with dark icons
+      setStatusBarColor(Colors.transparent);
+
+      // System UI overlay - navigation bar + status bar
       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        systemNavigationBarColor: Colors.white,
+        // Navigation bar
+        systemNavigationBarColor: LightThemeColors.scaffoldBackground,
         systemNavigationBarDividerColor: Colors.transparent,
-        systemNavigationBarIconBrightness: Brightness.light,
+        systemNavigationBarIconBrightness: Brightness.dark,
+        // Status bar
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
       ));
+    }
+  }
+
+  /// Set theme mode index and apply the theme
+  /// 0 = Light, 1 = Dark, 2 = System
+  @action
+  Future<void> setThemeModeIndex(int val) async {
+    themeModeIndex = val;
+    await setValue(THEME_MODE_INDEX, val);
+
+    if (val == THEME_MODE_LIGHT) {
+      await setDarkMode(false);
+    } else if (val == THEME_MODE_DARK) {
+      await setDarkMode(true);
+    } else if (val == THEME_MODE_SYSTEM) {
+      // Apply theme based on system brightness
+      final brightness =
+          WidgetsBinding.instance.platformDispatcher.platformBrightness;
+      await setDarkMode(brightness == Brightness.dark);
     }
   }
 

@@ -18,7 +18,7 @@ class HtmlWidget extends StatelessWidget {
         title.validate(),
         elevation: 0,
         backWidget: BackWidget(),
-        color: context.primaryColor,
+        color: context.primary,
         textColor: context.onPrimary,
       ),
       backgroundColor: context.scaffoldBackgroundColor,

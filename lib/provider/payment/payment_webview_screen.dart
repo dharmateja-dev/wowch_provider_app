@@ -112,7 +112,7 @@ class _PaymentWebViewScreenState extends State<PaymentWebViewScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBarWidget(languages.lblPayment,
-          color: context.primaryColor,
+          color: context.primary,
           textColor: context.onPrimary,
           backWidget: BackWidget()),
       body: SizedBox(

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:handyman_provider_flutter/models/service_detail_response.dart';
+import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/text_styles.dart';
 import 'package:nb_utils/nb_utils.dart';
-
-import '../../../main.dart';
 
 class ServiceFaqWidget extends StatelessWidget {
   final ServiceFaq? serviceFaq;
@@ -16,24 +15,30 @@ class ServiceFaqWidget extends StatelessWidget {
     return Container(
         margin: const EdgeInsets.symmetric(vertical: 4),
         decoration: BoxDecoration(
-          color: context.cardColor,
-          borderRadius: radius(),
-          border: appStore.isDarkMode
-              ? Border.all(color: context.dividerColor)
-              : null,
+          color: context.cardSecondary,
+          borderRadius: radius(8),
+          border: Border.all(color: context.cardSecondaryBorder),
         ),
         child: Theme(
-            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+            data: Theme.of(context)
+                .copyWith(dividerColor: context.cardSecondaryBorder),
             child: ExpansionTile(
               title: Text(serviceFaq!.title.validate(),
-                  style: context.primaryTextStyle()),
+                  style: context.boldTextStyle()),
               tilePadding:
                   const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              iconColor: context.icon,
+              collapsedIconColor: context.icon,
+              textColor: context.onSurface,
+              collapsedTextColor: context.onSurface,
+              backgroundColor: context.cardSecondary,
+              collapsedBackgroundColor: context.cardSecondary,
+              childrenPadding: const EdgeInsets.only(bottom: 8),
               children: [
                 ListTile(
                   title: Text(serviceFaq!.description.validate(),
-                      style: context.secondaryTextStyle()),
-                  contentPadding: const EdgeInsets.only(left: 32),
+                      style: context.primaryTextStyle()),
+                  contentPadding: const EdgeInsets.only(left: 32, right: 16),
                 ),
               ],
             ))).paddingOnly(left: 16, right: 16);

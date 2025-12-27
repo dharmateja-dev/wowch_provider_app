@@ -121,9 +121,7 @@ class ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               child: Text(
                 languages.lblCancel,
                 style: context.primaryTextStyle(
-                    size: 14,
-                    weight: FontWeight.bold,
-                    color: context.primaryColor),
+                    size: 14, weight: FontWeight.bold, color: context.primary),
               ),
             ).center(),
             32.height,

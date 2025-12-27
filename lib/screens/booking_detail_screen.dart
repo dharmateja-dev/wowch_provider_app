@@ -1308,14 +1308,14 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
         // For shop bookings, hide Decline button; allow only Accept
         return AppButton(
           text: languages.accept,
-          color: context.primaryColor,
+          color: context.primary,
           onTap: () async {
             await showConfirmDialogCustom(
               context,
               dialogType: DialogType.ACCEPT,
               title: languages.accept,
               subTitle: languages.wouldYouLikeToAcceptThisBooking,
-              primaryColor: context.primaryColor,
+              primaryColor: context.primary,
               positiveText: languages.lblYes,
               negativeText: languages.lblNo,
               onAccept: (_) async {
@@ -1343,7 +1343,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
         if (res.handymanData.validate().isEmpty) {
           return AppButton(
             text: languages.lblAssignHandyman,
-            color: context.primaryColor,
+            color: context.primary,
             onTap: () {
               assignBookingDialog(context, res.bookingDetail!.id,
                   res.bookingDetail!.bookingAddressId);
@@ -1359,7 +1359,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
               AppButton(
                 width: context.width(),
                 text: languages.lblReassign,
-                color: context.primaryColor,
+                color: context.primary,
                 onTap: () {
                   assignBookingDialog(context, res.bookingDetail!.id,
                       res.bookingDetail!.bookingAddressId);
@@ -1374,7 +1374,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
         showBottomActionBar = true;
         return AppButton(
           text: languages.lblConfirmPayment,
-          color: context.primaryColor,
+          color: context.primary,
           onTap: () {
             confirmationRequestDialog(context, BookingStatusKeys.complete, res);
           },
@@ -1385,7 +1385,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
         showBottomActionBar = true;
         return AppButton(
           text: languages.lblServiceProof,
-          color: context.primaryColor,
+          color: context.primary,
           onTap: () {
             ServiceProofScreen(bookingDetail: res)
                 .launch(context, pageRouteAnimation: PageRouteAnimation.Fade)
@@ -1419,14 +1419,14 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
             16.width,
             AppButton(
               text: languages.accept,
-              color: context.primaryColor,
+              color: context.primary,
               onTap: () async {
                 /// If Auto Assign is enabled, Assign to current Provider it self
                 if (appConfigurationStore.autoAssignStatus) {
                   await showConfirmDialogCustom(
                     context,
                     title: languages.lblAreYouSureYouWantToAssignToYourself,
-                    primaryColor: context.primaryColor,
+                    primaryColor: context.primary,
                     positiveText: languages.lblYes,
                     negativeText: languages.lblCancel,
                     onAccept: (c) async {
@@ -1450,7 +1450,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
                     dialogType: DialogType.ACCEPT,
                     title: languages.accept,
                     subTitle: languages.wouldYouLikeToAcceptThisBooking,
-                    primaryColor: context.primaryColor,
+                    primaryColor: context.primary,
                     positiveText: languages.lblYes,
                     negativeText: languages.lblNo,
                     onAccept: (_) async {
@@ -1483,7 +1483,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
         if (res.handymanData.validate().isEmpty) {
           return AppButton(
             text: languages.lblAssignHandyman,
-            color: context.primaryColor,
+            color: context.primary,
             onTap: () {
               assignBookingDialog(context, res.bookingDetail!.id,
                   res.bookingDetail!.bookingAddressId);
@@ -1499,7 +1499,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
               AppButton(
                 width: context.width(),
                 text: languages.lblReassign,
-                color: context.primaryColor,
+                color: context.primary,
                 onTap: () {
                   assignBookingDialog(context, res.bookingDetail!.id,
                       res.bookingDetail!.bookingAddressId);
@@ -1531,7 +1531,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
               AppButton(
                 text: languages.lblCompleted,
                 textStyle: context.boldTextStyle(color: white),
-                color: context.primaryColor,
+                color: context.primary,
                 onTap: () {
                   bool isAnyServiceAddonUnCompleted = res
                       .bookingDetail!.serviceaddon
@@ -1543,7 +1543,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
                       _handlePendingApproval(
                           val: res, isAddExtraCharges: false);
                     },
-                    primaryColor: context.primaryColor,
+                    primaryColor: context.primary,
                     positiveText: languages.lblYes,
                     negativeText: languages.lblNo,
                     subTitle: isAnyServiceAddonUnCompleted
@@ -1580,7 +1580,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
         showBottomActionBar = true;
         return AppButton(
           text: languages.lblConfirmPayment,
-          color: context.primaryColor,
+          color: context.primary,
           onTap: () {
             confirmationRequestDialog(context, BookingStatusKeys.complete, res);
           },
@@ -1591,7 +1591,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
         showBottomActionBar = true;
         return AppButton(
           text: languages.lblServiceProof,
-          color: context.primaryColor,
+          color: context.primary,
           onTap: () {
             ServiceProofScreen(bookingDetail: res)
                 .launch(context, pageRouteAnimation: PageRouteAnimation.Fade)
@@ -1630,7 +1630,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
                       appStore.setLoading(true);
                       updateBooking(res, '', BookingStatusKeys.pending);
                     },
-                    primaryColor: context.primaryColor,
+                    primaryColor: context.primary,
                   );
                 },
               ).expand(),
@@ -1644,7 +1644,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
                   showConfirmDialogCustom(
                     context,
                     title: languages.confirmationRequestTxt,
-                    primaryColor: context.primaryColor,
+                    primaryColor: context.primary,
                     positiveText: languages.lblYes,
                     negativeText: languages.lblNo,
                     onAccept: (c) async {
@@ -1676,7 +1676,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
               AppButton(
                 text: languages.lblCompleted,
                 textStyle: context.boldTextStyle(color: white),
-                color: context.primaryColor,
+                color: context.primary,
                 onTap: () {
                   bool isAnyServiceAddonUnCompleted = res
                       .bookingDetail!.serviceaddon
@@ -1688,7 +1688,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
                       _handlePendingApproval(
                           val: res, isAddExtraCharges: false);
                     },
-                    primaryColor: context.primaryColor,
+                    primaryColor: context.primary,
                     positiveText: languages.lblYes,
                     negativeText: languages.lblNo,
                     subTitle: isAnyServiceAddonUnCompleted
@@ -1732,7 +1732,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
               ? const Offstage()
               : AppButton(
                   text: languages.lblConfirmPayment,
-                  color: context.primaryColor,
+                  color: context.primary,
                   onTap: () {
                     confirmationRequestDialog(
                         context, BookingStatusKeys.complete, res);
@@ -1743,7 +1743,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
           showBottomActionBar = true;
           return AppButton(
             text: languages.lblServiceProof,
-            color: context.primaryColor,
+            color: context.primary,
             onTap: () {
               ServiceProofScreen(bookingDetail: res)
                   .launch(context, pageRouteAnimation: PageRouteAnimation.Fade)

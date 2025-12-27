@@ -246,7 +246,7 @@ class _PricingPlanScreenState extends State<PricingPlanScreen> {
                                       AnimatedContainer(
                                         duration: 500.milliseconds,
                                         decoration: BoxDecoration(
-                                          color: context.primaryColor,
+                                          color: context.primary,
                                           shape: BoxShape.circle,
                                           border: Border.all(
                                             color: Colors.grey.shade300,
@@ -344,7 +344,7 @@ class _PricingPlanScreenState extends State<PricingPlanScreen> {
                                 ).expand(),
                                 Container(
                                   decoration: BoxDecoration(
-                                    color: context.primaryColor,
+                                    color: context.primary,
                                     borderRadius: radius(),
                                   ),
                                   padding: const EdgeInsets.symmetric(
