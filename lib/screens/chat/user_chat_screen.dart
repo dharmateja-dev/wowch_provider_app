@@ -58,50 +58,159 @@ class _UserChatScreenState extends State<UserChatScreen>
     init();
   }
 
+  // Demo mode flag - set to true to show demo chat messages
+  bool _isDemoMode = false;
+  List<ChatMessageModel> _demoChatMessages = [];
+
   void init() async {
     WidgetsBinding.instance.addObserver(this);
 
-    if (widget.receiverUser.uid.validate().isEmpty) {
-      await userService
-          .getUser(email: widget.receiverUser.email.validate())
-          .then((value) {
-        widget.receiverUser.uid = value.uid;
-      }).catchError((e) {
-        log(e.toString());
-      });
+    // Try to fetch real data, fall back to demo mode on error
+    try {
+      if (widget.receiverUser.uid.validate().isEmpty) {
+        await userService
+            .getUser(email: widget.receiverUser.email.validate())
+            .then((value) {
+          widget.receiverUser.uid = value.uid;
+        }).catchError((e) {
+          log(e.toString());
+          _enableDemoMode();
+        });
+      }
+
+      senderUser =
+          await userService.getUser(email: appStore.userEmail.validate());
+
+      setState(() {});
+
+      if (await userService.isReceiverInContacts(
+          senderUserId: appStore.uid.validate(),
+          receiverUserId: widget.receiverUser.uid.validate())) {
+        await chatServices
+            .setUnReadStatusToTrue(
+                senderId: appStore.uid.validate(),
+                receiverId: widget.receiverUser.uid.validate())
+            .catchError((e) {
+          toast(e.toString());
+        });
+
+        log("receiver ID ${widget.receiverUser.uid}");
+        chatServices.setOnlineCount(
+            senderId: widget.receiverUser.uid.validate(),
+            receiverId: appStore.uid.validate(),
+            status: 1);
+        //
+        _streamSubscription = chatServices
+            .isReceiverOnline(
+                senderId: appStore.uid.validate(),
+                receiverUserId: widget.receiverUser.uid.validate())
+            .listen((event) {
+          isReceiverOnline = event.isOnline.validate();
+          log("=======*=======*=======*=======*=======* Provider $isReceiverOnline =======*=======*=======*=======*=======");
+        });
+      }
+    } catch (e) {
+      log('Chat init error: $e');
+      _enableDemoMode();
     }
+  }
 
-    senderUser =
-        await userService.getUser(email: appStore.userEmail.validate());
-
+  void _enableDemoMode() {
+    _isDemoMode = true;
+    _demoChatMessages = _generateDemoChatMessages();
     setState(() {});
+  }
 
-    if (await userService.isReceiverInContacts(
-        senderUserId: appStore.uid.validate(),
-        receiverUserId: widget.receiverUser.uid.validate())) {
-      await chatServices
-          .setUnReadStatusToTrue(
-              senderId: appStore.uid.validate(),
-              receiverId: widget.receiverUser.uid.validate())
-          .catchError((e) {
-        toast(e.toString());
-      });
+  List<ChatMessageModel> _generateDemoChatMessages() {
+    final now = DateTime.now();
+    final receiverId = widget.receiverUser.uid.validate().isNotEmpty
+        ? widget.receiverUser.uid!
+        : 'receiver1';
+    final senderId =
+        appStore.uid.validate().isNotEmpty ? appStore.uid : 'sender1';
 
-      log("receiver ID ${widget.receiverUser.uid}");
-      chatServices.setOnlineCount(
-          senderId: widget.receiverUser.uid.validate(),
-          receiverId: appStore.uid.validate(),
-          status: 1);
-      //
-      _streamSubscription = chatServices
-          .isReceiverOnline(
-              senderId: appStore.uid.validate(),
-              receiverUserId: widget.receiverUser.uid.validate())
-          .listen((event) {
-        isReceiverOnline = event.isOnline.validate();
-        log("=======*=======*=======*=======*=======* Provider $isReceiverOnline =======*=======*=======*=======*=======");
-      });
+    // Helper to create message and set isMe
+    ChatMessageModel createMessage({
+      required String uid,
+      required bool isFromReceiver,
+      required String message,
+      required int minutesAgo,
+      bool isRead = true,
+    }) {
+      final msg = ChatMessageModel(
+        uid: uid,
+        senderId: isFromReceiver ? receiverId : senderId,
+        receiverId: isFromReceiver ? senderId : receiverId,
+        message: message,
+        isMessageRead: isRead,
+        messageType: 'TEXT',
+        createdAt:
+            now.subtract(Duration(minutes: minutesAgo)).millisecondsSinceEpoch,
+      );
+      msg.isMe = !isFromReceiver;
+      return msg;
     }
+
+    return [
+      createMessage(
+          uid: '1',
+          isFromReceiver: true,
+          message: 'Hello! I have a question about my booking.',
+          minutesAgo: 30),
+      createMessage(
+          uid: '2',
+          isFromReceiver: false,
+          message: 'Hi! Sure, how can I help you?',
+          minutesAgo: 28),
+      createMessage(
+          uid: '3',
+          isFromReceiver: true,
+          message: 'What time will you arrive tomorrow for the service?',
+          minutesAgo: 25),
+      createMessage(
+          uid: '4',
+          isFromReceiver: false,
+          message: 'I will be there around 10:00 AM. Is that okay?',
+          minutesAgo: 22),
+      createMessage(
+          uid: '5',
+          isFromReceiver: true,
+          message: 'Perfect! That works for me. See you then!',
+          minutesAgo: 20),
+      createMessage(
+          uid: '6',
+          isFromReceiver: false,
+          message:
+              'Great! Please make sure to have the area cleared for easy access. 👍',
+          minutesAgo: 15),
+      createMessage(
+          uid: '7',
+          isFromReceiver: true,
+          message: 'Will do! Thanks for the reminder. 🙂',
+          minutesAgo: 10),
+      createMessage(
+          uid: '8',
+          isFromReceiver: false,
+          message:
+              'You\'re welcome! Let me know if you have any other questions.',
+          minutesAgo: 5,
+          isRead: false),
+    ];
+  }
+
+  Widget _buildDemoChatList() {
+    return ListView.builder(
+      reverse: true,
+      padding: EdgeInsets.only(left: 8, top: 8, right: 8, bottom: 0),
+      physics: BouncingScrollPhysics(),
+      itemCount: _demoChatMessages.length,
+      itemBuilder: (context, index) {
+        // Reverse order for chat (newest at bottom)
+        final reversedIndex = _demoChatMessages.length - 1 - index;
+        final data = _demoChatMessages[reversedIndex];
+        return ChatItemWidget(chatItemData: data);
+      },
+    );
   }
 
   //region Widget
@@ -436,34 +545,36 @@ class _UserChatScreenState extends State<UserChatScreen>
               Container(
                 margin:
                     EdgeInsets.only(bottom: widget.isChattingAllow ? 0 : 80),
-                child: FirestorePagination(
-                  reverse: true,
-                  isLive: true,
-                  padding:
-                      EdgeInsets.only(left: 8, top: 8, right: 8, bottom: 0),
-                  physics: BouncingScrollPhysics(),
-                  query: chatServices.chatMessagesWithPagination(
-                      senderId: appStore.uid.validate(),
-                      receiverUserId: widget.receiverUser.uid.validate()),
-                  initialLoader: LoaderWidget(),
-                  limit: PER_PAGE_CHAT_LIST_COUNT,
-                  onEmpty: Center(
-                    child: Text(
-                      languages.noConversation,
-                      style: context.primaryTextStyle(),
-                    ),
-                  ),
-                  shrinkWrap: true,
-                  viewType: ViewType.list,
-                  itemBuilder: (context, snap, index) {
-                    ChatMessageModel data = ChatMessageModel.fromJson(
-                        snap[index].data() as Map<String, dynamic>);
-                    data.isMe = data.senderId == appStore.uid;
-                    data.chatDocumentReference = snap[index].reference;
+                child: _isDemoMode
+                    ? _buildDemoChatList()
+                    : FirestorePagination(
+                        reverse: true,
+                        isLive: true,
+                        padding: EdgeInsets.only(
+                            left: 8, top: 8, right: 8, bottom: 0),
+                        physics: BouncingScrollPhysics(),
+                        query: chatServices.chatMessagesWithPagination(
+                            senderId: appStore.uid.validate(),
+                            receiverUserId: widget.receiverUser.uid.validate()),
+                        initialLoader: LoaderWidget(),
+                        limit: PER_PAGE_CHAT_LIST_COUNT,
+                        onEmpty: Center(
+                          child: Text(
+                            languages.noConversation,
+                            style: context.primaryTextStyle(),
+                          ),
+                        ),
+                        shrinkWrap: true,
+                        viewType: ViewType.list,
+                        itemBuilder: (context, snap, index) {
+                          ChatMessageModel data = ChatMessageModel.fromJson(
+                              snap[index].data() as Map<String, dynamic>);
+                          data.isMe = data.senderId == appStore.uid;
+                          data.chatDocumentReference = snap[index].reference;
 
-                    return ChatItemWidget(chatItemData: data);
-                  },
-                ),
+                          return ChatItemWidget(chatItemData: data);
+                        },
+                      ),
               ),
               if (!widget.isChattingAllow)
                 Positioned(

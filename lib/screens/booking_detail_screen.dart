@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:handyman_provider_flutter/components/app_common_dialog.dart';
+
 import 'package:handyman_provider_flutter/components/app_widgets.dart';
 import 'package:handyman_provider_flutter/components/basic_info_component.dart';
 import 'package:handyman_provider_flutter/components/booking_history_bottom_sheet.dart';
@@ -35,7 +35,7 @@ import 'package:handyman_provider_flutter/provider/components/assign_handyman_sc
 import 'package:handyman_provider_flutter/provider/handyman_info_screen.dart';
 import 'package:handyman_provider_flutter/provider/services/service_detail_screen.dart';
 import 'package:handyman_provider_flutter/provider/shop/shop_detail_screen.dart';
-import 'package:handyman_provider_flutter/screens/cash_management/component/cash_confirm_dialog.dart';
+
 import 'package:handyman_provider_flutter/screens/cash_management/view/cash_payment_history_screen.dart';
 import 'package:handyman_provider_flutter/screens/extra_charges/add_extra_charges_screen.dart';
 import 'package:handyman_provider_flutter/screens/rating_view_all_screen.dart';
@@ -170,22 +170,30 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
   ) async {
     if (status == BookingStatusKeys.complete &&
         res.bookingDetail!.paymentMethod == PAYMENT_METHOD_COD) {
-      showInDialog(
+      showConfirmDialogCustom(
         context,
-        contentPadding: const EdgeInsets.all(0),
-        builder: (p0) {
-          return AppCommonDialog(
-            title: languages.cashPaymentConfirmation,
-            child: CashConfirmDialog(
-              bookingId: res.bookingDetail!.id.validate(),
-              bookingAmount: res.bookingDetail!.totalAmount.validate(),
-              onAccept: (String remarks) {
-                appStore.setLoading(true);
-                finish(context);
-                updateBooking(res, '$remarks', BookingStatusKeys.complete);
-              },
-            ),
-          );
+        height: 80,
+        width: 290,
+        shape: appDialogShape(8),
+        title: languages.cashPaymentConfirmation,
+        titleColor: context.dialogTitleColor,
+        backgroundColor: context.dialogBackgroundColor,
+        primaryColor: context.primary,
+        customCenterWidget: Image.asset(
+          ic_warning,
+          color: context.onSecondaryContainer,
+          height: 70,
+          width: 70,
+          fit: BoxFit.cover,
+        ),
+        positiveText: languages.lblYes,
+        positiveTextColor: context.onPrimary,
+        negativeText: languages.lblCancel,
+        negativeTextColor: context.dialogCancelColor,
+        dialogType: DialogType.CONFIRMATION,
+        onAccept: (_) {
+          appStore.setLoading(true);
+          updateBooking(res, '', BookingStatusKeys.complete);
         },
       );
 
@@ -1407,6 +1415,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
             AppButton(
               text: languages.decline,
               textColor: context.primary,
+              color: context.scaffoldSecondary,
               shapeBorder: RoundedRectangleBorder(
                 borderRadius: radius(),
                 side: BorderSide(color: context.primary),
@@ -1530,7 +1539,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
             children: [
               AppButton(
                 text: languages.lblCompleted,
-                textStyle: context.boldTextStyle(color: white),
+                textStyle: context.boldTextStyle(color: context.onPrimary),
                 color: context.primary,
                 onTap: () {
                   bool isAnyServiceAddonUnCompleted = res
@@ -1616,6 +1625,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
               AppButton(
                 text: languages.decline,
                 textColor: context.primary,
+                color: context.scaffoldSecondary,
                 shapeBorder: RoundedRectangleBorder(
                   borderRadius: radius(),
                   side: BorderSide(color: context.primary),
@@ -1623,14 +1633,29 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
                 onTap: () {
                   showConfirmDialogCustom(
                     context,
+                    height: 80,
+                    width: 290,
+                    shape: appDialogShape(8),
                     title: languages.confirmationRequestTxt,
+                    titleColor: context.dialogTitleColor,
+                    backgroundColor: context.dialogBackgroundColor,
+                    primaryColor: context.primary,
+                    customCenterWidget: Image.asset(
+                      ic_warning,
+                      color: context.onSecondaryContainer,
+                      height: 70,
+                      width: 70,
+                      fit: BoxFit.cover,
+                    ),
                     positiveText: languages.lblYes,
+                    positiveTextColor: context.onPrimary,
                     negativeText: languages.lblNo,
+                    negativeTextColor: context.dialogCancelColor,
+                    dialogType: DialogType.CONFIRMATION,
                     onAccept: (val) {
                       appStore.setLoading(true);
                       updateBooking(res, '', BookingStatusKeys.pending);
                     },
-                    primaryColor: context.primary,
                   );
                 },
               ).expand(),
@@ -1643,10 +1668,25 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
                 onTap: () {
                   showConfirmDialogCustom(
                     context,
+                    height: 80,
+                    width: 290,
+                    shape: appDialogShape(8),
                     title: languages.confirmationRequestTxt,
+                    titleColor: context.dialogTitleColor,
+                    backgroundColor: context.dialogBackgroundColor,
                     primaryColor: context.primary,
+                    customCenterWidget: Image.asset(
+                      ic_warning,
+                      color: context.onSecondaryContainer,
+                      height: 70,
+                      width: 70,
+                      fit: BoxFit.cover,
+                    ),
                     positiveText: languages.lblYes,
+                    positiveTextColor: context.onPrimary,
                     negativeText: languages.lblNo,
+                    negativeTextColor: context.dialogCancelColor,
+                    dialogType: DialogType.CONFIRMATION,
                     onAccept: (c) async {
                       appStore.setLoading(true);
                       await updateBooking(
@@ -1675,7 +1715,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
             children: [
               AppButton(
                 text: languages.lblCompleted,
-                textStyle: context.boldTextStyle(color: white),
+                textStyle: context.boldTextStyle(color: context.onPrimary),
                 color: context.primary,
                 onTap: () {
                   bool isAnyServiceAddonUnCompleted = res
@@ -1684,17 +1724,32 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
                       .any((element) => element.status.getBoolInt() == false);
                   showConfirmDialogCustom(
                     context,
+                    height: 80,
+                    width: 290,
+                    shape: appDialogShape(8),
+                    title: languages.confirmationRequestTxt,
+                    titleColor: context.dialogTitleColor,
+                    backgroundColor: context.dialogBackgroundColor,
+                    primaryColor: context.primary,
+                    customCenterWidget: Image.asset(
+                      ic_warning,
+                      color: context.onSecondaryContainer,
+                      height: 70,
+                      width: 70,
+                      fit: BoxFit.cover,
+                    ),
+                    positiveText: languages.lblYes,
+                    positiveTextColor: context.onPrimary,
+                    negativeText: languages.lblNo,
+                    negativeTextColor: context.dialogCancelColor,
+                    subTitle: isAnyServiceAddonUnCompleted
+                        ? languages.pleaseNoteThatAllServiceMarkedCompleted
+                        : null,
+                    dialogType: DialogType.CONFIRMATION,
                     onAccept: (_) {
                       _handlePendingApproval(
                           val: res, isAddExtraCharges: false);
                     },
-                    primaryColor: context.primary,
-                    positiveText: languages.lblYes,
-                    negativeText: languages.lblNo,
-                    subTitle: isAnyServiceAddonUnCompleted
-                        ? languages.pleaseNoteThatAllServiceMarkedCompleted
-                        : null,
-                    title: languages.confirmationRequestTxt,
                   );
                 },
               ).expand(),
@@ -2277,7 +2332,6 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
                 bottom: 0,
                 child: Container(
                   width: context.width(),
-                  decoration: BoxDecoration(color: context.cardColor),
                   child: _action(res: res.data!),
                   padding: showBottomActionBar
                       ? const EdgeInsets.all(16)
