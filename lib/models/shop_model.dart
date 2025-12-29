@@ -1,3 +1,4 @@
+import 'package:handyman_provider_flutter/models/multi_language_request_model.dart';
 import 'package:handyman_provider_flutter/models/service_model.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -24,6 +25,7 @@ class ShopModel {
   String providerName;
   String providerImage;
   int isFavourite;
+  Map<String, MultiLanguageRequest>? translations;
 
   int serviceCount;
 
@@ -77,12 +79,15 @@ class ShopModel {
     this.providerImage = "",
     this.isFavourite = 0,
     this.serviceCount = 0,
+    this.translations,
   });
 
   factory ShopModel.fromJson(Map<String, dynamic> json) {
     return ShopModel(
       id: json['id'] is int ? json['id'] : -1,
-      registrationNumber: json['registration_number'] is String ? json['registration_number'] : "",
+      registrationNumber: json['registration_number'] is String
+          ? json['registration_number']
+          : "",
       name: json['name'] is String ? json['name'] : "",
       countryId: json['country_id'] is int ? json['country_id'] : -1,
       countryName: json['country_name'] is String ? json['country_name'] : "",
@@ -91,19 +96,36 @@ class ShopModel {
       cityId: json['city_id'] is int ? json['city_id'] : -1,
       cityName: json['city_name'] is String ? json['city_name'] : "",
       address: json['address'] is String ? json['address'] : "",
-      shopStartTime: json['shop_start_time'] is String ? json['shop_start_time'] : "",
+      shopStartTime:
+          json['shop_start_time'] is String ? json['shop_start_time'] : "",
       shopEndTime: json['shop_end_time'] is String ? json['shop_end_time'] : "",
       latitude: json['latitude'] is double ? json['latitude'] : 0,
       longitude: json['longitude'] is double ? json['longitude'] : 0,
-      contactNumber: json['contact_number'] is String ? json['contact_number'] : "",
+      contactNumber:
+          json['contact_number'] is String ? json['contact_number'] : "",
       email: json['email'] is String ? json['email'] : "",
-      shopImage: json['shop_image'] is List ? List<String>.from(json['shop_image']) : [],
-      services: json['services'] is List ? List<ServiceData>.from(json['services'].map((x) => ServiceData.fromJson(x))) : [],
+      shopImage: json['shop_image'] is List
+          ? List<String>.from(json['shop_image'])
+          : [],
+      services: json['services'] is List
+          ? List<ServiceData>.from(
+              json['services'].map((x) => ServiceData.fromJson(x)))
+          : [],
       providerId: json['provider_id'] is int ? json['provider_id'] : -1,
-      providerName: json['provider_name'] is String ? json['provider_name'] : "",
-      providerImage: json['provider_image'] is String ? json['provider_image'] : "",
+      providerName:
+          json['provider_name'] is String ? json['provider_name'] : "",
+      providerImage:
+          json['provider_image'] is String ? json['provider_image'] : "",
       isFavourite: json['is_favourite'] is int ? json['is_favourite'] : 0,
       serviceCount: json['services_count'] is int ? json['services_count'] : 0,
+      translations: json['translations'] is Map
+          ? (json['translations'] as Map<String, dynamic>).map(
+              (key, value) => MapEntry(
+                key,
+                MultiLanguageRequest.fromJson(value as Map<String, dynamic>),
+              ),
+            )
+          : null,
     );
   }
 
@@ -142,7 +164,9 @@ class ShopListResponse {
 
   factory ShopListResponse.fromJson(Map<String, dynamic> json) {
     return ShopListResponse(
-      shopList: json['data'] is List ? List<ShopModel>.from(json['data'].map((x) => ShopModel.fromJson(x))) : [],
+      shopList: json['data'] is List
+          ? List<ShopModel>.from(json['data'].map((x) => ShopModel.fromJson(x)))
+          : [],
     );
   }
 
@@ -160,7 +184,8 @@ class ShopDetailResponse {
 
   factory ShopDetailResponse.fromJson(Map<String, dynamic> json) {
     return ShopDetailResponse(
-      shopDetail: json['shop'] != null ? ShopModel.fromJson(json['shop']) : null,
+      shopDetail:
+          json['shop'] != null ? ShopModel.fromJson(json['shop']) : null,
     );
   }
 

@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:convert';
 import 'dart:io';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/models/city_list_response.dart';
 import 'package:handyman_provider_flutter/models/country_list_response.dart';
 import 'package:handyman_provider_flutter/models/service_model.dart';
+import 'package:handyman_provider_flutter/models/multi_language_request_model.dart';
 import 'package:handyman_provider_flutter/models/shop_model.dart';
 import 'package:handyman_provider_flutter/models/state_list_response.dart';
 import 'package:handyman_provider_flutter/networks/rest_apis.dart';
@@ -83,6 +85,11 @@ class _AddEditShopScreenState extends State<AddEditShopScreen> {
   FocusNode emailFocus = FocusNode();
   ValueNotifier _valueNotifier = ValueNotifier(true);
 
+  // Multilanguage support
+  UniqueKey formWidgetKey = UniqueKey();
+  Map<String, MultiLanguageRequest> translations = {};
+  MultiLanguageRequest enTranslations = MultiLanguageRequest();
+
   String formatTime24(TimeOfDay t) =>
       t.hour.toString().padLeft(2, '0') +
       ':' +
@@ -92,6 +99,7 @@ class _AddEditShopScreenState extends State<AddEditShopScreen> {
   void initState() {
     super.initState();
     init();
+    appStore.setSelectedLanguage(languageList().first);
   }
 
   Future<void> init() async {
@@ -286,7 +294,21 @@ class _AddEditShopScreenState extends State<AddEditShopScreen> {
         .then(
           (value) async {
             shopDetails = value.shopDetail;
-            nameController.text = shopDetails!.name;
+
+            // Load translations if available
+            if (shopDetails!.translations?.isNotEmpty ?? false) {
+              translations = Map.from(shopDetails!.translations!);
+              if (translations.containsKey(DEFAULT_LANGUAGE)) {
+                enTranslations = translations[DEFAULT_LANGUAGE]!;
+                translations.remove(DEFAULT_LANGUAGE);
+              }
+            }
+
+            // Use translated name if available, otherwise use default name
+            nameController.text = enTranslations.name.validate().isNotEmpty
+                ? enTranslations.name.validate()
+                : shopDetails!.name;
+
             addressController.text = shopDetails!.address;
             regNoController.text = shopDetails!.registrationNumber;
             latitudeController.text =
@@ -374,11 +396,18 @@ class _AddEditShopScreenState extends State<AddEditShopScreen> {
         toast(languages.pleaseSelectService);
         return;
       }
+
+      // Save current translation before submitting
+      updateTranslation();
+      removeEnTranslations();
+
       appStore.setLoading(true);
 
       final Map<String, dynamic> fields = {
         ShopKeys.providerId: appStore.userId.toString(),
-        ShopKeys.shopName: nameController.text.trim(),
+        ShopKeys.shopName: enTranslations.name.validate().isNotEmpty
+            ? enTranslations.name.validate()
+            : nameController.text.trim(),
         ShopKeys.countryId: selectedCountry?.id.toString() ?? '',
         ShopKeys.stateId: selectedState?.id.toString() ?? '',
         ShopKeys.cityId: selectedCity?.id.toString() ?? '',
@@ -391,6 +420,11 @@ class _AddEditShopScreenState extends State<AddEditShopScreen> {
         ShopKeys.contactNumber: buildMobileNumber(),
         ShopKeys.email: emailController.text.trim(),
       };
+
+      // Add translations if available
+      if (translations.isNotEmpty) {
+        fields[ShopKeys.translations] = jsonEncode(translations);
+      }
 
       if (serviceList.any((element) => element.isSelected.validate())) {
         serviceList
@@ -612,6 +646,84 @@ class _AddEditShopScreenState extends State<AddEditShopScreen> {
     }
   }
 
+  //region Multilanguage Support Methods
+
+  /// Updates the translations map with current form values
+  void updateTranslation() {
+    appStore.setLoading(true);
+    final languageCode = appStore.selectedLanguage.languageCode.validate();
+    if (nameController.text.isEmpty) {
+      translations.remove(languageCode);
+    } else {
+      if (languageCode != DEFAULT_LANGUAGE) {
+        translations[languageCode] = translations[languageCode]?.copyWith(
+              name: nameController.text.validate(),
+            ) ??
+            MultiLanguageRequest(
+              name: nameController.text.validate(),
+            );
+      } else {
+        enTranslations = enTranslations.copyWith(
+          name: nameController.text.validate(),
+        );
+      }
+    }
+    appStore.setLoading(false);
+    log("Updated Translations: ${jsonEncode(translations.map((key, value) => MapEntry(key, value.toJson())))}");
+  }
+
+  /// Retrieves translations for the currently selected language
+  void getTranslation() {
+    final languageCode = appStore.selectedLanguage.languageCode;
+    if (languageCode == DEFAULT_LANGUAGE) {
+      nameController.text = enTranslations.name.validate();
+    } else {
+      final translation = translations[languageCode] ?? MultiLanguageRequest();
+      nameController.text = translation.name.validate();
+    }
+    setState(() {});
+  }
+
+  /// Clears translation-related text fields when switching languages
+  void disposeAllTextFieldsController() {
+    nameController.clear();
+    setState(() {});
+  }
+
+  /// Returns true if validation is required (only for default language)
+  bool checkValidationLanguage() {
+    log("language Code ==> ${appStore.selectedLanguage.languageCode}");
+    if (appStore.selectedLanguage.languageCode == DEFAULT_LANGUAGE) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  /// Handles language change from MultiLanguageWidget
+  Future<void> handleLanguageChange(LanguageDataModel code) async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      hideKeyboard(context);
+      updateTranslation();
+
+      appStore.setSelectedLanguage(code);
+      disposeAllTextFieldsController();
+      getTranslation();
+      await checkValidationLanguage();
+      setState(() => formWidgetKey = UniqueKey());
+    }
+  }
+
+  /// Removes English translations before submission (they're sent separately)
+  void removeEnTranslations() {
+    if (translations.containsKey(DEFAULT_LANGUAGE)) {
+      translations.remove(DEFAULT_LANGUAGE);
+    }
+  }
+
+  //endregion
+
   @override
   void setState(fn) {
     if (mounted) super.setState(fn);
@@ -651,607 +763,637 @@ class _AddEditShopScreenState extends State<AddEditShopScreen> {
       ),
       body: Stack(
         children: [
-          SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Form(
-              key: _formKey,
-              autovalidateMode: isFirstTime
-                  ? AutovalidateMode.disabled
-                  : AutovalidateMode.onUserInteraction,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Image Picker
-                  CustomImagePicker(
-                    isMultipleImages: true,
-                    key: ValueKey(selectedImages.length),
-                    selectedImages: selectedImages,
-                    height: 140,
-                    width: double.infinity,
-                    onFileSelected: (files) {
-                      if (mounted) {
-                        setState(() {
-                          selectedImages = files.map((f) => f.path).toList();
-                        });
-                      }
-                    },
-                    onRemoveClick: (path) {
-                      if (mounted) {
-                        showConfirmDialogCustom(
-                          context,
-                          height: 80,
-                          width: 290,
-                          shape: appDialogShape(8),
-                          dialogType: DialogType.DELETE,
-                          title: languages.lblDoYouWantToDelete,
-                          titleColor: context.dialogTitleColor,
-                          backgroundColor: context.dialogBackgroundColor,
-                          primaryColor: context.error,
-                          customCenterWidget: Image.asset(
-                            ic_warning,
-                            color: context.dialogIconColor,
-                            height: 70,
-                            width: 70,
-                            fit: BoxFit.cover,
-                          ),
-                          positiveText: languages.lblDelete,
-                          positiveTextColor: context.onPrimary,
-                          negativeText: languages.lblCancel,
-                          negativeTextColor: context.dialogCancelColor,
-                          onAccept: (p0) {
-                            if (mounted) {
-                              setState(() {
-                                selectedImages.remove(path);
-                              });
-                            }
-                          },
-                        );
-                      }
-                    },
-                  ),
-
-                  24.height,
-
-                  // Shop Name
-                  Text(languages.shop, style: context.boldTextStyle()),
-                  8.height,
-                  AppTextField(
-                    textFieldType: TextFieldType.NAME,
-                    controller: nameController,
-                    focus: shopNameFocus,
-                    decoration: inputDecoration(
-                      context,
-                      hintText: languages.shop,
-                      fillColor: context.profileInputFillColor,
-                      borderRadius: 8,
-                      prefixIcon: Icon(Icons.storefront_outlined,
-                              size: 20, color: context.iconMuted)
-                          .paddingAll(14),
-                    ),
-                    nextFocus: registrationNumberFocus,
-                    isValidationRequired: true,
-                    errorThisFieldRequired: languages.hintRequired,
-                  ),
-
-                  16.height,
-
-                  // Registration Number
-                  Text(languages.registrationNumber,
-                      style: context.boldTextStyle()),
-                  8.height,
-                  AppTextField(
-                    textFieldType: TextFieldType.NAME,
-                    controller: regNoController,
-                    focus: registrationNumberFocus,
-                    decoration: inputDecoration(
-                      context,
-                      hintText: languages.registrationNumber,
-                      fillColor: context.profileInputFillColor,
-                      borderRadius: 8,
-                      prefixIcon: Icon(Icons.badge_outlined,
-                              size: 20, color: context.iconMuted)
-                          .paddingAll(14),
-                    ),
-                    isValidationRequired: true,
-                    errorThisFieldRequired: languages.hintRequired,
-                    nextFocus: countryFocus,
-                  ),
-
-                  16.height,
-
-                  // Country & State Row
-                  Row(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              8.height,
+              MultiLanguageWidget(onTap: (LanguageDataModel code) {
+                handleLanguageChange(code);
+              }),
+              8.height,
+              SingleChildScrollView(
+                padding: const EdgeInsets.only(
+                    left: 16, right: 16, top: 16, bottom: 90),
+                child: Form(
+                  key: _formKey,
+                  autovalidateMode: isFirstTime
+                      ? AutovalidateMode.disabled
+                      : AutovalidateMode.onUserInteraction,
+                  child: Column(
+                    key: formWidgetKey,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(languages.selectCountry,
-                                style: context.boldTextStyle()),
-                            8.height,
-                            DropdownButtonFormField<CountryListResponse>(
-                              decoration: inputDecoration(
-                                context,
-                                hintText: languages.selectCountry,
-                                fillColor: context.profileInputFillColor,
-                                borderRadius: 8,
+                      // Image Picker
+                      CustomImagePicker(
+                        isMultipleImages: true,
+                        key: ValueKey(selectedImages.length),
+                        selectedImages: selectedImages,
+                        height: 140,
+                        width: double.infinity,
+                        onFileSelected: (files) {
+                          if (mounted) {
+                            setState(() {
+                              selectedImages =
+                                  files.map((f) => f.path).toList();
+                            });
+                          }
+                        },
+                        onRemoveClick: (path) {
+                          if (mounted) {
+                            showConfirmDialogCustom(
+                              context,
+                              height: 80,
+                              width: 290,
+                              shape: appDialogShape(8),
+                              dialogType: DialogType.DELETE,
+                              title: languages.lblDoYouWantToDelete,
+                              titleColor: context.dialogTitleColor,
+                              backgroundColor: context.dialogBackgroundColor,
+                              primaryColor: context.error,
+                              customCenterWidget: Image.asset(
+                                ic_warning,
+                                color: context.dialogIconColor,
+                                height: 70,
+                                width: 70,
+                                fit: BoxFit.cover,
                               ),
-                              isExpanded: true,
-                              menuMaxHeight: 300,
-                              value: countryList.any(
-                                      (item) => item.id == selectedCountry?.id)
-                                  ? selectedCountry
-                                  : null,
-                              dropdownColor: context.cardSecondary,
-                              icon: Icon(Icons.keyboard_arrow_down,
-                                  color: context.icon),
-                              validator: (value) {
-                                if (value == null)
-                                  return languages.hintRequired;
-                                return null;
+                              positiveText: languages.lblDelete,
+                              positiveTextColor: context.onPrimary,
+                              negativeText: languages.lblCancel,
+                              negativeTextColor: context.dialogCancelColor,
+                              onAccept: (p0) {
+                                if (mounted) {
+                                  setState(() {
+                                    selectedImages.remove(path);
+                                  });
+                                }
                               },
-                              items: countryList.map((CountryListResponse e) {
-                                return DropdownMenuItem<CountryListResponse>(
-                                  value: e,
-                                  child: Text(e.name.validate(),
-                                      style: context.primaryTextStyle(),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis),
-                                );
-                              }).toList(),
-                              onChanged: (CountryListResponse? value) async {
-                                selectedCountry = value;
-                                selectedState = null;
-                                selectedCity = null;
-                                await getStates(selectedCountry!.id!);
-                                setState(() {});
-                              },
-                            ),
-                          ],
-                        ),
+                            );
+                          }
+                        },
                       ),
-                      16.width,
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(languages.selectState,
-                                style: context.boldTextStyle()),
-                            8.height,
-                            DropdownButtonFormField<StateListResponse>(
-                              decoration: inputDecoration(
-                                context,
-                                hintText: languages.selectState,
-                                fillColor: context.profileInputFillColor,
-                                borderRadius: 8,
-                              ),
-                              isExpanded: true,
-                              dropdownColor: context.cardSecondary,
-                              menuMaxHeight: 300,
-                              icon: Icon(Icons.keyboard_arrow_down,
-                                  color: context.icon),
-                              value: (stateList.isNotEmpty &&
-                                      selectedState != null &&
-                                      stateList.any((item) =>
-                                          item.id == selectedState?.id))
-                                  ? selectedState
-                                  : null,
-                              validator: (value) {
-                                if (value == null)
-                                  return languages.hintRequired;
-                                return null;
-                              },
-                              items: stateList.map((StateListResponse e) {
-                                return DropdownMenuItem<StateListResponse>(
-                                  value: e,
-                                  child: Text(e.name!,
-                                      style: context.primaryTextStyle(),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis),
-                                );
-                              }).toList(),
-                              onChanged: (StateListResponse? value) async {
-                                selectedState = value;
-                                selectedCity = null;
-                                await getCities(selectedState!.id!);
-                                setState(() {});
-                              },
-                            ),
-                          ],
+
+                      24.height,
+
+                      // Shop Name
+                      Text(languages.shop, style: context.boldTextStyle()),
+                      8.height,
+                      AppTextField(
+                        textFieldType: TextFieldType.NAME,
+                        controller: nameController,
+                        focus: shopNameFocus,
+                        decoration: inputDecoration(
+                          context,
+                          hintText: languages.shop,
+                          fillColor: context.profileInputFillColor,
+                          borderRadius: 8,
+                          prefixIcon: Icon(Icons.storefront_outlined,
+                                  size: 20, color: context.iconMuted)
+                              .paddingAll(14),
                         ),
+                        nextFocus: registrationNumberFocus,
+                        isValidationRequired: true,
+                        errorThisFieldRequired: languages.hintRequired,
                       ),
-                    ],
-                  ),
 
-                  16.height,
+                      16.height,
 
-                  // City
-                  Text(languages.selectCity, style: context.boldTextStyle()),
-                  8.height,
-                  DropdownButtonFormField<CityListResponse>(
-                    decoration: inputDecoration(
-                      context,
-                      hintText: languages.selectCity,
-                      fillColor: context.profileInputFillColor,
-                      borderRadius: 8,
-                    ),
-                    isExpanded: true,
-                    value: cityList.any((item) => item.id == selectedCity?.id)
-                        ? selectedCity
-                        : null,
-                    dropdownColor: context.cardSecondary,
-                    icon: Icon(Icons.keyboard_arrow_down, color: context.icon),
-                    validator: (value) {
-                      if (value == null) return languages.hintRequired;
-                      return null;
-                    },
-                    items: cityList.map(
-                      (CityListResponse e) {
-                        return DropdownMenuItem<CityListResponse>(
-                          value: e,
-                          child: Text(e.name!,
-                              style: context.primaryTextStyle(),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis),
-                        );
-                      },
-                    ).toList(),
-                    onChanged: (CityListResponse? value) async {
-                      selectedCity = value;
-                      setState(() {});
-                    },
-                  ),
-
-                  16.height,
-
-                  // Address
-                  Text(languages.hintAddress, style: context.boldTextStyle()),
-                  8.height,
-                  AppTextField(
-                    textFieldType: TextFieldType.MULTILINE,
-                    controller: addressController,
-                    focus: addressFocus,
-                    decoration: inputDecoration(
-                      context,
-                      hintText: languages.hintAddress,
-                      fillColor: context.profileInputFillColor,
-                      borderRadius: 8,
-                      prefixIcon: Icon(Icons.location_on_outlined,
-                              size: 20, color: context.iconMuted)
-                          .paddingAll(14),
-                    ),
-                    nextFocus: latitudeFocus,
-                    isValidationRequired: true,
-                    errorThisFieldRequired: languages.hintRequired,
-                  ),
-
-                  16.height,
-
-                  // Latitude
-                  Text(languages.latitude, style: context.boldTextStyle()),
-                  8.height,
-                  AppTextField(
-                    textFieldType: TextFieldType.NUMBER,
-                    controller: latitudeController,
-                    focus: latitudeFocus,
-                    decoration: inputDecoration(
-                      context,
-                      hintText: languages.latitude,
-                      fillColor: context.profileInputFillColor,
-                      borderRadius: 8,
-                      prefixIcon: Icon(Icons.map_outlined,
-                              size: 20, color: context.iconMuted)
-                          .paddingAll(14),
-                    ),
-                    nextFocus: longitudeFocus,
-                  ),
-
-                  16.height,
-
-                  // Longitude
-                  Text(languages.longitude, style: context.boldTextStyle()),
-                  8.height,
-                  AppTextField(
-                    textFieldType: TextFieldType.NUMBER,
-                    controller: longitudeController,
-                    focus: longitudeFocus,
-                    decoration: inputDecoration(
-                      context,
-                      hintText: languages.longitude,
-                      fillColor: context.profileInputFillColor,
-                      borderRadius: 8,
-                      prefixIcon: Icon(Icons.map_outlined,
-                              size: 20, color: context.iconMuted)
-                          .paddingAll(14),
-                    ),
-                    isValidationRequired: true,
-                    errorThisFieldRequired: languages.hintRequired,
-                    nextFocus: shopStartTimeFocus,
-                  ),
-
-                  8.height,
-
-                  // Use Current Location
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton.icon(
-                      onPressed: fetchCurrentLocation,
-                      icon: Icon(Icons.my_location,
-                          color: context.primary, size: 16),
-                      label: Text(
-                        languages.useCurrentLocation,
-                        style: context.boldTextStyle(
-                            size: 12, color: context.primary),
+                      // Registration Number
+                      Text(languages.registrationNumber,
+                          style: context.boldTextStyle()),
+                      8.height,
+                      AppTextField(
+                        textFieldType: TextFieldType.NAME,
+                        controller: regNoController,
+                        focus: registrationNumberFocus,
+                        decoration: inputDecoration(
+                          context,
+                          hintText: languages.registrationNumber,
+                          fillColor: context.profileInputFillColor,
+                          borderRadius: 8,
+                          prefixIcon: Icon(Icons.badge_outlined,
+                                  size: 20, color: context.iconMuted)
+                              .paddingAll(14),
+                        ),
+                        isValidationRequired: true,
+                        errorThisFieldRequired: languages.hintRequired,
+                        nextFocus: countryFocus,
                       ),
-                    ),
-                  ),
 
-                  8.height,
+                      16.height,
 
-                  // Shop Start Time
-                  Text(languages.shopStartTime, style: context.boldTextStyle()),
-                  8.height,
-                  AppTextField(
-                    textFieldType: TextFieldType.OTHER,
-                    controller: shopStartTimeController,
-                    focus: shopStartTimeFocus,
-                    nextFocus: shopEndTimeFocus,
-                    isValidationRequired: true,
-                    readOnly: true,
-                    errorThisFieldRequired: languages.hintRequired,
-                    decoration: inputDecoration(
-                      context,
-                      hintText: languages.shopStartTime,
-                      fillColor: context.profileInputFillColor,
-                      borderRadius: 8,
-                      prefixIcon: Icon(Icons.access_time,
-                              size: 20, color: context.iconMuted)
-                          .paddingAll(14),
-                    ),
-                    onTap: () async {
-                      final picked = await showTimePicker(
-                        context: context,
-                        initialTime:
-                            shopStartTime ?? TimeOfDay(hour: 9, minute: 0),
-                      );
-                      if (picked != null) {
-                        shopStartTime = picked;
-                        shopStartTimeController.text = formatTime24(picked);
-                        setState(() {});
-                      }
-                    },
-                  ),
-
-                  16.height,
-
-                  // Shop End Time
-                  Text(languages.shopEndTime, style: context.boldTextStyle()),
-                  8.height,
-                  AppTextField(
-                    textFieldType: TextFieldType.OTHER,
-                    controller: shopEndTimeController,
-                    focus: shopEndTimeFocus,
-                    nextFocus: contactNumberFocus,
-                    isValidationRequired: true,
-                    readOnly: true,
-                    errorThisFieldRequired: languages.hintRequired,
-                    decoration: inputDecoration(
-                      context,
-                      hintText: languages.shopEndTime,
-                      fillColor: context.profileInputFillColor,
-                      borderRadius: 8,
-                      prefixIcon: Icon(Icons.access_time,
-                              size: 20, color: context.iconMuted)
-                          .paddingAll(14),
-                    ),
-                    onTap: () async {
-                      final picked = await showTimePicker(
-                        context: context,
-                        initialTime: shopEndTime ?? TimeOfDay.now(),
-                      );
-                      if (picked != null) {
-                        shopEndTime = picked;
-                        shopEndTimeController.text = formatTime24(picked);
-                        setState(() {});
-                      }
-                    },
-                  ),
-                  16.height,
-
-                  // Email
-                  Text(languages.hintEmailAddressTxt,
-                      style: context.boldTextStyle()),
-                  8.height,
-                  AppTextField(
-                    textFieldType: TextFieldType.EMAIL_ENHANCED,
-                    controller: emailController,
-                    focus: emailFocus,
-                    decoration: inputDecoration(
-                      context,
-                      hintText: languages.hintEmailAddressTxt,
-                      fillColor: context.profileInputFillColor,
-                      borderRadius: 8,
-                      prefixIcon: Icon(Icons.email_outlined,
-                              size: 20, color: context.iconMuted)
-                          .paddingAll(14),
-                    ),
-                    isValidationRequired: true,
-                    errorThisFieldRequired: languages.hintRequired,
-                    errorInvalidEmail: languages.enterValidEmail,
-                  ),
-
-                  16.height,
-                  // Phone Number
-                  Text(languages.hintContactNumberTxt,
-                      style: context.boldTextStyle()),
-                  8.height,
-                  AppTextField(
-                    textFieldType:
-                        isAndroid ? TextFieldType.PHONE : TextFieldType.NAME,
-                    controller: mobileController,
-                    focus: contactNumberFocus,
-                    nextFocus: emailFocus,
-                    decoration: inputDecoration(
-                      context,
-                      hintText: languages.addYourPhoneNumber,
-                      fillColor: context.profileInputFillColor,
-                      borderRadius: 8,
-                      prefixIcon: GestureDetector(
-                        onTap: () => changeCountry(),
-                        child: ValueListenableBuilder(
-                          valueListenable: _valueNotifier,
-                          builder: (context, value, child) => Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                "+${selectedCountryPicker.phoneCode}",
-                                style: context.boldTextStyle(size: 14),
-                              ),
-                              2.width,
-                              Icon(
-                                Icons.arrow_drop_down,
-                                color: context.icon,
-                                size: 20,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ).paddingAll(14),
-                    ),
-                    maxLength: 15,
-                    buildCounter: (context,
-                            {required currentLength,
-                            required isFocused,
-                            maxLength}) =>
-                        null,
-                  ),
-
-                  24.height,
-
-                  // Select Service Section
-                  Container(
-                    width: context.width(),
-                    decoration: BoxDecoration(
-                      color: context.cardSecondary,
-                      borderRadius: radius(12),
-                      border: Border.all(color: context.cardSecondaryBorder),
-                    ),
-                    padding: EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          languages.selectService,
-                          style: context.boldTextStyle(),
-                        ),
-                        16.height,
-                        if (serviceList.isEmpty)
-                          Text(
-                            languages.noServiceFound,
-                            style: context.secondaryTextStyle(),
-                          ).center(),
-                        if (serviceList.isNotEmpty)
-                          Container(
-                            padding: EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                                color: context.selectServiceContainerColor,
-                                borderRadius: radius(8),
-                                border: Border.all(
-                                    color: context.cardSecondaryBorder)),
+                      // Country & State Row
+                      Row(
+                        children: [
+                          Expanded(
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                ListView.separated(
-                                  shrinkWrap: true,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  itemCount: servicePage == 1
-                                      ? _initialDisplayServices.length
-                                      : _fullSortedServices.length,
-                                  separatorBuilder: (context, index) =>
-                                      8.height,
-                                  itemBuilder: (context, index) {
-                                    final List<ServiceData> _displayList =
-                                        servicePage == 1
-                                            ? _initialDisplayServices
-                                            : _fullSortedServices;
-                                    ServiceData service = _displayList[index];
-                                    return InkWell(
-                                      onTap: () {
-                                        setState(() {
-                                          service.isSelected =
-                                              !service.isSelected.validate();
-                                        });
-                                      },
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                              service.name.validate(),
-                                              style: context.primaryTextStyle(
-                                                  size: 14),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                          8.width,
-                                          Container(
-                                            width: 20,
-                                            height: 20,
-                                            decoration: BoxDecoration(
-                                              color:
-                                                  service.isSelected.validate()
-                                                      ? context.primary
-                                                      : Colors.transparent,
-                                              borderRadius: radius(4),
-                                              border: Border.all(
-                                                color: service.isSelected
-                                                        .validate()
-                                                    ? context.primary
-                                                    : context.iconMuted,
-                                                width: 1.5,
-                                              ),
-                                            ),
-                                            child: service.isSelected.validate()
-                                                ? Icon(
-                                                    Icons.check,
-                                                    size: 14,
-                                                    color: context.onPrimary,
-                                                  )
-                                                : null,
-                                          ),
-                                        ],
-                                      ),
+                                Text(languages.selectCountry,
+                                    style: context.boldTextStyle()),
+                                8.height,
+                                DropdownButtonFormField<CountryListResponse>(
+                                  decoration: inputDecoration(
+                                    context,
+                                    hintText: languages.selectCountry,
+                                    fillColor: context.profileInputFillColor,
+                                    borderRadius: 8,
+                                  ),
+                                  isExpanded: true,
+                                  menuMaxHeight: 300,
+                                  value: countryList.any((item) =>
+                                          item.id == selectedCountry?.id)
+                                      ? selectedCountry
+                                      : null,
+                                  dropdownColor: context.cardSecondary,
+                                  icon: Icon(Icons.keyboard_arrow_down,
+                                      color: context.icon),
+                                  validator: (value) {
+                                    if (value == null)
+                                      return languages.hintRequired;
+                                    return null;
+                                  },
+                                  items:
+                                      countryList.map((CountryListResponse e) {
+                                    return DropdownMenuItem<
+                                        CountryListResponse>(
+                                      value: e,
+                                      child: Text(e.name.validate(),
+                                          style: context.primaryTextStyle(),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis),
                                     );
+                                  }).toList(),
+                                  onChanged:
+                                      (CountryListResponse? value) async {
+                                    selectedCountry = value;
+                                    selectedState = null;
+                                    selectedCity = null;
+                                    await getStates(selectedCountry!.id!);
+                                    setState(() {});
                                   },
                                 ),
-                                if (serviceList.length > 5)
-                                  Padding(
-                                    padding: EdgeInsets.only(top: 12),
-                                    child: GestureDetector(
-                                      onTap: isLastPage
-                                          ? onBackToFirstPage
-                                          : onNextPage,
-                                      child: Text(
-                                        isLastPage
-                                            ? languages.viewLess
-                                            : languages.viewMore,
-                                        style: context.primaryTextStyle(
-                                            color: context.primary, size: 12),
-                                      ),
-                                    ),
-                                  ),
                               ],
                             ),
                           ),
-                      ],
-                    ),
+                          16.width,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(languages.selectState,
+                                    style: context.boldTextStyle()),
+                                8.height,
+                                DropdownButtonFormField<StateListResponse>(
+                                  decoration: inputDecoration(
+                                    context,
+                                    hintText: languages.selectState,
+                                    fillColor: context.profileInputFillColor,
+                                    borderRadius: 8,
+                                  ),
+                                  isExpanded: true,
+                                  dropdownColor: context.cardSecondary,
+                                  menuMaxHeight: 300,
+                                  icon: Icon(Icons.keyboard_arrow_down,
+                                      color: context.icon),
+                                  value: (stateList.isNotEmpty &&
+                                          selectedState != null &&
+                                          stateList.any((item) =>
+                                              item.id == selectedState?.id))
+                                      ? selectedState
+                                      : null,
+                                  validator: (value) {
+                                    if (value == null)
+                                      return languages.hintRequired;
+                                    return null;
+                                  },
+                                  items: stateList.map((StateListResponse e) {
+                                    return DropdownMenuItem<StateListResponse>(
+                                      value: e,
+                                      child: Text(e.name!,
+                                          style: context.primaryTextStyle(),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis),
+                                    );
+                                  }).toList(),
+                                  onChanged: (StateListResponse? value) async {
+                                    selectedState = value;
+                                    selectedCity = null;
+                                    await getCities(selectedState!.id!);
+                                    setState(() {});
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      16.height,
+
+                      // City
+                      Text(languages.selectCity,
+                          style: context.boldTextStyle()),
+                      8.height,
+                      DropdownButtonFormField<CityListResponse>(
+                        decoration: inputDecoration(
+                          context,
+                          hintText: languages.selectCity,
+                          fillColor: context.profileInputFillColor,
+                          borderRadius: 8,
+                        ),
+                        isExpanded: true,
+                        value:
+                            cityList.any((item) => item.id == selectedCity?.id)
+                                ? selectedCity
+                                : null,
+                        dropdownColor: context.cardSecondary,
+                        icon: Icon(Icons.keyboard_arrow_down,
+                            color: context.icon),
+                        validator: (value) {
+                          if (value == null) return languages.hintRequired;
+                          return null;
+                        },
+                        items: cityList.map(
+                          (CityListResponse e) {
+                            return DropdownMenuItem<CityListResponse>(
+                              value: e,
+                              child: Text(e.name!,
+                                  style: context.primaryTextStyle(),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis),
+                            );
+                          },
+                        ).toList(),
+                        onChanged: (CityListResponse? value) async {
+                          selectedCity = value;
+                          setState(() {});
+                        },
+                      ),
+
+                      16.height,
+
+                      // Address
+                      Text(languages.hintAddress,
+                          style: context.boldTextStyle()),
+                      8.height,
+                      AppTextField(
+                        textFieldType: TextFieldType.MULTILINE,
+                        controller: addressController,
+                        focus: addressFocus,
+                        decoration: inputDecoration(
+                          context,
+                          hintText: languages.hintAddress,
+                          fillColor: context.profileInputFillColor,
+                          borderRadius: 8,
+                          prefixIcon: Icon(Icons.location_on_outlined,
+                                  size: 20, color: context.iconMuted)
+                              .paddingAll(14),
+                        ),
+                        nextFocus: latitudeFocus,
+                        isValidationRequired: true,
+                        errorThisFieldRequired: languages.hintRequired,
+                      ),
+
+                      16.height,
+
+                      // Latitude
+                      Text(languages.latitude, style: context.boldTextStyle()),
+                      8.height,
+                      AppTextField(
+                        textFieldType: TextFieldType.NUMBER,
+                        controller: latitudeController,
+                        focus: latitudeFocus,
+                        decoration: inputDecoration(
+                          context,
+                          hintText: languages.latitude,
+                          fillColor: context.profileInputFillColor,
+                          borderRadius: 8,
+                          prefixIcon: Icon(Icons.map_outlined,
+                                  size: 20, color: context.iconMuted)
+                              .paddingAll(14),
+                        ),
+                        nextFocus: longitudeFocus,
+                      ),
+
+                      16.height,
+
+                      // Longitude
+                      Text(languages.longitude, style: context.boldTextStyle()),
+                      8.height,
+                      AppTextField(
+                        textFieldType: TextFieldType.NUMBER,
+                        controller: longitudeController,
+                        focus: longitudeFocus,
+                        decoration: inputDecoration(
+                          context,
+                          hintText: languages.longitude,
+                          fillColor: context.profileInputFillColor,
+                          borderRadius: 8,
+                          prefixIcon: Icon(Icons.map_outlined,
+                                  size: 20, color: context.iconMuted)
+                              .paddingAll(14),
+                        ),
+                        isValidationRequired: true,
+                        errorThisFieldRequired: languages.hintRequired,
+                        nextFocus: shopStartTimeFocus,
+                      ),
+
+                      8.height,
+
+                      // Use Current Location
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton.icon(
+                          onPressed: fetchCurrentLocation,
+                          icon: Icon(Icons.my_location,
+                              color: context.primary, size: 16),
+                          label: Text(
+                            languages.useCurrentLocation,
+                            style: context.boldTextStyle(
+                                size: 12, color: context.primary),
+                          ),
+                        ),
+                      ),
+
+                      8.height,
+
+                      // Shop Start Time
+                      Text(languages.shopStartTime,
+                          style: context.boldTextStyle()),
+                      8.height,
+                      AppTextField(
+                        textFieldType: TextFieldType.OTHER,
+                        controller: shopStartTimeController,
+                        focus: shopStartTimeFocus,
+                        nextFocus: shopEndTimeFocus,
+                        isValidationRequired: true,
+                        readOnly: true,
+                        errorThisFieldRequired: languages.hintRequired,
+                        decoration: inputDecoration(
+                          context,
+                          hintText: languages.shopStartTime,
+                          fillColor: context.profileInputFillColor,
+                          borderRadius: 8,
+                          prefixIcon: Icon(Icons.access_time,
+                                  size: 20, color: context.iconMuted)
+                              .paddingAll(14),
+                        ),
+                        onTap: () async {
+                          final picked = await showTimePicker(
+                            context: context,
+                            initialTime:
+                                shopStartTime ?? TimeOfDay(hour: 9, minute: 0),
+                          );
+                          if (picked != null) {
+                            shopStartTime = picked;
+                            shopStartTimeController.text = formatTime24(picked);
+                            setState(() {});
+                          }
+                        },
+                      ),
+
+                      16.height,
+
+                      // Shop End Time
+                      Text(languages.shopEndTime,
+                          style: context.boldTextStyle()),
+                      8.height,
+                      AppTextField(
+                        textFieldType: TextFieldType.OTHER,
+                        controller: shopEndTimeController,
+                        focus: shopEndTimeFocus,
+                        nextFocus: contactNumberFocus,
+                        isValidationRequired: true,
+                        readOnly: true,
+                        errorThisFieldRequired: languages.hintRequired,
+                        decoration: inputDecoration(
+                          context,
+                          hintText: languages.shopEndTime,
+                          fillColor: context.profileInputFillColor,
+                          borderRadius: 8,
+                          prefixIcon: Icon(Icons.access_time,
+                                  size: 20, color: context.iconMuted)
+                              .paddingAll(14),
+                        ),
+                        onTap: () async {
+                          final picked = await showTimePicker(
+                            context: context,
+                            initialTime: shopEndTime ?? TimeOfDay.now(),
+                          );
+                          if (picked != null) {
+                            shopEndTime = picked;
+                            shopEndTimeController.text = formatTime24(picked);
+                            setState(() {});
+                          }
+                        },
+                      ),
+                      16.height,
+
+                      // Email
+                      Text(languages.hintEmailAddressTxt,
+                          style: context.boldTextStyle()),
+                      8.height,
+                      AppTextField(
+                        textFieldType: TextFieldType.EMAIL_ENHANCED,
+                        controller: emailController,
+                        focus: emailFocus,
+                        decoration: inputDecoration(
+                          context,
+                          hintText: languages.hintEmailAddressTxt,
+                          fillColor: context.profileInputFillColor,
+                          borderRadius: 8,
+                          prefixIcon: Icon(Icons.email_outlined,
+                                  size: 20, color: context.iconMuted)
+                              .paddingAll(14),
+                        ),
+                        isValidationRequired: true,
+                        errorThisFieldRequired: languages.hintRequired,
+                        errorInvalidEmail: languages.enterValidEmail,
+                      ),
+
+                      16.height,
+                      // Phone Number
+                      Text(languages.hintContactNumberTxt,
+                          style: context.boldTextStyle()),
+                      8.height,
+                      AppTextField(
+                        textFieldType: isAndroid
+                            ? TextFieldType.PHONE
+                            : TextFieldType.NAME,
+                        controller: mobileController,
+                        focus: contactNumberFocus,
+                        nextFocus: emailFocus,
+                        decoration: inputDecoration(
+                          context,
+                          hintText: languages.addYourPhoneNumber,
+                          fillColor: context.profileInputFillColor,
+                          borderRadius: 8,
+                          prefixIcon: GestureDetector(
+                            onTap: () => changeCountry(),
+                            child: ValueListenableBuilder(
+                              valueListenable: _valueNotifier,
+                              builder: (context, value, child) => Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "+${selectedCountryPicker.phoneCode}",
+                                    style: context.boldTextStyle(size: 14),
+                                  ),
+                                  2.width,
+                                  Icon(
+                                    Icons.arrow_drop_down,
+                                    color: context.icon,
+                                    size: 20,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ).paddingAll(14),
+                        ),
+                        maxLength: 15,
+                        buildCounter: (context,
+                                {required currentLength,
+                                required isFocused,
+                                maxLength}) =>
+                            null,
+                      ),
+
+                      24.height,
+
+                      // Select Service Section
+                      Container(
+                        width: context.width(),
+                        decoration: BoxDecoration(
+                          color: context.cardSecondary,
+                          borderRadius: radius(12),
+                          border:
+                              Border.all(color: context.cardSecondaryBorder),
+                        ),
+                        padding: EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              languages.selectService,
+                              style: context.boldTextStyle(),
+                            ),
+                            16.height,
+                            if (serviceList.isEmpty)
+                              Text(
+                                languages.noServiceFound,
+                                style: context.secondaryTextStyle(),
+                              ).center(),
+                            if (serviceList.isNotEmpty)
+                              Container(
+                                padding: EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                    color: context.selectServiceContainerColor,
+                                    borderRadius: radius(8),
+                                    border: Border.all(
+                                        color: context.cardSecondaryBorder)),
+                                child: Column(
+                                  children: [
+                                    ListView.separated(
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      itemCount: servicePage == 1
+                                          ? _initialDisplayServices.length
+                                          : _fullSortedServices.length,
+                                      separatorBuilder: (context, index) =>
+                                          8.height,
+                                      itemBuilder: (context, index) {
+                                        final List<ServiceData> _displayList =
+                                            servicePage == 1
+                                                ? _initialDisplayServices
+                                                : _fullSortedServices;
+                                        ServiceData service =
+                                            _displayList[index];
+                                        return InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              service.isSelected = !service
+                                                  .isSelected
+                                                  .validate();
+                                            });
+                                          },
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  service.name.validate(),
+                                                  style:
+                                                      context.primaryTextStyle(
+                                                          size: 14),
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                              8.width,
+                                              Container(
+                                                width: 20,
+                                                height: 20,
+                                                decoration: BoxDecoration(
+                                                  color: service.isSelected
+                                                          .validate()
+                                                      ? context.primary
+                                                      : Colors.transparent,
+                                                  borderRadius: radius(4),
+                                                  border: Border.all(
+                                                    color: service.isSelected
+                                                            .validate()
+                                                        ? context.primary
+                                                        : context.iconMuted,
+                                                    width: 1.5,
+                                                  ),
+                                                ),
+                                                child: service.isSelected
+                                                        .validate()
+                                                    ? Icon(
+                                                        Icons.check,
+                                                        size: 14,
+                                                        color:
+                                                            context.onPrimary,
+                                                      )
+                                                    : null,
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                    if (serviceList.length > 5)
+                                      Padding(
+                                        padding: EdgeInsets.only(top: 12),
+                                        child: GestureDetector(
+                                          onTap: isLastPage
+                                              ? onBackToFirstPage
+                                              : onNextPage,
+                                          child: Text(
+                                            isLastPage
+                                                ? languages.viewLess
+                                                : languages.viewMore,
+                                            style: context.primaryTextStyle(
+                                                color: context.primary,
+                                                size: 12),
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+
+                      100.height,
+                    ],
                   ),
-
-                  100.height,
-                ],
-              ),
-            ),
+                ),
+              ).expand(),
+            ],
           ),
-
           // Save Button
           Positioned(
             bottom: 16,

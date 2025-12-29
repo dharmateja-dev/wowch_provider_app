@@ -893,7 +893,7 @@ class MultiLanguageWidget extends StatelessWidget {
       builder: (context) {
         return Container(
           width: double.infinity,
-          decoration: BoxDecoration(color: context.scaffoldBackgroundColor),
+          decoration: BoxDecoration(color: context.scaffoldSecondary),
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -908,8 +908,8 @@ class MultiLanguageWidget extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: appStore.selectedLanguage.languageCode ==
                               languageData.languageCode
-                          ? primary
-                          : context.scaffoldBackgroundColor,
+                          ? context.primary
+                          : context.scaffoldSecondary,
                       elevation: 0,
                       shadowColor: transparentColor,
                       overlayColor: transparentColor,

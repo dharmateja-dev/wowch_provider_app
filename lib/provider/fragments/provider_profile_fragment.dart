@@ -819,9 +819,10 @@ class ProviderProfileFragmentState extends State<ProviderProfileFragment> {
                         titleColor: context.dialogTitleColor,
                         backgroundColor: context.dialogBackgroundColor,
                         primaryColor: context.primary,
+                        subTitleColor: context.dialogSubTitleColor,
                         customCenterWidget: Image.asset(
                           ic_warning,
-                          color: context.onSecondaryContainer,
+                          color: context.dialogIconColor,
                           height: 70,
                           width: 70,
                           fit: BoxFit.cover,

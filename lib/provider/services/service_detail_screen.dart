@@ -152,7 +152,7 @@ class ServiceDetailScreenState extends State<ServiceDetailScreen> {
       primaryColor: context.primary,
       customCenterWidget: Image.asset(
         ic_warning,
-        color: context.onSecondaryContainer,
+        color: context.dialogIconColor,
         height: 70,
         width: 70,
         fit: BoxFit.cover,
@@ -776,7 +776,7 @@ class ServiceDetailScreenState extends State<ServiceDetailScreen> {
                           primaryColor: context.primary,
                           customCenterWidget: Image.asset(
                             ic_warning,
-                            color: context.onSecondaryContainer,
+                            color: context.dialogIconColor,
                             height: 70,
                             width: 70,
                             fit: BoxFit.cover,

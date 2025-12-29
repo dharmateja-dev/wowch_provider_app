@@ -66,11 +66,23 @@ class ProviderDashboardScreenState extends State<ProviderDashboardScreen> {
   Future<void> init() async {
     afterBuildCreated(
       () async {
-        if (getIntAsync(THEME_MODE_INDEX) == THEME_MODE_SYSTEM) {
+        // Sync themeModeIndex from SharedPreferences to observable
+        int storedThemeMode =
+            getIntAsync(THEME_MODE_INDEX, defaultValue: THEME_MODE_SYSTEM);
+        if (appStore.themeModeIndex != storedThemeMode) {
+          appStore.themeModeIndex = storedThemeMode;
+        }
+
+        if (storedThemeMode == THEME_MODE_SYSTEM) {
           appStore.setDarkMode(context.platformBrightness() == Brightness.dark);
         }
         PlatformDispatcher.instance.onPlatformBrightnessChanged = () {
-          if (getIntAsync(THEME_MODE_INDEX) == THEME_MODE_SYSTEM) {
+          // Re-check SharedPreferences in case it changed
+          int currentThemeMode =
+              getIntAsync(THEME_MODE_INDEX, defaultValue: THEME_MODE_SYSTEM);
+          appStore.themeModeIndex = currentThemeMode;
+
+          if (currentThemeMode == THEME_MODE_SYSTEM) {
             appStore.setDarkMode(
               PlatformDispatcher.instance.platformBrightness == Brightness.dark,
             );

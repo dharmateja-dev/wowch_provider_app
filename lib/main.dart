@@ -149,6 +149,9 @@ Future<void> _initializeThemeMode() async {
   // so the initial getIntAsync in AppStore returns the default value
   appStore.themeModeIndex = storedThemeModeIndex;
 
+  // Also ensure it's persisted (in case it wasn't set before)
+  await setValue(THEME_MODE_INDEX, storedThemeModeIndex);
+
   log('_initializeThemeMode: storedThemeModeIndex = $storedThemeModeIndex');
 
   if (storedThemeModeIndex == THEME_MODE_LIGHT) {
@@ -204,8 +207,19 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.didChangePlatformBrightness();
 
     // Called when system theme changes (e.g., user switches dark/light mode in phone settings)
-    // Use the MobX observable directly instead of getIntAsync (which is async)
+    // Check BOTH the MobX observable AND SharedPreferences to handle initialization edge cases
     int val = appStore.themeModeIndex;
+
+    // Also read directly from SharedPreferences as fallback in case observable wasn't synced
+    int storedVal =
+        getIntAsync(THEME_MODE_INDEX, defaultValue: THEME_MODE_SYSTEM);
+
+    // If there's a mismatch, sync them
+    if (val != storedVal) {
+      log('didChangePlatformBrightness: Observable ($val) != SharedPrefs ($storedVal), syncing...');
+      appStore.themeModeIndex = storedVal;
+      val = storedVal;
+    }
 
     log('didChangePlatformBrightness called - themeModeIndex: $val');
 

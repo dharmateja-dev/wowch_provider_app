@@ -69,7 +69,8 @@ class BookingStatusKeys {
   static String all = BOOKING_PAYMENT_STATUS_ALL;
   static String paid = BOOKING_STATUS_PAID;
   static String pendingApproval = BOOKING_STATUS_PENDING_APPROVAL;
-  static String waitingAdvancedPayment = BOOKING_STATUS_WAITING_ADVANCED_PAYMENT;
+  static String waitingAdvancedPayment =
+      BOOKING_STATUS_WAITING_ADVANCED_PAYMENT;
 }
 
 class BookingUpdateKeys {
@@ -296,4 +297,5 @@ class ShopKeys {
   static String attachmentCount = 'attachment_count';
 
   static String existingImages = 'existing_images';
+  static String translations = 'translations';
 }
