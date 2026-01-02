@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
@@ -29,53 +30,75 @@ class StripeServiceNew {
 
   //StripPayment
   Future<dynamic> stripePay() async {
-    String stripePaymentKey = '';
-    String stripeURL = '';
-    String stripePaymentPublishKey = '';
-    print('TEST VALUE ===>${paymentSetting.testValue!.stripeKey}');
-    print('LIVE VALUE ===>${paymentSetting.liveValue!.stripePublickey}');
+    // Load Stripe keys from environment variables
+    // These are set in the .env file at project root
+    String stripeSecretKey = dotenv.env['STRIPE_SECRET_KEY'] ?? '';
+    String stripePublishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY'] ?? '';
+    String stripeURL = dotenv.env['STRIPE_API_URL'] ??
+        'https://api.stripe.com/v1/payment_intents';
 
-    if (paymentSetting.isTest == 1) {
-      stripePaymentKey = paymentSetting.testValue!.stripeKey!;
-      stripeURL = paymentSetting.testValue!.stripeUrl!;
-      stripePaymentPublishKey = paymentSetting.testValue!.stripePublickey!;
-    } else {
-      stripePaymentKey = paymentSetting.liveValue!.stripeKey!;
-      stripeURL = paymentSetting.liveValue!.stripeUrl!;
-      stripePaymentPublishKey = paymentSetting.liveValue!.stripePublickey!;
+    // Validate that environment variables are set
+    if (stripeSecretKey.isEmpty || stripePublishableKey.isEmpty) {
+      log('ERROR: Stripe keys not found in .env file');
+      throw 'Stripe configuration error. Please check .env file.';
     }
 
+    // Try to use backend values if available, otherwise use .env keys
+    try {
+      if (paymentSetting.isTest == 1 && paymentSetting.testValue != null) {
+        if (paymentSetting.testValue!.stripeKey?.isNotEmpty == true) {
+          stripeSecretKey = paymentSetting.testValue!.stripeKey!;
+        }
+        if (paymentSetting.testValue!.stripeUrl?.isNotEmpty == true) {
+          stripeURL = paymentSetting.testValue!.stripeUrl!;
+        }
+        if (paymentSetting.testValue!.stripePublickey?.isNotEmpty == true) {
+          stripePublishableKey = paymentSetting.testValue!.stripePublickey!;
+        }
+      } else if (paymentSetting.liveValue != null) {
+        if (paymentSetting.liveValue!.stripeKey?.isNotEmpty == true) {
+          stripeSecretKey = paymentSetting.liveValue!.stripeKey!;
+        }
+        if (paymentSetting.liveValue!.stripeUrl?.isNotEmpty == true) {
+          stripeURL = paymentSetting.liveValue!.stripeUrl!;
+        }
+        if (paymentSetting.liveValue!.stripePublickey?.isNotEmpty == true) {
+          stripePublishableKey = paymentSetting.liveValue!.stripePublickey!;
+        }
+      }
+    } catch (e) {
+      log('Using .env Stripe keys');
+    }
+
+    log('Stripe Secret Key: ${stripeSecretKey.substring(0, 20)}...');
+    log('Stripe Publishable Key: ${stripePublishableKey.substring(0, 20)}...');
+    log('Stripe URL: $stripeURL');
+
     Stripe.merchantIdentifier = 'merchant.flutter.stripe.test';
-    Stripe.publishableKey = stripePaymentPublishKey;
-
-    Stripe.instance.applySettings().catchError((e) {
-      toast(e.toString(), print: true);
-
-      throw e.toString();
-    });
+    Stripe.publishableKey = stripePublishableKey;
 
     Request request =
         http.Request(HttpMethodType.POST.name, Uri.parse(stripeURL));
 
     request.bodyFields = {
       'amount': '${(totalAmount * 100).toInt()}',
-      'currency': await isIqonicProduct
-          ? STRIPE_CURRENCY_CODE
-          : '${appConfigurationStore.currencyCode}',
+      'currency': 'usd', // Hardcoded USD for demo mode with US test keys
       'description':
           'Name: ${appStore.userFullName} - Email: ${appStore.userEmail}',
     };
 
-    request.headers.addAll(buildHeaderForStripe(stripePaymentKey));
+    request.headers.addAll(buildHeaderForStripe(stripeSecretKey));
 
     log('URL: ${request.url}');
-    log('Header: ${request.headers}');
     log('Request: ${request.bodyFields}');
 
     appStore.setLoading(true);
     await request.send().then((value) {
       http.Response.fromStream(value).then((response) async {
         appStore.setLoading(false);
+        log('Stripe Response Status: ${response.statusCode}');
+        log('Stripe Response Body: ${response.body}');
+
         if (response.statusCode.isSuccessful()) {
           StripePayModel res =
               StripePayModel.fromJson(jsonDecode(response.body));
@@ -91,7 +114,7 @@ class StripeServiceNew {
                 merchantCountryCode: STRIPE_MERCHANT_COUNTRY_CODE),
             googlePay: PaymentSheetGooglePay(
               merchantCountryCode: STRIPE_MERCHANT_COUNTRY_CODE,
-              testEnv: paymentSetting.isTest == 1,
+              testEnv: true,
             ),
             merchantDisplayName: APP_NAME,
             billingDetails: BillingDetails(
@@ -116,18 +139,20 @@ class StripeServiceNew {
             appStore.setLoading(false);
             throw 'Unable to initiate payment. Try again.';
           });
-        } else if (response.statusCode == 400) {
+        } else {
           appStore.setLoading(false);
-          throw errorSomethingWentWrong;
+          log('Stripe API Error ${response.statusCode}: ${response.body}');
+          throw 'Stripe Error: ${response.statusCode}';
         }
       }).catchError((e) {
         appStore.setLoading(false);
-        throw errorSomethingWentWrong;
+        log('Stripe Response Error: $e');
+        throw e.toString();
       });
     }).catchError((e) {
       appStore.setLoading(false);
+      log('Stripe Request Error: $e');
       toast(e.toString(), print: true);
-
       throw e.toString();
     });
   }

@@ -1320,12 +1320,26 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
           onTap: () async {
             await showConfirmDialogCustom(
               context,
+              height: 80,
+              width: 290,
+              shape: appDialogShape(8),
               dialogType: DialogType.ACCEPT,
               title: languages.accept,
               subTitle: languages.wouldYouLikeToAcceptThisBooking,
+              titleColor: context.dialogTitleColor,
+              backgroundColor: context.dialogBackgroundColor,
               primaryColor: context.primary,
+              customCenterWidget: Image.asset(
+                ic_warning,
+                color: context.dialogIconColor,
+                height: 70,
+                width: 70,
+                fit: BoxFit.cover,
+              ),
               positiveText: languages.lblYes,
+              positiveTextColor: context.onPrimary,
               negativeText: languages.lblNo,
+              negativeTextColor: context.dialogCancelColor,
               onAccept: (_) async {
                 var request = {
                   CommonKeys.id: res.bookingDetail!.id.validate(),
@@ -1434,10 +1448,25 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
                 if (appConfigurationStore.autoAssignStatus) {
                   await showConfirmDialogCustom(
                     context,
+                    height: 80,
+                    width: 290,
+                    shape: appDialogShape(8),
+                    dialogType: DialogType.CONFIRMATION,
                     title: languages.lblAreYouSureYouWantToAssignToYourself,
+                    titleColor: context.dialogTitleColor,
+                    backgroundColor: context.dialogBackgroundColor,
                     primaryColor: context.primary,
+                    customCenterWidget: Image.asset(
+                      ic_warning,
+                      color: context.dialogIconColor,
+                      height: 70,
+                      width: 70,
+                      fit: BoxFit.cover,
+                    ),
                     positiveText: languages.lblYes,
+                    positiveTextColor: context.onPrimary,
                     negativeText: languages.lblCancel,
+                    negativeTextColor: context.dialogCancelColor,
                     onAccept: (c) async {
                       var request = {
                         CommonKeys.id: widget.bookingId.validate(),
@@ -1456,12 +1485,26 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
                 } else {
                   await showConfirmDialogCustom(
                     context,
+                    height: 80,
+                    width: 290,
+                    shape: appDialogShape(8),
                     dialogType: DialogType.ACCEPT,
                     title: languages.accept,
                     subTitle: languages.wouldYouLikeToAcceptThisBooking,
+                    titleColor: context.dialogTitleColor,
+                    backgroundColor: context.dialogBackgroundColor,
                     primaryColor: context.primary,
+                    customCenterWidget: Image.asset(
+                      ic_warning,
+                      color: context.dialogIconColor,
+                      height: 70,
+                      width: 70,
+                      fit: BoxFit.cover,
+                    ),
                     positiveText: languages.lblYes,
+                    positiveTextColor: context.onPrimary,
                     negativeText: languages.lblNo,
+                    negativeTextColor: context.dialogCancelColor,
                     onAccept: (_) async {
                       var request = {
                         CommonKeys.id: res.bookingDetail!.id.validate(),
@@ -1548,17 +1591,32 @@ class BookingDetailScreenState extends State<BookingDetailScreen>
                       .any((element) => element.status.getBoolInt() == false);
                   showConfirmDialogCustom(
                     context,
+                    height: 80,
+                    width: 290,
+                    shape: appDialogShape(8),
+                    dialogType: DialogType.CONFIRMATION,
+                    title: languages.confirmationRequestTxt,
+                    subTitle: isAnyServiceAddonUnCompleted
+                        ? languages.pleaseNoteThatAllServiceMarkedCompleted
+                        : null,
+                    titleColor: context.dialogTitleColor,
+                    backgroundColor: context.dialogBackgroundColor,
+                    primaryColor: context.primary,
+                    customCenterWidget: Image.asset(
+                      ic_warning,
+                      color: context.dialogIconColor,
+                      height: 70,
+                      width: 70,
+                      fit: BoxFit.cover,
+                    ),
+                    positiveText: languages.lblYes,
+                    positiveTextColor: context.onPrimary,
+                    negativeText: languages.lblNo,
+                    negativeTextColor: context.dialogCancelColor,
                     onAccept: (_) {
                       _handlePendingApproval(
                           val: res, isAddExtraCharges: false);
                     },
-                    primaryColor: context.primary,
-                    positiveText: languages.lblYes,
-                    negativeText: languages.lblNo,
-                    subTitle: isAnyServiceAddonUnCompleted
-                        ? languages.pleaseNoteThatAllServiceMarkedCompleted
-                        : null,
-                    title: languages.confirmationRequestTxt,
                   );
                 },
               ).expand(),

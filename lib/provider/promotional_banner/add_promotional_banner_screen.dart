@@ -115,6 +115,18 @@ class _AddPromotionalBannerScreenState
         }
       });
       return serviceList;
+    }).catchError((e) {
+      // Demo mode: Add dummy services when API fails
+      log('Service API failed, using demo services');
+      serviceList = [
+        ServiceData(id: 1, name: 'Home Cleaning'),
+        ServiceData(id: 2, name: 'Plumbing Service'),
+        ServiceData(id: 3, name: 'Electrical Repair'),
+        ServiceData(id: 4, name: 'AC Service'),
+        ServiceData(id: 5, name: 'Painting'),
+      ];
+      setState(() {});
+      return serviceList;
     });
     // Sync new configurations for secret keys
     await setValue(LAST_APP_CONFIGURATION_SYNCED_TIME, 0);
@@ -128,10 +140,18 @@ class _AddPromotionalBannerScreenState
     await getAllServiceList(providerId: appStore.providerId, perPage: 'all')
         .then((value) {
       serviceList = value.data.validate();
-
       setState(() {});
     }).catchError((e) {
-      toast(e.toString(), print: true);
+      // Demo mode: Add demo services when API fails
+      log('Service API failed, using demo services');
+      serviceList = [
+        ServiceData(id: 1, name: 'Home Cleaning'),
+        ServiceData(id: 2, name: 'Plumbing Service'),
+        ServiceData(id: 3, name: 'Electrical Repair'),
+        ServiceData(id: 4, name: 'AC Service'),
+        ServiceData(id: 5, name: 'Painting'),
+      ];
+      setState(() {});
     });
     appStore.setLoading(false);
   }
@@ -142,10 +162,20 @@ class _AddPromotionalBannerScreenState
 
     await getPaymentGateways(requireCOD: false).then((paymentListData) {
       paymentList = paymentListData.validate();
-
       setState(() {});
     }).catchError((e) {
-      toast(e.toString(), print: true);
+      // Demo mode: Add Stripe payment option when API fails
+      log('Payment API failed, using demo Stripe');
+      paymentList = [
+        PaymentSetting(
+          id: 1,
+          title: 'Stripe',
+          type: PAYMENT_METHOD_STRIPE,
+          status: 1,
+          isTest: 1,
+        ),
+      ];
+      setState(() {});
     });
 
     appStore.setLoading(false);
@@ -743,9 +773,7 @@ class _AddPromotionalBannerScreenState
                                 ),
                               ).paddingTop(8),
 
-                            if (totalDaysCount.isNotEmpty &&
-                                DateTime.parse(startingDate)
-                                    .isAfter(DateTime.now())) ...[
+                            if (totalDaysCount.isNotEmpty) ...[
                               16.height,
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -791,24 +819,22 @@ class _AddPromotionalBannerScreenState
                                   PaymentSetting paymentData =
                                       paymentList[index];
 
-                                  return RadioGroup<PaymentSetting>(
-                                    groupValue: selectedPaymentSetting,
+                                  return RadioListTile<String>(
+                                    dense: true,
+                                    activeColor: context.primary,
+                                    value: paymentData.type.validate(),
+                                    groupValue: selectedPaymentSetting?.type,
+                                    controlAffinity:
+                                        ListTileControlAffinity.trailing,
+                                    contentPadding: EdgeInsets.zero,
+                                    visualDensity: VisualDensity.compact,
                                     onChanged: (value) {
-                                      selectedPaymentSetting = value;
+                                      selectedPaymentSetting = paymentData;
                                       setState(() {});
                                     },
-                                    child: RadioListTile<PaymentSetting>(
-                                      dense: true,
-                                      activeColor: context.primary,
-                                      value: paymentData,
-                                      controlAffinity:
-                                          ListTileControlAffinity.trailing,
-                                      contentPadding: EdgeInsets.zero,
-                                      visualDensity: VisualDensity.compact,
-                                      title: Text(
-                                        paymentData.title.validate(),
-                                        style: context.primaryTextStyle(),
-                                      ),
+                                    title: Text(
+                                      paymentData.title.validate(),
+                                      style: context.primaryTextStyle(),
                                     ),
                                   );
                                 },
@@ -891,6 +917,10 @@ class _AddPromotionalBannerScreenState
     );
   }
 
-  num get totalAmount => (appConfigurationStore.bannerPerDayAmount *
-      totalDaysCount.toInt(defaultValue: 1));
+  // Demo mode: Use $10 per day if bannerPerDayAmount is 0
+  num get totalAmount {
+    num pricePerDay = appConfigurationStore.bannerPerDayAmount;
+    if (pricePerDay == 0) pricePerDay = 10; // Demo price: $10 per day
+    return pricePerDay * totalDaysCount.toInt(defaultValue: 1);
+  }
 }

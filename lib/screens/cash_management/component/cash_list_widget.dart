@@ -7,7 +7,6 @@ import 'package:handyman_provider_flutter/screens/cash_management/cash_repositor
 import 'package:handyman_provider_flutter/screens/cash_management/model/payment_history_model.dart';
 import 'package:handyman_provider_flutter/screens/cash_management/view/pay_to_screen.dart';
 import 'package:handyman_provider_flutter/utils/common.dart';
-import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
 import 'package:handyman_provider_flutter/utils/context_extensions.dart';
 import 'package:handyman_provider_flutter/utils/extensions/color_extension.dart';

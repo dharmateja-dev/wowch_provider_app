@@ -1,0 +1,553 @@
+================================================================================
+          STRIPE PAYMENT GATEWAY - API REQUIREMENTS & INTEGRATION GUIDE
+                         For Production-Ready Implementation
+================================================================================
+
+Created: 2026-01-01
+Project: Provider Flutter App (Handyman Service Provider)
+
+================================================================================
+                              TABLE OF CONTENTS
+================================================================================
+1. Overview
+2. Current Implementation Analysis
+3. Required APIs - Backend (Your Server)
+4. Required APIs - Stripe Direct
+5. Payment Flow Diagram
+6. API Specifications
+7. Security Considerations
+8. Production Checklist
+
+================================================================================
+                              1. OVERVIEW
+================================================================================
+
+This document outlines all APIs required for integrating Stripe payment gateway
+in the Provider Flutter application. The payment system supports:
+
+- Subscription plan payments (Provider pricing plans)
+- Promotional banner payments
+- Booking-related payments
+
+Current Status: Development/Test Mode (using hardcoded test keys)
+Target: Production-ready implementation
+
+================================================================================
+                      2. CURRENT IMPLEMENTATION ANALYSIS
+================================================================================
+
+Files Analyzed:
+- lib/provider/payment/components/stripe_service_new.dart
+- lib/provider/payment/payment_screen.dart
+- lib/networks/rest_apis.dart
+- lib/utils/app_configuration.dart
+- lib/models/stripe_pay_model.dart
+
+Current Flow (INSECURE - Development Only):
+1. App directly calls Stripe API with secret key (NOT RECOMMENDED for production)
+2. Creates Payment Intent from app
+3. Uses Payment Sheet for payment collection
+4. Calls backend to save payment after completion
+
+================================================================================
+                    3. REQUIRED BACKEND APIs (YOUR SERVER)
+================================================================================
+
+These APIs must be implemented on YOUR backend server:
+
+------------------------------------------------------------------------------
+API 1: GET PAYMENT GATEWAYS
+------------------------------------------------------------------------------
+Endpoint:    GET /api/payment-gateways
+Purpose:     Retrieve available payment methods and their configuration
+Auth:        Bearer Token (User Authentication)
+
+Request Headers:
+  Authorization: Bearer {user_token}
+  Content-Type: application/json
+
+Query Parameters:
+  is_add_wallet (optional): boolean - For wallet top-up specific gateways
+
+Response (200 OK):
+[
+  {
+    "id": 1,
+    "title": "Stripe",
+    "type": "stripe",
+    "status": 1,
+    "is_test": 1,
+    "value": {
+      "stripe_url": "https://api.stripe.com/v1/payment_intents",
+      "stripe_key": "sk_test_xxxx...",           // SECRET KEY (Backend only!)
+      "stripe_publickey": "pk_test_xxxx..."      // PUBLISHABLE KEY (Frontend)
+    },
+    "live_value": {
+      "stripe_url": "https://api.stripe.com/v1/payment_intents",
+      "stripe_key": "sk_live_xxxx...",           // SECRET KEY (Backend only!)
+      "stripe_publickey": "pk_live_xxxx..."      // PUBLISHABLE KEY (Frontend)
+    }
+  }
+]
+
+⚠️ SECURITY NOTE: In production, NEVER expose stripe_key (secret key) to
+the mobile app. Only send stripe_publickey (publishable key) to the frontend.
+
+------------------------------------------------------------------------------
+API 2: CREATE PAYMENT INTENT (CRITICAL - Must implement on backend)
+------------------------------------------------------------------------------
+Endpoint:    POST /api/create-payment-intent
+Purpose:     Securely create Stripe Payment Intent on server
+Auth:        Bearer Token (User Authentication)
+
+Why This Is Critical:
+- Secret key must NEVER be exposed to mobile app
+- Server-side creation ensures amount validation
+- Prevents tampering with payment amounts
+
+Request:
+{
+  "amount": 2999,                    // Amount in cents (e.g., $29.99 = 2999)
+  "currency": "usd",                 // ISO currency code
+  "payment_type": "subscription",    // "subscription" | "booking" | "promotional_banner"
+  "plan_id": 123,                    // For subscription payments
+  "booking_id": null,                // For booking payments
+  "description": "Premium Plan Subscription",
+  "customer_email": "user@example.com",
+  "customer_name": "John Doe",
+  "metadata": {
+    "user_id": "456",
+    "app_version": "1.0.0"
+  }
+}
+
+Response (200 OK):
+{
+  "status": true,
+  "client_secret": "pi_xxx_secret_xxx",   // For Payment Sheet
+  "payment_intent_id": "pi_xxx",          // For tracking
+  "publishable_key": "pk_test_xxx",       // Stripe publishable key
+  "merchant_country_code": "US",
+  "customer_id": "cus_xxx"                // Optional: Stripe customer ID
+}
+
+Error Response (400/500):
+{
+  "status": false,
+  "message": "Unable to create payment intent",
+  "error_code": "PAYMENT_INTENT_FAILED"
+}
+
+Backend Implementation (Node.js/PHP Example):
+```javascript
+// Node.js with Express
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+
+app.post('/api/create-payment-intent', async (req, res) => {
+  try {
+    const { amount, currency, description, customer_email } = req.body;
+    
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: amount,
+      currency: currency,
+      description: description,
+      receipt_email: customer_email,
+      automatic_payment_methods: {
+        enabled: true,
+      },
+    });
+    
+    res.json({
+      status: true,
+      client_secret: paymentIntent.client_secret,
+      payment_intent_id: paymentIntent.id,
+      publishable_key: process.env.STRIPE_PUBLISHABLE_KEY
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: false,
+      message: error.message
+    });
+  }
+});
+```
+
+------------------------------------------------------------------------------
+API 3: SAVE SUBSCRIPTION / RECORD PAYMENT
+------------------------------------------------------------------------------
+Endpoint:    POST /api/save-subscription
+Purpose:     Record successful payment and activate subscription
+Auth:        Bearer Token (User Authentication)
+
+Request:
+{
+  "plan_id": 123,
+  "amount": 29.99,
+  "title": "Premium Plan",
+  "description": "Monthly premium subscription",
+  "duration": "monthly",
+  "identifier": "premium_monthly",
+  "plan_type": "monthly",
+  "plan_limitation": "limited",
+  "type": "subscription",
+  "payment_status": "paid",
+  "payment_type": "stripe",
+  "txn_id": "pi_xxx",              // Stripe Payment Intent ID
+  "other_transaction_detail": "",
+  "user_id": 456
+}
+
+Response (200 OK):
+{
+  "status": true,
+  "message": "Subscription activated successfully",
+  "data": {
+    "id": 789,
+    "plan_id": 123,
+    "user_id": 456,
+    "start_date": "2026-01-01",
+    "end_date": "2026-02-01",
+    "status": "active",
+    ... // Full subscription details
+  }
+}
+
+------------------------------------------------------------------------------
+API 4: VERIFY PAYMENT (RECOMMENDED)
+------------------------------------------------------------------------------
+Endpoint:    POST /api/verify-payment
+Purpose:     Server-side verification of payment completion
+Auth:        Bearer Token (User Authentication)
+
+Request:
+{
+  "payment_intent_id": "pi_xxx",
+  "payment_type": "subscription",
+  "plan_id": 123
+}
+
+Response (200 OK):
+{
+  "status": true,
+  "payment_verified": true,
+  "payment_status": "succeeded",
+  "amount_received": 2999,
+  "currency": "usd"
+}
+
+------------------------------------------------------------------------------
+API 5: WEBHOOK HANDLER (CRITICAL FOR PRODUCTION)
+------------------------------------------------------------------------------
+Endpoint:    POST /api/stripe-webhook
+Purpose:     Receive Stripe events for payment status updates
+Auth:        Stripe Webhook Signature Verification
+
+Events to Handle:
+- payment_intent.succeeded
+- payment_intent.payment_failed
+- payment_intent.canceled
+- customer.subscription.created
+- customer.subscription.updated
+- customer.subscription.deleted
+- charge.refunded
+
+Example Webhook Handler:
+```javascript
+const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+app.post('/api/stripe-webhook', express.raw({type: 'application/json'}), (req, res) => {
+  const sig = req.headers['stripe-signature'];
+  
+  let event;
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+  } catch (err) {
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+  
+  switch (event.type) {
+    case 'payment_intent.succeeded':
+      const paymentIntent = event.data.object;
+      // Update payment status in database
+      break;
+    case 'payment_intent.payment_failed':
+      // Handle failed payment
+      break;
+    // ... handle other events
+  }
+  
+  res.json({received: true});
+});
+```
+
+================================================================================
+                      4. REQUIRED STRIPE DIRECT APIs
+================================================================================
+
+These are Stripe's APIs that will be called (either from backend or via SDK):
+
+------------------------------------------------------------------------------
+API: CREATE PAYMENT INTENT (Stripe)
+------------------------------------------------------------------------------
+URL:         https://api.stripe.com/v1/payment_intents
+Method:      POST
+Auth:        Bearer {stripe_secret_key}
+Content-Type: application/x-www-form-urlencoded
+
+Request Body:
+  amount=2999
+  currency=usd
+  description=Subscription Payment
+  receipt_email=user@example.com
+
+Response:
+{
+  "id": "pi_xxx",
+  "object": "payment_intent",
+  "amount": 2999,
+  "amount_capturable": 0,
+  "amount_received": 0,
+  "client_secret": "pi_xxx_secret_xxx",
+  "confirmation_method": "automatic",
+  "created": 1704067200,
+  "currency": "usd",
+  "description": "Subscription Payment",
+  "status": "requires_payment_method",
+  "payment_method_types": ["card"],
+  ...
+}
+
+------------------------------------------------------------------------------
+API: RETRIEVE PAYMENT INTENT (For Verification)
+------------------------------------------------------------------------------
+URL:         https://api.stripe.com/v1/payment_intents/{payment_intent_id}
+Method:      GET
+Auth:        Bearer {stripe_secret_key}
+
+------------------------------------------------------------------------------
+API: CONFIRM PAYMENT INTENT (Optional - Usually handled by SDK)
+------------------------------------------------------------------------------
+URL:         https://api.stripe.com/v1/payment_intents/{id}/confirm
+Method:      POST
+Auth:        Bearer {stripe_secret_key}
+
+================================================================================
+                          5. PAYMENT FLOW DIAGRAM
+================================================================================
+
+CURRENT FLOW (Development - INSECURE):
+=====================================
+
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│   Mobile App    │     │  Stripe API     │     │  Your Backend   │
+└────────┬────────┘     └────────┬────────┘     └────────┬────────┘
+         │                       │                       │
+         │  1. Get Payment Gateways                      │
+         ├──────────────────────────────────────────────>│
+         │  (returns stripe keys including secret!)      │
+         │<──────────────────────────────────────────────┤
+         │                       │                       │
+         │  2. Create Payment Intent (with secret key!)  │
+         ├──────────────────────>│                       │
+         │  (client_secret)      │                       │
+         │<──────────────────────┤                       │
+         │                       │                       │
+         │  3. Show Payment Sheet                        │
+         │  (User enters card)   │                       │
+         │                       │                       │
+         │  4. Confirm Payment   │                       │
+         ├──────────────────────>│                       │
+         │  (payment complete)   │                       │
+         │<──────────────────────┤                       │
+         │                       │                       │
+         │  5. Save Subscription │                       │
+         ├──────────────────────────────────────────────>│
+         │  (success)            │                       │
+         │<──────────────────────────────────────────────┤
+         │                       │                       │
+
+
+RECOMMENDED FLOW (Production - SECURE):
+=======================================
+
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│   Mobile App    │     │  Your Backend   │     │  Stripe API     │
+└────────┬────────┘     └────────┬────────┘     └────────┬────────┘
+         │                       │                       │
+         │  1. Get Payment Gateways                      │
+         ├──────────────────────>│                       │
+         │  (only publishable key)                       │
+         │<──────────────────────┤                       │
+         │                       │                       │
+         │  2. Request Payment Intent                    │
+         │  (amount, plan_id, etc.)                      │
+         ├──────────────────────>│                       │
+         │                       │  3. Create Payment Intent
+         │                       ├──────────────────────>│
+         │                       │  (full PaymentIntent) │
+         │                       │<──────────────────────┤
+         │  4. Return client_secret                      │
+         │<──────────────────────┤                       │
+         │                       │                       │
+         │  5. Initialize Payment Sheet                  │
+         │     with client_secret                        │
+         │                       │                       │
+         │  6. User enters payment details               │
+         │<─────────────────────────────────────────────>│
+         │  (SDK handles securely)                       │
+         │                       │                       │
+         │  7. Payment Complete  │                       │
+         │  (transaction_id)     │                       │
+         │                       │                       │
+         │  8. Save Subscription │                       │
+         ├──────────────────────>│                       │
+         │                       │  9. Verify Payment    │
+         │                       ├──────────────────────>│
+         │                       │  (payment status)     │
+         │                       │<──────────────────────┤
+         │                       │ 10. Record in DB      │
+         │  (success)            │                       │
+         │<──────────────────────┤                       │
+         │                       │                       │
+         │                       │  11. Webhook events   │
+         │                       │<──────────────────────┤
+         │                       │  (status updates)     │
+         │                       │                       │
+
+================================================================================
+                          6. API SPECIFICATIONS
+================================================================================
+
+STRIPE KEYS REQUIRED:
+---------------------
+1. Publishable Key (pk_test_xxx / pk_live_xxx)
+   - Safe to expose in mobile app
+   - Used to initialize Stripe SDK
+   
+2. Secret Key (sk_test_xxx / sk_live_xxx)
+   - NEVER expose to mobile app
+   - Store securely on backend only
+   - Used for server-side API calls
+
+3. Webhook Signing Secret (whsec_xxx)
+   - Store on backend only
+   - Used to verify webhook authenticity
+
+ENVIRONMENT VARIABLES (Backend):
+-------------------------------
+STRIPE_SECRET_KEY=sk_live_xxx
+STRIPE_PUBLISHABLE_KEY=pk_live_xxx
+STRIPE_WEBHOOK_SECRET=whsec_xxx
+STRIPE_MERCHANT_COUNTRY_CODE=US
+
+CURRENCY CONFIGURATION:
+----------------------
+Current setting: INR (Indian Rupee) / USD (US Dollar)
+Update in: lib/utils/constant.dart (STRIPE_CURRENCY_CODE)
+Update in: lib/utils/configs.dart (STRIPE_MERCHANT_COUNTRY_CODE)
+
+================================================================================
+                       7. SECURITY CONSIDERATIONS
+================================================================================
+
+CRITICAL SECURITY ISSUES IN CURRENT IMPLEMENTATION:
+---------------------------------------------------
+
+1. ❌ SECRET KEY EXPOSURE
+   Current code has hardcoded secret keys in stripe_service_new.dart
+   
+   FIX: Move Payment Intent creation to backend
+
+2. ❌ CLIENT-SIDE AMOUNT DETERMINATION
+   Amount is determined client-side, allowing manipulation
+   
+   FIX: Validate amount on backend before creating Payment Intent
+
+3. ❌ NO SERVER-SIDE VERIFICATION
+   Payment success is trusted from client without verification
+   
+   FIX: Implement API 4 (Verify Payment) and webhooks
+
+SECURITY CHECKLIST:
+------------------
+□ Remove hardcoded secret keys from mobile app
+□ Implement backend endpoint for Payment Intent creation
+□ Never send secret key to mobile app
+□ Validate payment amounts server-side
+□ Implement webhook handler for payment events
+□ Use HTTPS for all API calls
+□ Implement rate limiting on payment APIs
+□ Log all payment attempts for audit
+□ Implement idempotency keys to prevent duplicate charges
+□ Enable 3D Secure authentication
+□ Use Stripe Radar for fraud prevention
+
+================================================================================
+                       8. PRODUCTION CHECKLIST
+================================================================================
+
+BEFORE GOING LIVE:
+-----------------
+□ Replace test keys with live keys (sk_live_xxx, pk_live_xxx)
+□ Update Stripe Dashboard settings:
+  □ Set webhook endpoints
+  □ Configure webhook events
+  □ Set up Radar rules
+  □ Verify business details
+  
+□ Backend Implementation:
+  □ Create payment-intent endpoint
+  □ Implement payment verification
+  □ Set up webhook handler
+  □ Configure proper error handling
+  □ Set up payment logging/audit
+  
+□ Mobile App Updates:
+  □ Remove hardcoded keys
+  □ Update stripePay() to use backend endpoint
+  □ Handle all payment error cases
+  □ Add retry logic for failed payments
+  □ Test in Stripe test mode first
+  
+□ Testing:
+  □ Test with Stripe test cards
+  □ Test declined payment scenarios
+  □ Test 3D Secure flow
+  □ Test webhook delivery
+  □ Load testing for high traffic
+
+STRIPE TEST CARDS:
+-----------------
+Success:              4242 4242 4242 4242
+Declined:             4000 0000 0000 0002
+3D Secure Required:   4000 0027 6000 3184
+Insufficient Funds:   4000 0000 0000 9995
+
+CVV: Any 3 digits
+Expiry: Any future date
+
+================================================================================
+                              SUMMARY
+================================================================================
+
+REQUIRED BACKEND APIs:
+1. GET  /api/payment-gateways       - Get payment method configuration
+2. POST /api/create-payment-intent  - Create Stripe Payment Intent (CRITICAL)
+3. POST /api/save-subscription      - Record payment and activate subscription
+4. POST /api/verify-payment         - Verify payment completion
+5. POST /api/stripe-webhook         - Handle Stripe webhook events
+
+MOBILE APP CHANGES NEEDED:
+1. Modify StripeServiceNew to call backend for Payment Intent
+2. Remove secret key handling from app
+3. Add proper error handling for backend failures
+4. Implement payment verification flow
+
+STRIPE APIs USED:
+1. POST /v1/payment_intents         - Create payment intent (Backend)
+2. GET  /v1/payment_intents/{id}    - Retrieve payment intent (Backend)
+3. Flutter Stripe SDK               - Payment Sheet (Mobile App)
+
+================================================================================
+                           END OF DOCUMENT
+================================================================================
